@@ -132,10 +132,10 @@ export default function Scanner() {
 
     // Upload to Supabase Storage bucket 'finvexa-documents'
     uploadDocument(file, 'finvexa-documents')
-      .then(res => {
+      .then((res: { cloud: boolean; path?: string; publicUrl?: string; error?: string }) => {
         setStorageUpload(res)
       })
-      .catch(err => {
+      .catch((err: unknown) => {
         console.warn('Storage upload error:', err)
         setStorageUpload({ cloud: false, path: file.name })
       })
