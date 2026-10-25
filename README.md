@@ -2,11 +2,17 @@
 ### Universal Financial Digital Twin & Multi-Risk Decision Engine
 > **"Smart Money Decisions in 8th-Grade Simple English Before You Spend a Single Rupee"**
 
+<div align="center">
+
+[![GitHub Actions CI/CD](https://img.shields.io/github/actions/workflow/status/RAYAPURAMVIKRAM/Srujana_hackathon2026_PocketGuardAI/deploy.yml?branch=main&label=GitHub%20Pages%20Build&style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_PocketGuardAI/actions)
 [![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://chanakya-psi.vercel.app)
 [![Supabase](https://img.shields.io/badge/Supabase-Database%20%26%20Storage-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Backend%20API-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Google Gemini](https://img.shields.io/badge/Google%20Gemini-2.5%20Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
 [![RBI Account Aggregator](https://img.shields.io/badge/RBI%20AA-Sahamati%20Standard-2563EB?style=for-the-badge)](https://sahamati.org.in)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind-Radiant%20Dark%20Fintech-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+
+</div>
 
 ---
 
@@ -22,52 +28,27 @@ FINVEXA translates complex balance sheets into **8th-grade simple English**. Bef
 
 ---
 
-## 🎨 Pure White & Crisp Slate High-Trust Fintech Design System
+## 🌌 Radiant Dark Aurora & Neon Glass Fintech Theme
 
-FINVEXA is styled with an official, high-trust **Pure White & Crisp Slate Theme** inspired by world-class banking interfaces (Zerodha, Stripe, and Apple Financial):
-- **Backgrounds**: Crisp `bg-white` and `bg-slate-50` cards with fine grid line overlays.
-- **Typography**: Dark, readable headings (`text-slate-900`) and clear body text (`text-slate-600`).
-- **Card Borders**: Refined `border-slate-200` with soft `shadow-sm` depth.
-- **Status Badges**: Official bank status indicators:
-  - 🟢 **Safe**: Emerald Green (`#059669`)
-  - 🟡 **Warning**: Amber (`#D97706`)
-  - 🔴 **Alert**: Crimson Red (`#DC2626`)
-  - 🔵 **Primary**: Royal Blue (`#2563EB`)
+FINVEXA features a high-trust, immersive **Radiant Dark Fintech Theme** (`bg-slate-950 text-white`) with glowing blurred aurora background orbs, `bg-slate-900/70 backdrop-blur-xl border-white/10` 3D tilt cards, and dynamic persona ambient glow:
+- **🎓 Student / Job Holder**: Radiant Electric Violet (`#8B5CF6`), Fuchsia (`#EC4899`) & Cyber Cyan (`#06B6D4`) glow.
+- **💻 Freelancer / Creator**: Radiant Sunset Amber (`#F59E0B`), Coral Rose (`#F43F5E`) & Purple (`#A855F7`) glow.
+- **🏪 Small Business Owner**: Radiant Emerald Neon (`#10B981`), Ocean Teal (`#14B8A6`) & Royal Blue (`#2563EB`) glow.
 
 ---
 
-## 🧠 3 Real-Life Financial Personalities (8th-Grade English)
+## 🎯 Global Custom Goal & Number Synchronization (`AppContext.tsx`)
 
-Every page, slider label, risk check, and rescue strategy dynamically re-calibrates for the chosen personality:
-
-### 1. 🎓 Student & Job Holder
-- **Real-Life Goal**: *"Buy a ₹55,000 Laptop or Bike without touching ₹18,000 Hostel Rent & College Fees."*
-- **Simple Terms**:
-  - `Money Safe in Bank`: ₹65,000
-  - `Untouchable Rent & Fees`: ₹18,000
-  - `Money Wasted on 1 AM Snacks & Subscriptions`: ₹3,400/month
-  - `Friends Who Still Owe You Money`: ₹900
-- **Daily Defense**: Catches 1 AM food delivery surge markups, recurring OTT app debits, and provides WhatsApp reminders for hangout splits.
-
-### 2. 💻 Freelancer & Creator
-- **Real-Life Goal**: *"Buy a ₹45,000 Camera or Editing Laptop while a client delays my ₹65,000 payment by 22 days."*
-- **Simple Sliders**:
-  1. `Camera/Gear Price`: ₹45,000
-  2. `How Many Days Client Pays Late`: 22 Days
-  3. `Advance Money Paid by Client`: 25%
-  4. `Extra Tax & App Fees`: 10%
-  5. `Pay in Monthly Parts`: 2 Batches
-- **Risk Reality**: *"Your client sent a WhatsApp screenshot, but the money has NOT entered your bank. Studio rent of ₹15,000 is due in 10 days before the client pays. You will be short by ₹14,500 on Day 18!"*
-
-### 3. 🏪 Small Business Owner (T-Shirt Shop)
-- **Real-Life Goal**: *"Accept a ₹1,00,000 T-Shirt Order where making the shirts costs ₹60,000, delivery costs ₹5,000 extra, and ₹20,000 Staff Salaries & Shop Rent must be paid first."*
-- **Simple Sliders**:
-  1. `Cost to Make the T-Shirts`: ₹60,000
-  2. `How Many Days Buyer Pays Late`: 25 Days
-  3. `Advance Taken from Buyer`: 15%
-  4. `Extra Delivery & Packing Cost`: ₹5,000 (8%)
-  5. `Split Order into Batches`: 1 or 2 Batches
-- **Risk Reality**: *"You have ₹50,000 in the bank, but making the shirts (₹60,000) + delivery (₹5,000) + worker salaries & rent (₹20,000) needs ₹85,000 — so you run out of money and hit a deficit of −₹35,000 on Day 18!"*
+Every user input is immediately and bidirectionally connected to every chart and slider across FINVEXA:
+- **Smart Parser**: Automatically extracts Rupee amounts (`"₹80,000"`, `"1.5 lakh"`, `"80k"`, `"55000"`) and timelines (`"2 months"`, `"45 days"`, `"3 weeks"`).
+- **Global Ripple Effect**: Overwrites the active decision and recomputes:
+  1. The **90-Day Recharts Graph** on `/simulator` (Green Expected Line vs. Red Real-Life Balance Line, shortage amount, and exact crash day).
+  2. The **Dashboard KPI Cards** on `/dashboard` (showing user goal name, cost, and calculated shortage).
+  3. All **6 Risk Check Cards** on `/risk-matrix` (dynamically inserting the user's exact goal name and rupee numbers into risk explanations).
+  4. The **Side-by-Side Comparison Table** on `/goal-strategy` (calculating exact savings and timeline difference for their specific goal).
+  5. All **3 Rescue Plans** on `/rescue` (calculating exact 45% advance, 2-batch split amounts, and installment numbers from entered goal cost).
+- **Persistent State**: Persisted in `localStorage` across page reloads.
+- **Quick Goal Bar (`GoalQuickEditBar.tsx`)**: Prominently placed at the top of `/dashboard`, `/simulator`, `/risk-matrix`, `/leaks`, `/scanner`, `/rescue`, `/goal-strategy`, and `/profile` for instant goal testing.
 
 ---
 
@@ -77,7 +58,7 @@ Every page, slider label, risk check, and rescue strategy dynamically re-calibra
 flowchart TD
     A[Visitor Opens Web App] --> B[Pure White Animated Splash Screen /]
     B -->|Tap / Scroll| C[Smart Auth & Returning User /auth]
-    C --> D[Step 1: Life Situation /onboarding/personality]
+    C --> D[Step 1: Life Situation & Custom Goal /onboarding/personality]
     D --> E[Step 2: RBI AA Bank Linking /onboarding/bank-link]
     E --> F[FINVEXA Dashboard /dashboard]
 
@@ -96,7 +77,7 @@ flowchart TD
 | Route | Page | What It Does in Simple English |
 |---|---|---|
 | `/dashboard` | **🏠 Home Dashboard** | 4 Big Plain-English KPI cards (*Money Safe in Bank*, *Untouchable Bills Locked*, *Sneaky Leaks Found*, *Safe to Spend Today*), 3D Interactive Financial Shield, and live 24/7 AI Banking Chatbot. |
-| `/simulator` | **🔮 90-Day Simulator** | 3 live explanation boxes updating in real-time, white Recharts canvas with Green Expected line, Red Real-Life line, `₹0` Danger line, Untouchable Rent line, and a **"✨ Auto-Fix This Shortage Now"** button. |
+| `/simulator` | **🔮 90-Day Simulator** | 3 live explanation boxes updating in real-time, Recharts dark canvas with Green Expected line, Red Real-Life line, `₹0` Danger line, Untouchable Rent line, and a **"✨ Auto-Fix This Shortage Now"** button. |
 | `/goal-strategy` | **🎯 Goal & Comparison** | AI Goal input box with quick chips, side-by-side comparison (*Without FINVEXA* vs. *With FINVEXA*), and genuine web-researched earning/saving platforms matched to your personality. |
 | `/risk-matrix` | **🛡️ 6 Safety Checks** | 6 expandable cards showing: (1) *What AI Found in Your Account*, (2) *Why This Hurts You in Simple English*, and (3) *Actionable Fix + Web Link*. |
 | `/leaks` | **💸 Hidden Money Finder** | "🎉 Public Hangout Group Bill Detected!" alert, Solo vs. Group split calculator, mobile contact picker (`navigator.contacts`), direct WhatsApp Web reminder links, and 1 AM food delivery leak reports. |
@@ -161,21 +142,38 @@ FINVEXA operates strictly under the **Reserve Bank of India (RBI) Non-Banking Fi
 
 ---
 
-## 🛠️ Technology Stack & Architecture
+## 👨‍⚖️ Hackathon Judge Demo Walkthrough (3 Minutes)
 
-| Layer | Technologies |
-|---|---|
-| **Frontend UI/UX** | React 18, TypeScript, Vite, Tailwind CSS (Pure White Fintech Tokens), Lucide Icons, Canvas API |
-| **Data Visualization** | Recharts (Responsive White Grid, Multi-Axis Reference Lines, Zero Danger Line) |
-| **Device APIs** | `navigator.mediaDevices.getUserMedia` (Camera), `navigator.geolocation` (GPS), `navigator.contacts` |
-| **Backend API** | Python 3.11, FastAPI, Uvicorn, Pydantic v2 |
-| **AI Intelligence** | Google Gemini 2.5 Flash (`google-genai` SDK), Regex Clause Parser |
-| **Cloud Database & Storage** | Supabase PostgreSQL, Supabase Storage (`finvexa-documents`, `finvexa-assets`) |
-| **Deployment** | Vercel (Frontend SPA), Supabase Cloud |
+1. **Splash Screen (`/`)**: Note the animated FINVEXA diamond-shield logo and tap *"⬆️ Scroll Up or Tap Anywhere to Continue"*.
+2. **Instant Auth (`/auth`)**: Click **"Guest"** -> **"Enter as Guest Explorer"** (or use phone number with demo OTP `8492`).
+3. **Onboarding (`/onboarding/personality`)**: Pick **"Student & Job Holder"** or **"Small Business Owner"**, type your custom goal (e.g. `"MacBook Air ₹95,000"`), and view how all starting numbers calibrate.
+4. **Bank Safety (`/onboarding/bank-link`)**: Pick **HDFC Bank** or **SBI**, enter demo OTP `8492`, and observe the read-only Sahamati AA connection.
+5. **Home Dashboard (`/dashboard`)**:
+   - Inspect the 4 plain-English KPI cards showing your custom goal name and numbers.
+   - Test the top **"🎯 Edit My Goal & Amount"** bar to see instant recalculations.
+   - Interact with the **AI Banking Chatbot** using quick prompts like *"Why was ₹250 deducted?"*.
+6. **Simulator (`/simulator`)**:
+   - Move the purchase slider up and watch the Red line drop into negative cash shortage on Day 18.
+   - Note the **3 Plain-English Live Explanation Boxes**.
+   - Tap **"✨ Auto-Fix This Shortage Now"** and see the sliders rebalance to pull the Red line into safety!
+7. **Goal & Comparison (`/goal-strategy`)**:
+   - View the Side-by-Side comparison table (*Without FINVEXA* vs. *With FINVEXA*).
+   - Test verified external earning and saving links.
+8. **Hidden Money Finder (`/leaks`)**:
+   - Review the **"🎉 Public Hangout Group Bill Detected!"** card.
+   - Tap **"👥 Group Split!"**, enter friend name and phone number, and test the **WhatsApp Web** reminder link.
+9. **Scanner (`/scanner`)**:
+   - Click **"📸 Turn On Live Camera"** to see the live viewfinder.
+   - Click **"📍 Verify Live GPS Location"** to stamp your device coordinates.
+   - Click **"WhatsApp Fake UPI Slip"** to see the 4-point legal authenticity report detect font tampering and missing UTR.
+10. **Profile (`/profile`)**:
+    - Switch to **"Small Business Owner"** to test a T-Shirt shop scenario.
+    - Tap **"Reset Demo Flow"** anytime to reset local session data for the next judge!
 
 ---
 
-## 🚀 Quickstart & Local Setup Instructions
+<details>
+<summary>⚙️ Developer Local Terminal Commands</summary>
 
 ### 1. Clone Repository
 ```bash
@@ -183,7 +181,7 @@ git clone https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_PocketGuardAI
 cd Srujana_hackathon2026_PocketGuardAI
 ```
 
-### 2. Frontend Setup
+### 2. Frontend Setup & Run
 ```bash
 cd frontend
 npm install
@@ -191,13 +189,13 @@ npm run dev
 # Frontend dev server runs on http://localhost:5173
 ```
 
-To build production bundle:
+To compile production bundle:
 ```bash
 npm run build
 # Compiles via tsc -b && vite build to dist/
 ```
 
-### 3. Backend Setup
+### 3. Backend Setup & Run
 ```bash
 cd backend
 python -m venv venv
@@ -212,34 +210,15 @@ python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 # Backend API runs on http://localhost:8000 (Swagger docs at http://localhost:8000/docs)
 ```
 
----
+### 4. Git Push & Deployment Commands
+```bash
+git add -A
+git commit -m "fix: sync onboarding custom goal across all graphs/sliders, restore radiant dark theme, and add GitHub Actions auto-build"
+git push origin main
+git push chanakya main
+```
 
-## 👨‍⚖️ Hackathon Judge Demo Walkthrough (3 Minutes)
-
-1. **Splash Screen (`/`)**: Note the animated FINVEXA diamond-shield logo and tap *"⬆️ Scroll Up or Tap Anywhere to Continue"*.
-2. **Instant Auth (`/auth`)**: Click **"Guest"** -> **"Enter as Guest Explorer"** (or use phone number with demo OTP `8492`).
-3. **Onboarding (`/onboarding/personality`)**: Pick **"Student & Job Holder"** or **"Small Business Owner"** and view how the starting numbers calibrate.
-4. **Bank Safety (`/onboarding/bank-link`)**: Pick **HDFC Bank** or **SBI**, enter demo OTP `8492`, and observe the read-only Sahamati AA connection.
-5. **Home Dashboard (`/dashboard`)**:
-   - Inspect the 4 plain-English KPI cards.
-   - Interact with the **AI Banking Chatbot** using quick prompts like *"Why was ₹250 deducted?"*.
-6. **Simulator (`/simulator`)**:
-   - Move the purchase slider up and watch the Red line drop into negative cash shortage on Day 18.
-   - Note the **3 Plain-English Live Explanation Boxes**.
-   - Tap **"✨ Auto-Fix This Shortage Now"** and see the sliders rebalance to pull the Red line into safety!
-7. **Goal & Comparison (`/goal-strategy`)**:
-   - View the Side-by-Side comparison table (*Without FINVEXA* vs. *With FINVEXA*).
-   - Test verified external earning and saving links.
-8. **Hidden Money Finder (`/leaks`)**:
-   - Review the **"🎉 Public Hangout Group Bill Detected!"** card.
-   - Tap **"👥 It Was a Group Split!"**, enter friend name and phone number, and test the **WhatsApp Web** reminder link.
-9. **Scanner (`/scanner`)**:
-   - Click **"📸 Turn On Live Camera"** to see the live viewfinder.
-   - Click **"📍 Verify Live GPS Location"** to stamp your device coordinates.
-   - Click **"WhatsApp Fake UPI Slip"** to see the 4-point legal authenticity report detect font tampering and missing UTR.
-10. **Profile (`/profile`)**:
-    - Switch to **"Small Business Owner"** to test a T-Shirt shop scenario.
-    - Tap **"Reset Demo Flow"** anytime to reset local session data for the next judge!
+</details>
 
 ---
 

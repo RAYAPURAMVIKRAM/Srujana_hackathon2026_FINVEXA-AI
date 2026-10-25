@@ -21,6 +21,7 @@ import {
 import { Link } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import Tilt3DCard from '../components/Tilt3DCard'
+import GoalQuickEditBar from '../components/GoalQuickEditBar'
 import { generateCashflow, computeRiskMetrics } from '../lib/cashflow'
 
 interface RiskFixDetails {
@@ -35,7 +36,6 @@ interface RiskFixDetails {
 export default function RiskMatrix() {
   const { personaData, simulator, setSimulator } = useApp()
   const [expandedId, setExpandedId] = useState<string | null>(null)
-  const theme = personaData.theme
 
   const cashflow = generateCashflow({
     balance: personaData.balance,
@@ -119,108 +119,99 @@ export default function RiskMatrix() {
           isExternal: true,
         }
 
-      case 'stress-shock':
-      case 'client-ghosting':
-      case 'festive-inventory-shortage':
       default:
         return {
-          aiFound: `Stress testing reveals that a 10-day delay in incoming payments turns your projected balance from +₹12,400 to a deficit of −₹${(shortage || 4800).toLocaleString('en-IN')}.`,
-          whyItHurts: 'Relying on "clients paying on the exact 1st" creates high anxiety. One delayed payment forces you into emergency borrowing at 24% to 36% APR.',
-          fixAction: 'Test your exact cashflow curve on our 90-day simulator and apply a 3-part milestone rescue plan.',
-          fixLink: '/simulator',
-          fixLinkText: 'Run 90-Day Cashflow Stress Simulator',
-          isExternal: false,
+          aiFound: `Calculated from your active purchase plan of ₹${simulator.decisionCost.toLocaleString('en-IN')} with a ${simulator.paymentDelayDays}-day settlement lag.`,
+          whyItHurts: 'Payment lags without milestone advance coverage force you to absorb supplier and living costs out of your own thin emergency pocket.',
+          fixAction: 'Use RBI-regulated TReDS or milestone invoice links to convert 45% of order value into upfront working cash today.',
+          fixLink: 'https://www.invoicemart.com',
+          fixLinkText: 'Invoicemart TReDS Portal',
+          isExternal: true,
         }
     }
   }
 
-  // Icons for the 6 checks
   const getIconForIndex = (idx: number) => {
     switch (idx) {
       case 0:
-        return <ShieldAlert size={20} className="text-rose-400" />
+        return <Eye size={18} />
       case 1:
-        return <Eye size={20} className="text-amber-400" />
+        return <Clock size={18} />
       case 2:
-        return <TrendingDown size={20} className="text-cyan-400" />
+        return <TrendingDown size={18} />
       case 3:
-        return <Lock size={20} className="text-emerald-400" />
+        return <Lock size={18} />
       case 4:
-        return <CreditCard size={20} className="text-violet-400" />
+        return <CreditCard size={18} />
       case 5:
-        return <Package size={20} className="text-teal-400" />
+        return <Package size={18} />
       default:
-        return <Zap size={20} className="text-yellow-400" />
+        return <Zap size={18} />
     }
   }
 
   return (
-    <div className="space-y-7 animate-fade-in">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div className="space-y-6 sm:space-y-8 animate-fade-in text-white">
+      {/* 0. Live Goal Quick Edit Bar (Syncs Entire App) */}
+      <GoalQuickEditBar />
+
+      {/* Header Banner */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-900/70 backdrop-blur-xl p-6 rounded-3xl border border-white/10 shadow-xl">
         <div>
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold border mb-2 shadow-xs"
-            style={{
-              borderColor: `${theme.primaryHex}40`,
-              background: `${theme.primaryHex}10`,
-              color: theme.primaryHex,
-            }}
-          >
-            <Sparkles size={13} />
-            <span>6-Risk Forensic Radar · Zero Jargon</span>
+          <div className="flex items-center gap-2">
+            <ShieldAlert size={20} className="text-amber-400" />
+            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+              6 Real-Life Money Safety Checks
+            </h1>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            6 Risks & Exactly How to Fix Them
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
-            Custom-built for <strong className="text-slate-900 font-bold">{personaData.label}</strong>. Every card breaks down:
-            <span className="text-sky-700 font-bold"> (1) What AI Found</span>,
-            <span className="text-rose-700 font-bold"> (2) Why It Hurts You in Simple English</span>, and
-            <span className="text-emerald-700 font-bold"> (3) Actionable Fix Link</span>.
+          <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
+            {personaData.emoji} <strong className="text-white">{personaData.label}</strong>: We scanned your transactions and simulated your upcoming purchase to flag hidden traps before they strike:
           </p>
         </div>
 
-        {/* Live Status Pill */}
-        <div className="bg-white px-4 py-2.5 rounded-2xl flex items-center gap-3 border border-slate-200 shadow-xs shrink-0">
+        <div className="flex items-center gap-3">
+          <Link
+            to="/rescue"
+            className="btn-primary text-xs py-2 px-3.5 flex items-center gap-2 shrink-0 font-bold shadow-lg"
+          >
+            <Sparkles size={14} />
+            <span>See 3 Easy Fixes</span>
+          </Link>
           <div
-            className="w-3 h-3 rounded-full animate-ping"
-            style={{ background: shortage === 0 ? '#059669' : '#dc2626' }}
-          />
-          <div className="text-xs">
-            <div className="text-slate-500 uppercase font-mono text-[10px] font-bold">Real-Life Radar</div>
-            <div className="font-black text-slate-900">
-              {shortage === 0
-                ? 'All 6 Checks Safe'
-                : `₹${shortage.toLocaleString('en-IN')} Money Squeeze Detected`}
-            </div>
+            className={`px-3 py-1.5 rounded-xl font-bold text-xs mono shrink-0 border ${
+              shortage === 0
+                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                : 'bg-rose-500/20 text-rose-300 border-rose-500/30'
+            }`}
+          >
+            {shortage === 0 ? '✓ 0 Traps Triggered' : `⚠ Potential Deficit: ₹${shortage.toLocaleString('en-IN')}`}
           </div>
         </div>
       </div>
 
       {/* Quick Life Shock Test Buttons */}
-      <Tilt3DCard className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs">
+      <Tilt3DCard className="bg-slate-900/70 backdrop-blur-xl p-4 sm:p-5 rounded-2xl border border-white/10 shadow-lg">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="text-xs text-slate-700 font-medium">
-            <span className="font-bold text-slate-900">⚡ Test Real-Life Surprises:</span> See what happens if things go wrong right now:
+          <div className="text-xs text-slate-300 font-medium">
+            <span className="font-bold text-white">⚡ Test Real-Life Surprises:</span> See what happens if things go wrong right now:
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() =>
                 setSimulator({ paymentDelayDays: Math.min(60, simulator.paymentDelayDays + 10) })
               }
-              className="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1.5 transition-colors shadow-xs"
+              className="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 flex items-center gap-1.5 transition-colors shadow-sm"
             >
-              <Clock size={13} className="text-amber-600" />
+              <Clock size={13} className="text-amber-400" />
               <span>+10 Days Late Pay</span>
             </button>
             <button
               onClick={() =>
                 setSimulator({ hiddenCostBuffer: Math.min(25, simulator.hiddenCostBuffer + 6) })
               }
-              className="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-300 flex items-center gap-1.5 transition-colors shadow-xs"
+              className="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 flex items-center gap-1.5 transition-colors shadow-sm"
             >
-              <AlertTriangle size={13} className="text-rose-600" />
+              <AlertTriangle size={13} className="text-rose-400" />
               <span>+₹5,000 Surprise Fee</span>
             </button>
             <button
@@ -230,7 +221,7 @@ export default function RiskMatrix() {
                   hiddenCostBuffer: 8,
                 })
               }
-              className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors shadow-xs"
+              className="px-3 py-1.5 rounded-xl text-xs font-bold bg-white/5 hover:bg-white/10 text-slate-300 border border-white/15 transition-colors shadow-sm"
             >
               Reset to Normal
             </button>
@@ -244,15 +235,33 @@ export default function RiskMatrix() {
           const isExpanded = expandedId === rc.id
           const details = getRiskDetails(rc.id)
           const severityColors = {
-            safe: { border: 'border-emerald-200', text: 'text-emerald-700', bg: 'bg-emerald-50', badge: 'SAFE', iconBg: 'bg-emerald-50 text-emerald-600 border-emerald-200' },
-            warning: { border: 'border-amber-200', text: 'text-amber-700', bg: 'bg-amber-50', badge: 'WARNING', iconBg: 'bg-amber-50 text-amber-600 border-amber-200' },
-            critical: { border: 'border-rose-200', text: 'text-rose-700', bg: 'bg-rose-50', badge: 'ALERT', iconBg: 'bg-rose-50 text-rose-600 border-rose-200' },
+            safe: {
+              border: 'border-emerald-500/30 hover:border-emerald-400/50',
+              text: 'text-emerald-400',
+              bg: 'bg-emerald-500/15',
+              badge: 'SAFE',
+              iconBg: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+            },
+            warning: {
+              border: 'border-amber-500/30 hover:border-amber-400/50',
+              text: 'text-amber-400',
+              bg: 'bg-amber-500/15',
+              badge: 'WARNING',
+              iconBg: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+            },
+            critical: {
+              border: 'border-rose-500/30 hover:border-rose-400/50',
+              text: 'text-rose-400',
+              bg: 'bg-rose-500/15',
+              badge: 'ALERT',
+              iconBg: 'bg-rose-500/20 text-rose-400 border-rose-500/30',
+            },
           }[rc.severity]
 
           return (
             <Tilt3DCard
               key={rc.id}
-              className={`bg-white rounded-2xl p-5 border shadow-xs transition-all duration-300 flex flex-col justify-between hover:shadow-md ${severityColors.border}`}
+              className={`bg-slate-900/70 backdrop-blur-xl rounded-3xl p-5 border shadow-xl transition-all duration-300 flex flex-col justify-between ${severityColors.border}`}
             >
               <div className="space-y-3.5">
                 {/* Card Header */}
@@ -269,50 +278,50 @@ export default function RiskMatrix() {
 
                 {/* Plain-English Titles */}
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 leading-snug">{rc.plainTitle}</h3>
-                  <div className="text-xs text-slate-500 font-semibold mt-0.5">{rc.title}</div>
+                  <h3 className="text-base font-bold text-white leading-snug">{rc.plainTitle}</h3>
+                  <div className="text-xs text-slate-400 font-semibold mt-0.5">{rc.title}</div>
                 </div>
 
                 {/* Metric Highlight */}
-                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono text-xs font-bold text-slate-800">
+                <div className="p-2.5 rounded-xl bg-slate-950/80 border border-white/10 font-mono text-xs font-bold text-emerald-400">
                   {rc.metricLabel}
                 </div>
 
                 {/* Quick Warning Summary */}
-                <p className="text-xs text-slate-600 leading-relaxed font-medium">{rc.warningText}</p>
+                <p className="text-xs text-slate-300 leading-relaxed font-medium">{rc.warningText}</p>
 
                 {/* 3 Explicit Breakdown Sections: What AI Found, Why It Hurts, Actionable Fix */}
                 {isExpanded ? (
-                  <div className="pt-3 border-t border-slate-100 space-y-3 animate-in fade-in duration-200">
+                  <div className="pt-3 border-t border-white/10 space-y-3 animate-in fade-in duration-200">
                     {/* Section 1: What AI Found */}
-                    <div className="p-3 rounded-xl bg-sky-50 border border-sky-200 space-y-1">
-                      <div className="text-[11px] font-black uppercase tracking-wider text-sky-800 flex items-center gap-1.5">
-                        <Search size={12} className="text-sky-600" />
+                    <div className="p-3 rounded-xl bg-sky-950/40 border border-sky-500/30 space-y-1">
+                      <div className="text-[11px] font-black uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
+                        <Search size={12} className="text-sky-400" />
                         <span>(1) What AI Found</span>
                       </div>
-                      <p className="text-xs text-sky-900 leading-relaxed font-sans font-medium">
+                      <p className="text-xs text-sky-100 leading-relaxed font-sans font-medium">
                         {details.aiFound}
                       </p>
                     </div>
 
                     {/* Section 2: Why It Hurts You in Simple English */}
-                    <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 space-y-1">
-                      <div className="text-[11px] font-black uppercase tracking-wider text-rose-800 flex items-center gap-1.5">
-                        <AlertTriangle size={12} className="text-rose-600" />
+                    <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-500/30 space-y-1">
+                      <div className="text-[11px] font-black uppercase tracking-wider text-rose-400 flex items-center gap-1.5">
+                        <AlertTriangle size={12} className="text-rose-400" />
                         <span>(2) Why It Hurts You (Simple English)</span>
                       </div>
-                      <p className="text-xs text-rose-900 leading-relaxed font-sans font-medium">
+                      <p className="text-xs text-rose-100 leading-relaxed font-sans font-medium">
                         {details.whyItHurts}
                       </p>
                     </div>
 
                     {/* Section 3: Actionable Fix Link */}
-                    <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 space-y-2">
-                      <div className="text-[11px] font-black uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
-                        <CheckCircle size={12} className="text-emerald-600" />
+                    <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 space-y-2">
+                      <div className="text-[11px] font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                        <CheckCircle size={12} className="text-emerald-400" />
                         <span>(3) Actionable Fix</span>
                       </div>
-                      <p className="text-xs text-emerald-900 leading-relaxed font-sans font-medium">
+                      <p className="text-xs text-emerald-100 leading-relaxed font-sans font-medium">
                         {details.fixAction}
                       </p>
 
@@ -321,7 +330,7 @@ export default function RiskMatrix() {
                           href={details.fixLink}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-xs"
+                          className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-md"
                         >
                           <span>{details.fixLinkText}</span>
                           <ExternalLink size={12} />
@@ -329,7 +338,7 @@ export default function RiskMatrix() {
                       ) : (
                         <Link
                           to={details.fixLink}
-                          className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-xs"
+                          className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-md"
                         >
                           <span>{details.fixLinkText}</span>
                           <ArrowRight size={12} />
@@ -338,7 +347,7 @@ export default function RiskMatrix() {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-[11px] text-slate-500 italic">
+                  <div className="text-[11px] text-slate-400 italic">
                     Tap below to see AI findings, impact, and verified fix link.
                   </div>
                 )}
@@ -347,7 +356,7 @@ export default function RiskMatrix() {
               {/* Expand Toggle */}
               <button
                 onClick={() => toggleExpand(rc.id)}
-                className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors"
+                className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold text-slate-300 hover:text-white transition-colors"
               >
                 <span>{isExpanded ? '▲ Hide 3-Part Breakdown' : '▼ Expand (AI Findings, Impact & Fix)'}</span>
                 {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}

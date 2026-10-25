@@ -15,6 +15,7 @@ import KpiCard from '../components/KpiCard'
 import Tilt3DCard from '../components/Tilt3DCard'
 import Interactive3DFinancialCore from '../components/Interactive3DFinancialCore'
 import AiBankingChatbot from '../components/AiBankingChatbot'
+import GoalQuickEditBar from '../components/GoalQuickEditBar'
 import { generateCashflow, computeRiskMetrics } from '../lib/cashflow'
 
 export default function CommandCenter() {
@@ -45,18 +46,22 @@ export default function CommandCenter() {
       : 'critical'
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-6 sm:space-y-8 animate-fade-in">
+      {/* 0. Live Goal Quick Edit Bar (Syncs Entire App) */}
+      <GoalQuickEditBar />
+
       {/* 1. Interactive 3D Hero Banner */}
       <Tilt3DCard
-        className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-xs relative overflow-hidden"
+        className="bg-slate-900/70 backdrop-blur-xl p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl relative overflow-hidden"
       >
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
           {/* Hero Left Content */}
           <div className="lg:col-span-8 space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold border shadow-xs"
+            <div
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold border shadow-sm"
               style={{
                 borderColor: `${theme.primaryHex}40`,
-                background: `${theme.primaryHex}10`,
+                background: `${theme.primaryHex}15`,
                 color: theme.primaryHex,
               }}
             >
@@ -65,7 +70,7 @@ export default function CommandCenter() {
             </div>
 
             <div>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
                 FINVEXA
               </h1>
               <p className="text-sm sm:text-base font-bold mt-1 tracking-wide" style={{ color: theme.primaryHex }}>
@@ -73,18 +78,18 @@ export default function CommandCenter() {
               </p>
             </div>
 
-            <p className="text-slate-600 text-sm sm:text-base max-w-xl leading-relaxed">
+            <p className="text-slate-300 text-sm sm:text-base max-w-xl leading-relaxed">
               Test any big purchase, client invoice, or shop order in <strong>₹ Rupees</strong> before you spend a single Rupee. We simulate the next 90 days of your real life so you never get trapped by late payments or sneaky fees.
             </p>
 
             {/* Active Persona Story Box */}
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-3 shadow-xs">
+            <div className="p-4 rounded-2xl bg-slate-950/60 border border-white/10 flex items-start gap-3 shadow-md">
               <span className="text-2xl mt-0.5">{personaData.emoji}</span>
               <div>
-                <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">
                   Current Real-Life Scenario ({personaData.label})
                 </div>
-                <div className="text-sm font-semibold text-slate-900 mt-0.5">
+                <div className="text-sm font-semibold text-white mt-0.5">
                   "{personaData.story}"
                 </div>
               </div>
@@ -93,16 +98,16 @@ export default function CommandCenter() {
             <div className="flex flex-wrap items-center gap-3 pt-1">
               <button
                 onClick={() => navigate('/simulator')}
-                className="btn-primary text-xs py-2.5 px-5 flex items-center gap-2 font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-xs rounded-xl"
+                className="btn-primary text-xs py-2.5 px-5 flex items-center gap-2 font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-lg rounded-xl"
               >
                 <span>Launch 90-Day Money Simulator</span>
                 <ArrowRight size={14} />
               </button>
               <button
                 onClick={() => navigate('/rescue')}
-                className="px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-colors flex items-center gap-1.5 shadow-xs"
+                className="px-4 py-2.5 rounded-xl text-xs font-bold bg-white/5 hover:bg-white/10 text-slate-200 border border-white/15 transition-colors flex items-center gap-1.5 shadow-sm"
               >
-                <Flame size={14} className="text-amber-500" />
+                <Flame size={14} className="text-amber-400" />
                 <span>See 3 Easy Ways to Fix This</span>
               </button>
             </div>
@@ -121,14 +126,14 @@ export default function CommandCenter() {
 
       {/* RBI Account Aggregator Live Feed Banner */}
       {bankConsent.isLinked && (
-        <div className="p-3.5 sm:p-4 rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-emerald-900 shadow-xs">
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-emerald-300 shadow-md">
           <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-ping shrink-0" />
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
             <span>
-              <strong className="text-slate-900 font-bold">RBI Account Aggregator Live Feed Active:</strong> {bankConsent.bankName} ({bankConsent.accountMasked})
+              <strong className="text-white font-bold">RBI Account Aggregator Live Feed Active:</strong> {bankConsent.bankName} ({bankConsent.accountMasked})
             </span>
           </div>
-          <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 shrink-0 self-start sm:self-auto">
+          <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shrink-0 self-start sm:self-auto">
             100% Read-Only Protected · Sahamati Standard
           </span>
         </div>
@@ -138,15 +143,15 @@ export default function CommandCenter() {
       <div>
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <Shield size={18} className="text-emerald-600" />
+            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+              <Shield size={18} className="text-emerald-400" />
               Money Health Right Now
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-400 mt-0.5">
               Live bank status with zero complex financial formulas
             </p>
           </div>
-          <span className="text-xs text-slate-500 font-bold hidden sm:inline-block">
+          <span className="text-xs text-slate-400 font-bold hidden sm:inline-block">
             {personaData.emoji} {personaData.label}
           </span>
         </div>
@@ -208,25 +213,25 @@ export default function CommandCenter() {
 
       {/* 4. Instant Action Callout */}
       <Tilt3DCard
-        className="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs flex flex-col md:flex-row items-center justify-between gap-6"
+        className="bg-slate-900/70 backdrop-blur-xl p-6 sm:p-7 rounded-3xl border border-white/10 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6"
       >
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <CheckCircle2 size={18} className="text-emerald-600" />
-            <h3 className="text-slate-900 font-bold text-base sm:text-lg">
+            <CheckCircle2 size={18} className="text-emerald-400" />
+            <h3 className="text-white font-bold text-base sm:text-lg">
               Want to see what happens before spending ₹{simulator.decisionCost.toLocaleString('en-IN')}?
             </h3>
           </div>
-          <p className="text-slate-600 text-xs sm:text-sm max-w-2xl leading-relaxed">
-            Move sliders for <strong className="text-slate-900">{personaData.sliderLabels.decisionCost}</strong> and{' '}
-            <strong className="text-slate-900">{personaData.sliderLabels.paymentDelay}</strong>. Our 90-day chart shows you the exact day your money drops, and gives you 3 easy solutions to fix it.
+          <p className="text-slate-300 text-xs sm:text-sm max-w-2xl leading-relaxed">
+            Move sliders for price, payment delay days, down payment, and batch splitting to see your exact 90-day bank balance graph live.
           </p>
         </div>
+
         <button
           onClick={() => navigate('/simulator')}
-          className="btn-primary shrink-0 text-xs py-3 px-6 flex items-center gap-2 font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-xs rounded-xl"
+          className="btn-primary text-xs sm:text-sm py-3 px-6 whitespace-nowrap shrink-0 flex items-center gap-2 font-bold shadow-lg rounded-xl"
         >
-          <span>Open Sliders & Charts</span>
+          <span>Run 90-Day Simulation</span>
           <ArrowRight size={16} />
         </button>
       </Tilt3DCard>

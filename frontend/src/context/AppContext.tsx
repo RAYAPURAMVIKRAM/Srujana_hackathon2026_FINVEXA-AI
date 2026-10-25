@@ -1,5 +1,5 @@
 // src/context/AppContext.tsx
-import React, { createContext, useContext, useState, useCallback } from 'react'
+import React, { createContext, useContext, useState, useCallback, useMemo } from 'react'
 
 export type PersonaType = 'salaried' | 'freelancer' | 'business'
 export type ThemeMode = 'light' | 'dark'
@@ -119,17 +119,17 @@ export const PERSONAS: Record<PersonaType, PersonaData> = {
       splitBatches: 'Pay in Monthly Parts (Batches)',
     },
     theme: {
-      name: 'Royal Blue Fintech',
-      meshClass: 'from-blue-50 to-slate-50',
-      orb1: 'rgba(37, 99, 235, 0.08)',
-      orb2: 'rgba(5, 150, 105, 0.06)',
-      orb3: 'rgba(217, 119, 6, 0.06)',
-      accentBorder: 'border-blue-200 hover:border-blue-400',
-      accentText: 'text-blue-700',
-      accentBg: 'bg-blue-50',
-      badgeClass: 'bg-blue-50 text-blue-700 border-blue-200',
-      buttonGradient: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-      primaryHex: '#2563eb',
+      name: 'Electric Violet & Cyber Cyan',
+      meshClass: 'from-[#0b0416] via-[#150a2e] to-[#041122]',
+      orb1: 'rgba(168, 85, 247, 0.35)',
+      orb2: 'rgba(236, 72, 153, 0.25)',
+      orb3: 'rgba(6, 182, 212, 0.30)',
+      accentBorder: 'border-fuchsia-500/40 hover:border-violet-400',
+      accentText: 'text-fuchsia-400',
+      accentBg: 'bg-fuchsia-500/10',
+      badgeClass: 'bg-fuchsia-500/20 text-fuchsia-300 border-fuchsia-500/40',
+      buttonGradient: 'linear-gradient(135deg, #a855f7 0%, #ec4899 100%)',
+      primaryHex: '#a855f7',
     },
     riskCards: [
       {
@@ -254,17 +254,17 @@ export const PERSONAS: Record<PersonaType, PersonaData> = {
       splitBatches: 'Pay in Monthly Parts (2)',
     },
     theme: {
-      name: 'Crisp Amber Fintech',
-      meshClass: 'from-amber-50 to-slate-50',
-      orb1: 'rgba(217, 119, 6, 0.08)',
-      orb2: 'rgba(37, 99, 235, 0.06)',
-      orb3: 'rgba(5, 150, 105, 0.06)',
-      accentBorder: 'border-amber-200 hover:border-amber-400',
-      accentText: 'text-amber-800',
-      accentBg: 'bg-amber-50',
-      badgeClass: 'bg-amber-50 text-amber-800 border-amber-200',
-      buttonGradient: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
-      primaryHex: '#d97706',
+      name: 'Sunset Amber & Coral Rose',
+      meshClass: 'from-[#160803] via-[#240b15] to-[#14051f]',
+      orb1: 'rgba(245, 158, 11, 0.35)',
+      orb2: 'rgba(244, 63, 94, 0.25)',
+      orb3: 'rgba(147, 51, 234, 0.30)',
+      accentBorder: 'border-amber-500/40 hover:border-rose-400',
+      accentText: 'text-amber-400',
+      accentBg: 'bg-amber-500/10',
+      badgeClass: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+      buttonGradient: 'linear-gradient(135deg, #f59e0b 0%, #f43f5e 100%)',
+      primaryHex: '#f59e0b',
     },
     riskCards: [
       {
@@ -389,17 +389,17 @@ export const PERSONAS: Record<PersonaType, PersonaData> = {
       splitBatches: 'Split Order into Batches (1 or 2)',
     },
     theme: {
-      name: 'High-Trust Emerald Fintech',
-      meshClass: 'from-emerald-50 to-slate-50',
-      orb1: 'rgba(5, 150, 105, 0.08)',
-      orb2: 'rgba(37, 99, 235, 0.06)',
-      orb3: 'rgba(217, 119, 6, 0.06)',
-      accentBorder: 'border-emerald-200 hover:border-emerald-400',
-      accentText: 'text-emerald-800',
-      accentBg: 'bg-emerald-50',
-      badgeClass: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-      buttonGradient: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
-      primaryHex: '#059669',
+      name: 'Emerald Neon & Royal Blue',
+      meshClass: 'from-[#02140e] via-[#051c24] to-[#041029]',
+      orb1: 'rgba(16, 185, 129, 0.35)',
+      orb2: 'rgba(20, 184, 166, 0.25)',
+      orb3: 'rgba(37, 99, 235, 0.30)',
+      accentBorder: 'border-emerald-500/40 hover:border-teal-400',
+      accentText: 'text-emerald-400',
+      accentBg: 'bg-emerald-500/10',
+      badgeClass: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+      buttonGradient: 'linear-gradient(135deg, #10b981 0%, #14b8a6 100%)',
+      primaryHex: '#10b981',
     },
     riskCards: [
       {
@@ -527,6 +527,91 @@ export interface UserGoal {
   downpaymentPercent?: number
 }
 
+// Smart Goal Text & Amount Parser (handles "1.5 lakh", "80k", "₹80,000", "2 months", "45 days")
+export function parseGoalTextAndAmount(
+  rawText: string,
+  customCost?: number,
+  customDays?: number,
+  personaType: PersonaType = 'salaried'
+): { title: string; cost: number; days: number; category: string } {
+  let cost = customCost && customCost > 0 ? customCost : 0
+  let days = customDays && customDays > 0 ? customDays : 0
+  const text = (rawText || '').trim()
+
+  // 1. Amount parsing if not directly provided
+  if (!cost) {
+    // Check for "X.Y lakh" or "X lakh" or "X lac"
+    const lakhMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:lakh|lac|l)\b/i)
+    if (lakhMatch) {
+      cost = Math.round(parseFloat(lakhMatch[1]) * 100000)
+    } else {
+      // Check for "Xk" e.g. "80k", "55k"
+      const kMatch = text.match(/(\d+(?:\.\d+)?)\s*k\b/i)
+      if (kMatch) {
+        cost = Math.round(parseFloat(kMatch[1]) * 1000)
+      } else {
+        // Check for numbers with commas or Rupee symbols e.g. "₹80,000", "80,000", "80000"
+        const rupeeMatch = text.match(/(?:₹|rs\.?|inr)?\s*(\d{1,3}(?:,\d{3})+|\d{4,})/i)
+        if (rupeeMatch) {
+          cost = parseInt(rupeeMatch[1].replace(/,/g, ''), 10)
+        } else {
+          // General number match
+          const anyNum = text.replace(/,/g, '').match(/\b(\d+)\b/)
+          if (anyNum) {
+            const val = parseInt(anyNum[1], 10)
+            if (val >= 1000) cost = val
+            else if (val > 0 && val < 500) cost = val * 1000
+          }
+        }
+      }
+    }
+  }
+
+  // Fallback defaults per persona if still 0
+  if (!cost || cost <= 0) {
+    cost = personaType === 'business' ? 100000 : personaType === 'freelancer' ? 45000 : 55000
+  }
+
+  // 2. Timeline parsing if not directly provided
+  if (!days) {
+    const monthMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:month|months|mo)\b/i)
+    if (monthMatch) {
+      days = Math.round(parseFloat(monthMatch[1]) * 30)
+    } else {
+      const weekMatch = text.match(/(\d+)\s*(?:week|weeks|wk)\b/i)
+      if (weekMatch) {
+        days = parseInt(weekMatch[1], 10) * 7
+      } else {
+        const dayMatch = text.match(/(\d+)\s*(?:day|days|d)\b/i)
+        if (dayMatch) {
+          days = parseInt(dayMatch[1], 10)
+        }
+      }
+    }
+  }
+
+  if (!days || days <= 0) {
+    days = personaType === 'business' ? 25 : personaType === 'freelancer' ? 22 : 8
+  }
+
+  // 3. Category inference
+  const lower = text.toLowerCase()
+  let category = 'general'
+  if (lower.includes('laptop') || lower.includes('phone') || lower.includes('camera') || lower.includes('pc') || lower.includes('macbook')) {
+    category = 'tech'
+  } else if (lower.includes('bike') || lower.includes('scooter') || lower.includes('car')) {
+    category = 'vehicle'
+  } else if (lower.includes('shirt') || lower.includes('order') || lower.includes('stock') || lower.includes('material')) {
+    category = 'business'
+  } else if (lower.includes('rent') || lower.includes('fee') || lower.includes('emergency')) {
+    category = 'survival'
+  }
+
+  const cleanTitle = text || (personaType === 'business' ? '₹1,00,000 Corporate Order' : personaType === 'freelancer' ? '₹45,000 Camera Gear' : '₹55,000 Laptop / Bike')
+
+  return { title: cleanTitle, cost, days, category }
+}
+
 interface AppContextType {
   themeMode: ThemeMode
   toggleThemeMode: () => void
@@ -551,6 +636,7 @@ interface AppContextType {
   getSavedUserByIdentifier: (identifier: string) => SavedUserProfile | null
   userGoal: UserGoal
   updateUserGoal: (goal: Partial<UserGoal>) => void
+  applyUserGoalToEntireApp: (rawGoalText: string, customCost?: number, customDays?: number) => void
 }
 
 const DEFAULT_SIMULATOR: SimulatorState = {
@@ -623,7 +709,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return 'salaried'
   })
 
-  const [simulator, setSimulatorState] = useState<SimulatorState>(DEFAULT_SIMULATOR)
+  const [simulator, setSimulatorState] = useState<SimulatorState>(() => {
+    try {
+      const saved = localStorage.getItem('finvexa_simulator_state')
+      if (saved) return JSON.parse(saved)
+    } catch {
+      // ignore
+    }
+    return DEFAULT_SIMULATOR
+  })
 
   // Goal Strategy State
   const [userGoal, setUserGoalState] = useState<UserGoal>(() => {
@@ -654,32 +748,58 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     })
   }, [])
 
+  const applyUserGoalToEntireApp = useCallback(
+    (rawGoalText: string, customCost?: number, customDays?: number) => {
+      const parsed = parseGoalTextAndAmount(rawGoalText, customCost, customDays, persona)
+
+      const updatedGoal: UserGoal = {
+        title: parsed.title,
+        targetAmount: parsed.cost,
+        targetMonths: Math.max(1, Math.round(parsed.days / 30)),
+        category: parsed.category,
+        downpaymentPercent: simulator.upfrontPercent,
+      }
+
+      setUserGoalState(updatedGoal)
+      try {
+        localStorage.setItem('finvexa_user_goal', JSON.stringify(updatedGoal))
+      } catch {
+        // ignore
+      }
+
+      setSimulatorState(prev => {
+        const nextSim: SimulatorState = {
+          ...prev,
+          decisionCost: parsed.cost,
+          paymentDelayDays: parsed.days,
+        }
+        try {
+          localStorage.setItem('finvexa_simulator_state', JSON.stringify(nextSim))
+        } catch {
+          // ignore
+        }
+        return nextSim
+      })
+    },
+    [persona, simulator.upfrontPercent]
+  )
+
   const setPersona = useCallback((p: PersonaType) => {
     setPersonaState(p)
-    if (p === 'salaried') {
-      setSimulatorState({
-        decisionCost: 55000,
-        paymentDelayDays: 8,
-        upfrontPercent: 30,
-        hiddenCostBuffer: 8,
-        splitBatches: 2,
-      })
-    } else if (p === 'freelancer') {
-      setSimulatorState({
-        decisionCost: 45000,
-        paymentDelayDays: 22,
-        upfrontPercent: 25,
-        hiddenCostBuffer: 10,
-        splitBatches: 2,
-      })
-    } else {
-      setSimulatorState({
-        decisionCost: 60000,
-        paymentDelayDays: 25,
-        upfrontPercent: 15,
-        hiddenCostBuffer: 8,
-        splitBatches: 1,
-      })
+    const nextCost = p === 'salaried' ? 55000 : p === 'freelancer' ? 45000 : 60000
+    const nextDays = p === 'salaried' ? 8 : p === 'freelancer' ? 22 : 25
+    const nextSim: SimulatorState = {
+      decisionCost: nextCost,
+      paymentDelayDays: nextDays,
+      upfrontPercent: p === 'business' ? 15 : p === 'freelancer' ? 25 : 30,
+      hiddenCostBuffer: p === 'freelancer' ? 10 : 8,
+      splitBatches: p === 'business' ? 1 : 2,
+    }
+    setSimulatorState(nextSim)
+    try {
+      localStorage.setItem('finvexa_simulator_state', JSON.stringify(nextSim))
+    } catch {
+      // ignore
     }
 
     // Also update saved user session if exists
@@ -706,8 +826,115 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const setSimulator = useCallback((s: Partial<SimulatorState>) => {
-    setSimulatorState(prev => ({ ...prev, ...s }))
+    setSimulatorState(prev => {
+      const next = { ...prev, ...s }
+      try {
+        localStorage.setItem('finvexa_simulator_state', JSON.stringify(next))
+      } catch {
+        // ignore
+      }
+      return next
+    })
   }, [])
+
+  // Dynamic personaData customized live with the active goal title & rupee figures
+  const dynamicPersonaData = useMemo<PersonaData>(() => {
+    const base = PERSONAS[persona]
+    const currentCost = simulator.decisionCost || base.defaultDecisionCost
+    const currentDays = simulator.paymentDelayDays || (persona === 'salaried' ? 8 : persona === 'freelancer' ? 22 : 25)
+    const goalName = userGoal.title || base.purchaseLabel
+
+    // Dynamically update risk cards with user's exact numbers & goal name
+    const customRiskCards = base.riskCards.map(rc => {
+      let wText = rc.warningText
+      let mLabel = rc.metricLabel
+      let pTitle = rc.plainTitle
+      const advice = rc.advice
+
+      if (persona === 'freelancer') {
+        if (rc.id === 'unverified-upi') {
+          mLabel = `₹${Math.round(currentCost * 1.3).toLocaleString('en-IN')} NOT in Bank Yet`
+          wText = `Your client sent a WhatsApp payment screenshot for ₹${Math.round(currentCost * 1.3).toLocaleString('en-IN')}, but the money has NOT entered your bank yet.`
+        } else if (rc.id === 'irregular-income') {
+          const shortageAmt = Math.max(0, currentCost - (base.balance - base.lockedReserves))
+          pTitle = `You Will Be Short by ₹${shortageAmt.toLocaleString('en-IN')} on Day ${Math.min(currentDays, 25)}`
+          wText = `Because the client pays ${currentDays} days late, buying "${goalName}" (₹${currentCost.toLocaleString('en-IN')}) causes a ₹${shortageAmt.toLocaleString('en-IN')} cash squeeze.`
+        }
+      } else if (persona === 'business') {
+        if (rc.id === 'cash-shortage-trap') {
+          const shortageAmt = Math.max(0, currentCost + 25000 - base.balance)
+          pTitle = `Needs ₹${(currentCost + 25000).toLocaleString('en-IN')} but Only Have ₹${base.balance.toLocaleString('en-IN')} in Bank!`
+          mLabel = `₹${shortageAmt.toLocaleString('en-IN')} Cash Shortage Alert`
+          wText = `Making costs (₹${currentCost.toLocaleString('en-IN')}) + delivery (₹5,000) + worker salaries & rent (₹20,000) needs ₹${(currentCost + 25000).toLocaleString('en-IN')}—so you will run out of money and be short by ₹${shortageAmt.toLocaleString('en-IN')}!`
+        }
+      } else {
+        if (rc.id === 'rent-lock') {
+          wText = `₹18,000 is strictly locked for hostel rent. Buying "${goalName}" for ₹${currentCost.toLocaleString('en-IN')} must not touch this floor.`
+        }
+      }
+
+      return {
+        ...rc,
+        warningText: wText,
+        metricLabel: mLabel,
+        plainTitle: pTitle,
+        advice,
+      }
+    })
+
+    // Dynamically update rescue plans with user's exact numbers & goal name
+    const customRescuePlans = base.rescuePlans.map((rp, idx) => {
+      let title = rp.title
+      let desc = rp.description
+      let msg = rp.negotiationMessage
+
+      if (idx === 0) {
+        const advPct = persona === 'business' ? 45 : 40
+        const advAmt = Math.round(currentCost * (advPct / 100))
+        title = `Ask for ${advPct}% Advance (₹${advAmt.toLocaleString('en-IN')}) Upfront`
+        desc = `Secure ₹${advAmt.toLocaleString('en-IN')} advance before committing to "${goalName}". Wipes out cash squeeze and protects your rent/salaries!`
+        msg = `Hi, to proceed with the "${goalName}" (₹${currentCost.toLocaleString('en-IN')}), our standard policy is a ${advPct}% advance (₹${advAmt.toLocaleString('en-IN')}). Please approve so we can start immediately!`
+      } else if (idx === 1) {
+        const parts = persona === 'salaried' ? 3 : 2
+        const partAmt = Math.round(currentCost / parts)
+        title = `Split "${goalName}" into ${parts} Parts (₹${partAmt.toLocaleString('en-IN')} Each)`
+        desc = `Split ₹${currentCost.toLocaleString('en-IN')} into ${parts} monthly parts of ₹${partAmt.toLocaleString('en-IN')}. Keeps cashflow positive with zero loans.`
+        msg = `Hi, could we set up a ${parts}-part payment for the ₹${currentCost.toLocaleString('en-IN')} "${goalName}"? I can pay ₹${partAmt.toLocaleString('en-IN')} upfront and the balance in ${parts - 1} installments.`
+      } else if (idx === 2) {
+        const downAmt = Math.round(currentCost * 0.25)
+        title = `Pay 25% Down (₹${downAmt.toLocaleString('en-IN')}) + Balance on Delivery`
+        desc = `Pay ₹${downAmt.toLocaleString('en-IN')} down today and schedule balance settlement after ${currentDays} days.`
+        msg = `Hi! I am ready to pay ₹${downAmt.toLocaleString('en-IN')} (25% downpayment) today for "${goalName}". Can we settle the balance upon delivery in ${currentDays} days?`
+      }
+
+      return {
+        ...rp,
+        title,
+        description: desc,
+        negotiationMessage: msg,
+      }
+    })
+
+    return {
+      ...base,
+      story: `Goal: "${goalName}" for ₹${currentCost.toLocaleString('en-IN')} (${currentDays} days timeline)`,
+      purchaseLabel: `₹${currentCost.toLocaleString('en-IN')} ${goalName}`,
+      defaultDecisionCost: currentCost,
+      sliderLabels: {
+        ...base.sliderLabels,
+        decisionCost: `${goalName} Price (₹${currentCost.toLocaleString('en-IN')})`,
+        paymentDelay:
+          persona === 'salaried'
+            ? `Salary / Allowance Delay (${currentDays} Days)`
+            : persona === 'freelancer'
+            ? `How Many Days Client Pays Late (${currentDays} Days)`
+            : `How Many Days Buyer Pays Late (${currentDays} Days)`,
+      },
+      riskCards: customRiskCards,
+      rescuePlans: customRescuePlans,
+    }
+  }, [persona, simulator.decisionCost, simulator.paymentDelayDays, userGoal.title])
+
 
   const [bankConsent, setBankConsent] = useState<BankConsentState>(() => {
     try {
@@ -971,7 +1198,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         toggleThemeMode,
         persona,
         setPersona,
-        personaData: PERSONAS[persona],
+        personaData: dynamicPersonaData,
         simulator,
         setSimulator,
         authUser,
@@ -990,6 +1217,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         getSavedUserByIdentifier,
         userGoal,
         updateUserGoal,
+        applyUserGoalToEntireApp,
       }}
     >
       {children}

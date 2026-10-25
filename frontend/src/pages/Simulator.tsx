@@ -28,6 +28,7 @@ import { useApp } from '../context/AppContext'
 import { generateCashflow, computeRiskMetrics } from '../lib/cashflow'
 import { saveScenario } from '../lib/supabase'
 import Interactive3DFinancialCore from '../components/Interactive3DFinancialCore'
+import GoalQuickEditBar from '../components/GoalQuickEditBar'
 
 function SliderRow({
   label,
@@ -53,8 +54,8 @@ function SliderRow({
   return (
     <div className="space-y-1.5">
       <div className="flex justify-between items-center">
-        <label className="text-xs font-bold text-slate-700">{label}</label>
-        <span className="mono text-xs font-bold text-blue-700 px-2.5 py-0.5 rounded-lg bg-blue-50 border border-blue-200">
+        <label className="text-xs font-bold text-slate-300">{label}</label>
+        <span className="mono text-xs font-bold text-blue-300 px-2.5 py-0.5 rounded-lg bg-blue-500/20 border border-blue-500/30">
           {display}
         </span>
       </div>
@@ -69,7 +70,7 @@ function SliderRow({
           className="slider-custom relative z-10 w-full cursor-pointer h-6 touch-pan-y"
         />
       </div>
-      <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+      <div className="flex justify-between text-[10px] text-slate-500 font-mono">
         <span>{format ? format(min) : `${min}${unit ?? ''}`}</span>
         <span>{format ? format(max) : `${max}${unit ?? ''}`}</span>
       </div>
@@ -80,16 +81,16 @@ function SliderRow({
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-white p-3.5 rounded-xl min-w-[210px] border border-slate-200 shadow-xl">
-      <div className="text-xs text-slate-500 mb-2 font-bold font-mono">Day {label} Balance Check</div>
+    <div className="bg-slate-900/95 backdrop-blur-xl p-3.5 rounded-xl min-w-[210px] border border-white/10 shadow-2xl text-white">
+      <div className="text-xs text-slate-400 mb-2 font-bold font-mono">Day {label} Balance Check</div>
       {payload.map((p: any) => (
         <div key={p.dataKey} className="flex justify-between items-center gap-4 py-0.5">
           <span className="text-xs font-semibold" style={{ color: p.color }}>
             {p.name}
           </span>
-          <span className="mono text-xs font-bold text-slate-900">
+          <span className="mono text-xs font-bold text-white">
             ₹{Math.abs(p.value).toLocaleString('en-IN')}
-            {p.value < 0 && <span className="text-red-600"> (Shortage)</span>}
+            {p.value < 0 && <span className="text-rose-400"> (Shortage)</span>}
           </span>
         </div>
       ))}
@@ -180,27 +181,25 @@ export default function Simulator() {
         message: 'Saved to local browser storage (ready for cloud sync)!',
       })
     }
-
-    setTimeout(() => {
-      setSaveStatus(null)
-    }, 4500)
+    setTimeout(() => setSaveStatus(null), 4000)
   }
 
   return (
-    <div className="space-y-6 animate-fade-in text-slate-800">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+    <div className="space-y-6 sm:space-y-8 animate-fade-in">
+      {/* 0. Live Goal Quick Edit Bar (Syncs Entire App) */}
+      <GoalQuickEditBar />
+
+      {/* Header Info */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-blue-50 text-blue-600 border border-blue-200">
-              <Sliders size={20} />
-            </span>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-              Before-You-Spend 90-Day Simulator
+            <Sliders size={20} className="text-blue-400" />
+            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+              Before-You-Spend 90-Day Money Simulator
             </h1>
           </div>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1.5">
-            {personaData.emoji} <strong className="text-slate-900">{personaData.label}</strong>: "{personaData.story}"
+          <p className="text-xs sm:text-sm text-slate-300 mt-1.5">
+            {personaData.emoji} <strong className="text-white">{personaData.label}</strong>: "{personaData.story}"
           </p>
         </div>
 
@@ -218,10 +217,10 @@ export default function Simulator() {
           <div
             className={`px-3 py-1.5 rounded-xl font-bold text-xs mono shrink-0 border ${
               shortage === 0
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
                 : shortage < 20000
-                ? 'bg-amber-50 text-amber-700 border-amber-200'
-                : 'bg-red-50 text-red-700 border-red-200'
+                ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                : 'bg-rose-500/20 text-rose-300 border-rose-500/30'
             }`}
           >
             {shortage === 0 ? '✅ 100% SAFE' : `🚨 SHORTAGE: −₹${shortage.toLocaleString('en-IN')}`}
@@ -232,17 +231,17 @@ export default function Simulator() {
       {/* Toast Notification */}
       {saveStatus && (
         <div
-          className={`p-3.5 rounded-xl flex items-center justify-between gap-3 text-xs animate-fade-in border shadow-sm ${
+          className={`p-3.5 rounded-xl flex items-center justify-between gap-3 text-xs animate-fade-in border shadow-lg ${
             saveStatus.type === 'cloud'
-              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-              : 'bg-blue-50 border-blue-200 text-blue-800'
+              ? 'bg-emerald-950/80 border-emerald-500/40 text-emerald-200'
+              : 'bg-blue-950/80 border-blue-500/40 text-blue-200'
           }`}
         >
           <div className="flex items-center gap-2 font-semibold">
             {saveStatus.type === 'cloud' ? <Database size={15} /> : <CheckCircle2 size={15} />}
             <span>{saveStatus.message}</span>
           </div>
-          <span className="text-[10px] font-mono text-slate-500">
+          <span className="text-[10px] font-mono text-slate-400">
             {saveStatus.type === 'cloud' ? 'Supabase Online' : 'Local Storage'}
           </span>
         </div>
@@ -251,43 +250,43 @@ export default function Simulator() {
       {/* 3 BIG PLAIN-ENGLISH EXPLANATION BOXES (Live Updates) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Box 1: What You Think Will Happen */}
-        <div className="bg-emerald-50/80 border border-emerald-200 p-4 rounded-2xl shadow-xs space-y-1">
-          <div className="text-xs font-black uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+        <div className="bg-emerald-950/40 backdrop-blur-xl border border-emerald-500/30 p-4 rounded-2xl shadow-lg space-y-1">
+          <div className="text-xs font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
             <span>🟢 What You Think Will Happen</span>
           </div>
-          <p className="text-xs text-emerald-950 font-medium leading-relaxed">
+          <p className="text-xs text-emerald-100 font-medium leading-relaxed">
             You think you will finish the month with{' '}
-            <strong className="text-emerald-700 font-black">+₹{estimatedProfit.toLocaleString('en-IN')} profit</strong> because you ignore payment delays and hidden fees.
+            <strong className="text-emerald-300 font-black">+₹{estimatedProfit.toLocaleString('en-IN')} profit</strong> because you ignore payment delays and hidden fees.
           </p>
         </div>
 
         {/* Box 2: What Actually Happens in Real Life */}
         <div
-          className={`p-4 rounded-2xl shadow-xs space-y-1 border ${
+          className={`p-4 rounded-2xl shadow-lg space-y-1 backdrop-blur-xl border ${
             shortage > 0
-              ? 'bg-red-50/90 border-red-200'
-              : 'bg-blue-50/80 border-blue-200'
+              ? 'bg-rose-950/50 border-rose-500/40 text-rose-100'
+              : 'bg-blue-950/40 border-blue-500/30 text-blue-100'
           }`}
         >
           <div
             className={`text-xs font-black uppercase tracking-wider flex items-center gap-1.5 ${
-              shortage > 0 ? 'text-red-700' : 'text-blue-700'
+              shortage > 0 ? 'text-rose-400' : 'text-blue-300'
             }`}
           >
-            <span>{shortage > 0 ? '🔴 What Actually Happens' : '🔵 Real-Life Balance Check'}</span>
+            <span>{shortage > 0 ? '🔴 What Actually Happens in Real Life' : '🔵 Real-Life Balance Check'}</span>
           </div>
           <p
             className={`text-xs font-medium leading-relaxed ${
-              shortage > 0 ? 'text-red-950' : 'text-blue-950'
+              shortage > 0 ? 'text-rose-100' : 'text-blue-100'
             }`}
           >
             {shortage > 0 ? (
               <>
                 Because of late payment + hidden costs + rent/salaries due first, your bank balance hits{' '}
-                <strong className="text-red-700 font-black">
+                <strong className="text-rose-300 font-black">
                   −₹{shortage.toLocaleString('en-IN')} (SHORTAGE)
                 </strong>{' '}
-                on <strong className="text-red-800 font-bold">Day {worstDay}</strong>!
+                on <strong className="text-rose-200 font-bold">Day {worstDay}</strong>!
               </>
             ) : (
               <>
@@ -298,15 +297,15 @@ export default function Simulator() {
         </div>
 
         {/* Box 3: How Much Advance You Need to Stay Safe */}
-        <div className="bg-amber-50/80 border border-amber-200 p-4 rounded-2xl shadow-xs space-y-1">
-          <div className="text-xs font-black uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
-            <span>🛡️ How to Stay 100% Safe</span>
+        <div className="bg-amber-950/40 backdrop-blur-xl border border-amber-500/30 p-4 rounded-2xl shadow-lg space-y-1">
+          <div className="text-xs font-black uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+            <span>🛡️ How Much Advance You Need to Stay Safe</span>
           </div>
-          <p className="text-xs text-amber-950 font-medium leading-relaxed">
+          <p className="text-xs text-amber-100 font-medium leading-relaxed">
             {shortage > 0 ? (
               <>
-                Take <strong className="text-amber-800 font-black">₹{recommendedAdvance.toLocaleString('en-IN')} advance</strong> OR{' '}
-                <strong className="text-amber-800 font-black">Split into 2 Batches</strong> to keep your bank balance above ₹0.
+                Take <strong className="text-amber-300 font-black">₹{recommendedAdvance.toLocaleString('en-IN')} advance</strong> OR{' '}
+                <strong className="text-amber-300 font-black">Split into 2 Batches</strong> to keep your bank balance above ₹0.
               </>
             ) : (
               <>
@@ -321,11 +320,11 @@ export default function Simulator() {
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
         {/* Left: Dynamic 5 Sliders Panel */}
         <div className="xl:col-span-5 space-y-5">
-          <div className="bg-white p-6 space-y-5 border border-slate-200 rounded-2xl shadow-xs">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="bg-slate-900/70 backdrop-blur-xl p-6 space-y-5 border border-white/10 rounded-2xl shadow-xl">
+            <div className="flex items-center justify-between pb-3 border-b border-white/10">
               <div className="flex items-center gap-2">
-                <TrendingUp size={16} className="text-blue-600" />
-                <span className="text-sm font-bold text-slate-900">Adjust Your Real-Life Numbers</span>
+                <TrendingUp size={16} className="text-blue-400" />
+                <span className="text-sm font-bold text-white">Adjust Your Real-Life Numbers</span>
               </div>
               <span className="text-[10px] text-slate-400 font-mono">Live Sync</span>
             </div>
@@ -382,34 +381,34 @@ export default function Simulator() {
             />
 
             {/* Plain-English Stats Summary */}
-            <div className="pt-3 border-t border-slate-100 space-y-2 text-xs">
+            <div className="pt-3 border-t border-white/10 space-y-2 text-xs">
               <div className="flex justify-between items-center">
-                <span className="text-slate-500">Lowest Bank Balance You Will Touch:</span>
+                <span className="text-slate-400">Lowest Bank Balance You Will Touch:</span>
                 <span
                   className={`mono font-bold ${
-                    stressMin < 0 ? 'text-red-600' : 'text-slate-900'
+                    stressMin < 0 ? 'text-rose-400' : 'text-emerald-400'
                   }`}
                 >
                   ₹{stressMin.toLocaleString('en-IN')}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-500">Days Spent in Danger Zone:</span>
-                <span className="mono font-bold text-amber-700">{valleyDays} Days</span>
+                <span className="text-slate-400">Days Spent in Danger Zone:</span>
+                <span className="mono font-bold text-amber-400">{valleyDays} Days</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-500">How Much You Will Be Short:</span>
+                <span className="text-slate-400">How Much You Will Be Short:</span>
                 <span
                   className={`mono font-bold ${
-                    shortage > 0 ? 'text-red-600' : 'text-emerald-600'
+                    shortage > 0 ? 'text-rose-400' : 'text-emerald-400'
                   }`}
                 >
                   {shortage > 0 ? `−₹${shortage.toLocaleString('en-IN')}` : '₹0 (Safe)'}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-500">Untouchable Money (Rent & Fees):</span>
-                <span className="mono font-bold text-slate-800">
+                <span className="text-slate-400">Untouchable Money (Rent & Fees):</span>
+                <span className="mono font-bold text-purple-300">
                   ₹{personaData.lockedReserves.toLocaleString('en-IN')}
                 </span>
               </div>
@@ -418,7 +417,7 @@ export default function Simulator() {
             {shortage > 0 && (
               <button
                 onClick={() => navigate('/rescue')}
-                className="w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 text-white shadow-sm transition-all hover:bg-red-700 bg-red-600"
+                className="w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 text-white shadow-md transition-all hover:bg-rose-700 bg-rose-600"
               >
                 <ShieldAlert size={15} />
                 <span>Fix ₹{shortage.toLocaleString('en-IN')} Shortage with 3 Easy Plans</span>
@@ -430,46 +429,46 @@ export default function Simulator() {
 
         {/* Right: Chart + Auto-Fix Button + 3D Core Panel */}
         <div className="xl:col-span-7 space-y-5">
-          <div className="bg-white p-6 border border-slate-200 rounded-2xl shadow-xs">
+          <div className="bg-slate-900/70 backdrop-blur-xl p-6 border border-white/10 rounded-2xl shadow-xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
               <div>
-                <h3 className="text-sm sm:text-base font-bold text-slate-900">
+                <h3 className="text-sm sm:text-base font-bold text-white">
                   Expected vs Stress-Tested Bank Balance
                 </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-slate-400 mt-0.5">
                   Green Line = Expected · Red Line = Real Life · Yellow Dashed = Rent/Salaries Floor
                 </p>
               </div>
-              <div className="flex items-center gap-1 text-[11px] text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg shrink-0 font-medium">
-                <Sparkles size={13} className="text-blue-600" />
+              <div className="flex items-center gap-1 text-[11px] text-blue-300 bg-blue-500/15 border border-blue-500/20 px-2.5 py-1 rounded-lg shrink-0 font-medium">
+                <Sparkles size={13} className="text-blue-400" />
                 <span>90-Day Forecast</span>
               </div>
             </div>
 
             {/* Recharts 90-Day Cash Flow Canvas */}
-            <div className="w-full h-[280px] md:h-[370px] bg-slate-50/50 rounded-xl p-2 border border-slate-100">
+            <div className="w-full h-[280px] md:h-[370px] bg-slate-950/60 rounded-xl p-2 border border-white/10">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}>
                   <defs>
                     <linearGradient id="naiveGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#059669" stopOpacity={0.25} />
-                      <stop offset="95%" stopColor="#059669" stopOpacity={0.0} />
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.35} />
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0.0} />
                     </linearGradient>
                     <linearGradient id="stressGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#dc2626" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#dc2626" stopOpacity={0.0} />
+                      <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.4} />
+                      <stop offset="95%" stopColor="#f43f5e" stopOpacity={0.0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.6} />
                   <XAxis
                     dataKey="day"
-                    tick={{ fill: '#64748b', fontSize: 10 }}
+                    tick={{ fill: '#94a3b8', fontSize: 10 }}
                     tickLine={false}
-                    axisLine={{ stroke: '#cbd5e1' }}
-                    label={{ value: 'Day', position: 'insideBottomRight', offset: -4, fill: '#94a3b8', fontSize: 10 }}
+                    axisLine={{ stroke: '#475569' }}
+                    label={{ value: 'Day', position: 'insideBottomRight', offset: -4, fill: '#64748b', fontSize: 10 }}
                   />
                   <YAxis
-                    tick={{ fill: '#64748b', fontSize: 10 }}
+                    tick={{ fill: '#94a3b8', fontSize: 10 }}
                     tickLine={false}
                     axisLine={false}
                     tickFormatter={v => `₹${(v / 1000).toFixed(0)}K`}
@@ -477,9 +476,9 @@ export default function Simulator() {
                   />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend
-                    wrapperStyle={{ fontSize: '11px', color: '#475569', paddingTop: '10px' }}
+                    wrapperStyle={{ fontSize: '11px', color: '#94a3b8', paddingTop: '10px' }}
                     formatter={value => (
-                      <span className="text-xs font-semibold text-slate-700">
+                      <span className="text-xs font-semibold text-slate-300">
                         {value === 'naive'
                           ? '🟢 What You Expect (Without Delays)'
                           : value === 'stressed'
@@ -491,13 +490,13 @@ export default function Simulator() {
                   {/* ₹0 Danger Line */}
                   <ReferenceLine
                     y={0}
-                    stroke="#dc2626"
+                    stroke="#f43f5e"
                     strokeWidth={2}
                     strokeDasharray="5 5"
                     label={{
                       value: '🚨 ₹0 Danger Line (Out of Cash)',
                       position: 'insideBottomLeft',
-                      fill: '#b91c1c',
+                      fill: '#fb7185',
                       fontSize: 10,
                       fontWeight: 'bold',
                     }}
@@ -505,13 +504,13 @@ export default function Simulator() {
                   {/* Untouchable Rent & Salary Line */}
                   <ReferenceLine
                     y={personaData.lockedReserves}
-                    stroke="#d97706"
+                    stroke="#fbbf24"
                     strokeWidth={2}
                     strokeDasharray="4 4"
                     label={{
                       value: `🔒 Untouchable Rent & Salary Money (₹${(personaData.lockedReserves / 1000).toFixed(0)}K)`,
                       position: 'top',
-                      fill: '#b45309',
+                      fill: '#fde68a',
                       fontSize: 10,
                       fontWeight: 'bold',
                     }}
@@ -519,87 +518,65 @@ export default function Simulator() {
                   <Area
                     type="monotone"
                     dataKey="naive"
-                    name="naive"
-                    stroke="#059669"
+                    stroke="#10b981"
                     strokeWidth={2.5}
                     fill="url(#naiveGrad)"
+                    name="naive"
                   />
                   <Area
                     type="monotone"
                     dataKey="stressed"
-                    name="stressed"
-                    stroke="#dc2626"
+                    stroke="#f43f5e"
                     strokeWidth={2.5}
                     fill="url(#stressGrad)"
+                    name="stressed"
                   />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
 
-            {/* 1-Click Auto-Fix Shortage Button */}
-            <div className="mt-4 pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
-              <div className="text-xs text-slate-600">
-                {shortage > 0 ? (
-                  <span>
-                    Red line dipped below safety floor. Click Auto-Fix to rebalance sliders instantly:
-                  </span>
-                ) : (
-                  <span className="text-emerald-700 font-semibold flex items-center gap-1.5">
-                    <CheckCircle2 size={14} /> Red line is currently in the safe zone!
-                  </span>
-                )}
+            {/* 1-Click Auto-Fix Action Banner */}
+            <div className="mt-4 pt-3 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="text-xs text-slate-300 flex items-center gap-1.5">
+                <Wand2 size={15} className="text-emerald-400" />
+                <span>
+                  {autoFixed
+                    ? '🎉 Auto-Fix applied! Sliders adjusted to ensure your bank balance stays safe.'
+                    : 'Red line below zero? 1-click optimizes advance & batches to keep cashflow green.'}
+                </span>
               </div>
 
               <button
+                type="button"
                 onClick={handleAutoFix}
-                className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-xs shrink-0 ${
-                  autoFixed
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-blue-600 hover:bg-blue-700 text-white'
-                }`}
+                className="w-full sm:w-auto px-4 py-2 rounded-xl text-xs font-bold text-white shadow-md flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 bg-emerald-600 hover:bg-emerald-500"
               >
-                <Wand2 size={14} />
-                <span>{autoFixed ? '✓ Shortage Fixed Live!' : '✨ Auto-Fix This Shortage Now'}</span>
+                <Sparkles size={14} />
+                <span>✨ Auto-Fix This Shortage Now</span>
               </button>
-            </div>
-
-            {/* Plain-English Visual Guide */}
-            <div className="mt-4 p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 space-y-1.5">
-              <div className="font-bold text-slate-800 flex items-center gap-1.5">
-                <span>💡 How to read this chart in 5 seconds:</span>
-              </div>
-              <p>
-                • <strong className="text-emerald-700">Green Line:</strong> The happy story in your head if everyone pays on time with zero surprise fees.
-              </p>
-              <p>
-                • <strong className="text-red-700">Red Line:</strong> Real life when client/buyer delays payment and surprise fees hit your bank.
-              </p>
-              <p>
-                • <strong className="text-amber-700">Yellow Dashed Line:</strong> Your untouchable survival money for rent, fees, and wages. Keep the red line above it!
-              </p>
             </div>
           </div>
 
-          {/* Interactive Gyroscope Mini Core */}
-          <div className="bg-white p-5 border border-slate-200 rounded-2xl shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+          {/* Real-time 3D Stress Core */}
+          <div className="bg-slate-900/70 backdrop-blur-xl p-5 border border-white/10 rounded-2xl shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="space-y-1">
-              <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                3D Shield Spin Frequency
-              </div>
-              <div className="text-sm font-bold text-slate-900">
-                {shortage === 0
-                  ? '🛡️ Stable & Safe — 0 Cash Shortage'
-                  : `⚠️ Spinning Rapidly — ₹${shortage.toLocaleString('en-IN')} Shortage Detected`}
-              </div>
-              <p className="text-xs text-slate-500 max-w-md">
-                This 3D financial core spins faster and changes from Emerald to Crimson when you risk running out of cash. Drag it with your mouse to test!
+              <span className="text-[10px] uppercase font-mono font-bold text-blue-400">
+                WebGL 3D Core Telemetry
+              </span>
+              <h4 className="text-sm font-bold text-white">
+                Interactive Liquidity Core ({personaData.label})
+              </h4>
+              <p className="text-xs text-slate-300">
+                Visualizes real-time systemic financial pressure. Glow turns crimson when cash reserves drop below safe survival thresholds.
               </p>
             </div>
-            <Interactive3DFinancialCore
-              shortage={shortage}
-              size={120}
-              label="Twin Pulse"
-            />
+            <div className="shrink-0">
+              <Interactive3DFinancialCore
+                shortage={shortage}
+                size={110}
+                label="Simulation Shield"
+              />
+            </div>
           </div>
         </div>
       </div>

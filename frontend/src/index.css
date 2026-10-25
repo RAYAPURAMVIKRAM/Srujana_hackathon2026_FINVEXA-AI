@@ -3,15 +3,15 @@
 
 @layer base {
   :root {
-    --color-brand: 37 99 235; /* Royal Blue #2563eb */
-    --color-accent: 217 119 6; /* Amber #d97706 */
-    --color-danger: 220 38 38; /* Red #dc2626 */
-    --color-bg: 248 250 252; /* Slate-50 */
-    --color-surface: 255 255 255; /* White */
-    --color-surface2: 241 245 249; /* Slate-100 */
-    --color-border: 226 232 240; /* Slate-200 */
-    --color-text: 15 23 42; /* Slate-900 */
-    --color-muted: 100 116 139; /* Slate-500 */
+    --color-brand: 16 185 129;
+    --color-accent: 245 158 11;
+    --color-danger: 244 63 94;
+    --color-bg: 2 6 23;
+    --color-surface: 15 23 42;
+    --color-surface2: 30 41 59;
+    --color-border: 51 65 85;
+    --color-text: 241 245 249;
+    --color-muted: 148 163 184;
   }
 
   * {
@@ -21,8 +21,8 @@
 
   body {
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #f8fafc;
-    color: #0f172a;
+    background: #020617;
+    color: #e2e8f0;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
@@ -31,58 +31,70 @@
   }
 
   ::selection {
-    background: rgba(37, 99, 235, 0.15);
-    color: #1e40af;
+    background: rgba(16, 185, 129, 0.3);
+    color: #ecfdf5;
   }
 
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #f1f5f9;
+    background: #020617;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: #334155;
     border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+    background: #10b981;
   }
 }
 
 @layer components {
-  /* Crisp Official White Fintech Cards */
+  /* Radiant Dark Fintech Glass */
   .glass {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(16px) saturate(1.8);
+    -webkit-backdrop-filter: blur(16px) saturate(1.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .glass-card {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(24px) saturate(1.8);
+    -webkit-backdrop-filter: blur(24px) saturate(1.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
   }
 
   .glass-card:hover {
-    border-color: #cbd5e1;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
-    transform: translateY(-1px);
+    border-color: rgba(16, 185, 129, 0.35);
+    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.15), 0 20px 40px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
   }
 
-  /* High-Trust Fintech Status Badges */
+  .glow-emerald {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.25), 0 0 60px rgba(16, 185, 129, 0.08);
+  }
+
+  .glow-amber {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.25), 0 0 60px rgba(245, 158, 11, 0.08);
+  }
+
+  .glow-rose {
+    box-shadow: 0 0 20px rgba(244, 63, 94, 0.25), 0 0 60px rgba(244, 63, 94, 0.08);
+  }
+
+  /* High-Trust Status Badges in Dark Mode */
   .badge-safe {
-    background: #ecfdf5;
-    color: #047857;
-    border: 1px solid #a7f3d0;
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.35);
     border-radius: 999px;
     padding: 2px 10px;
     font-size: 11px;
@@ -92,9 +104,9 @@
   }
 
   .badge-warning {
-    background: #fffbeb;
-    color: #b45309;
-    border: 1px solid #fde68a;
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.35);
     border-radius: 999px;
     padding: 2px 10px;
     font-size: 11px;
@@ -104,9 +116,9 @@
   }
 
   .badge-critical {
-    background: #fef2f2;
-    color: #b91c1c;
-    border: 1px solid #fecaca;
+    background: rgba(244, 63, 94, 0.15);
+    color: #fb7185;
+    border: 1px solid rgba(244, 63, 94, 0.35);
     border-radius: 999px;
     padding: 2px 10px;
     font-size: 11px;
@@ -115,17 +127,16 @@
     text-transform: uppercase;
   }
 
-  /* High-Trust Primary Button (Royal Blue Bank Grade) */
   .btn-primary {
-    background: #2563eb;
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
     color: #ffffff;
     font-weight: 600;
     border: none;
     border-radius: 10px;
     cursor: pointer;
-    transition: all 0.15s ease;
-    box-shadow: 0 1px 3px rgba(37, 99, 235, 0.3), 0 2px 6px rgba(37, 99, 235, 0.15);
-    padding: 9px 18px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+    padding: 10px 20px;
     font-size: 14px;
     display: inline-flex;
     align-items: center;
@@ -133,9 +144,9 @@
   }
 
   .btn-primary:hover {
-    background: #1d4ed8;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.45);
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   }
 
   .btn-primary:active {
@@ -143,14 +154,14 @@
   }
 
   .btn-ghost {
-    background: #f8fafc;
-    color: #334155;
-    font-weight: 600;
-    border: 1px solid #cbd5e1;
+    background: rgba(51, 65, 85, 0.4);
+    color: #cbd5e1;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     cursor: pointer;
-    transition: all 0.15s ease;
-    padding: 9px 18px;
+    transition: all 0.2s ease;
+    padding: 10px 20px;
     font-size: 14px;
     display: inline-flex;
     align-items: center;
@@ -158,19 +169,18 @@
   }
 
   .btn-ghost:hover {
-    background: #f1f5f9;
-    color: #0f172a;
-    border-color: #94a3b8;
+    background: rgba(51, 65, 85, 0.7);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
   }
 
-  /* Accessible White Fintech Sliders */
   .slider-custom {
     -webkit-appearance: none;
     appearance: none;
     width: 100%;
     height: 6px;
     border-radius: 9999px;
-    background: #e2e8f0;
+    background: #1e293b;
     outline: none;
     cursor: pointer;
     touch-action: pan-y;
@@ -182,31 +192,30 @@
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    background: #2563eb;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
-    border: 2.5px solid #ffffff;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.9);
     transition: transform 0.15s ease, box-shadow 0.2s ease;
   }
 
   .slider-custom::-webkit-slider-thumb:hover,
   .slider-custom::-webkit-slider-thumb:active {
     transform: scale(1.18);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.6);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.9);
   }
 
   .slider-custom::-moz-range-thumb {
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    background: #2563eb;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4);
-    border: 2.5px solid #ffffff;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.9);
     transition: transform 0.15s ease, box-shadow 0.2s ease;
   }
 
-  /* No-scrollbar utility for horizontal swiping on mobile */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
@@ -219,10 +228,17 @@
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
   }
 
+  .gradient-text {
+    background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
   .bg-grid {
     background-image:
-      linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
-    background-size: 32px 32px;
+      linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
   }
 }

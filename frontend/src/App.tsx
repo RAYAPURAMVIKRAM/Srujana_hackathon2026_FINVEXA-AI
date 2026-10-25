@@ -18,10 +18,13 @@ import Scanner from './pages/Scanner'
 import Rescue from './pages/Rescue'
 import Profile from './pages/Profile'
 import GoalStrategy from './pages/GoalStrategy'
+import { useApp } from './context/AppContext'
 
 export default function App() {
   const [isAssetManagerOpen, setIsAssetManagerOpen] = useState(false)
+  const { personaData } = useApp()
   const location = useLocation()
+  const theme = personaData.theme
 
   // Dedicated full-screen routes without top/side navigation
   const isOnboardingOrSplash = [
@@ -33,7 +36,7 @@ export default function App() {
 
   if (isOnboardingOrSplash) {
     return (
-      <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
+      <div className="min-h-screen bg-slate-950 text-white font-sans selection:bg-blue-500/30 selection:text-white">
         <Routes>
           <Route path="/" element={<SplashScreen />} />
           <Route path="/auth" element={<Auth />} />
@@ -45,9 +48,29 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans relative overflow-x-hidden selection:bg-blue-100 selection:text-blue-900">
-      {/* Subtle crisp fintech grid background */}
-      <div className="fixed inset-0 pointer-events-none z-0 bg-grid opacity-60" />
+    <div
+      className={`min-h-screen transition-colors duration-500 relative overflow-x-hidden bg-slate-950 text-slate-100 bg-gradient-to-br ${theme.meshClass} selection:bg-blue-500/30 selection:text-white`}
+    >
+      {/* Dynamic 3-Orb Radiant Aurora Mesh Background */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Orb 1: Top Left */}
+        <div
+          className="absolute -top-32 -left-32 w-96 h-96 rounded-full blur-[130px] opacity-70 animate-pulse transition-all duration-1000"
+          style={{ background: theme.orb1 }}
+        />
+        {/* Orb 2: Center Right */}
+        <div
+          className="absolute top-1/3 -right-32 w-[30rem] h-[30rem] rounded-full blur-[150px] opacity-60 transition-all duration-1000"
+          style={{ background: theme.orb2 }}
+        />
+        {/* Orb 3: Bottom Left / Center */}
+        <div
+          className="absolute -bottom-32 left-1/3 w-[26rem] h-[26rem] rounded-full blur-[140px] opacity-65 animate-pulse transition-all duration-1000"
+          style={{ background: theme.orb3 }}
+        />
+        {/* Fine Grain Grid overlay */}
+        <div className="absolute inset-0 bg-grid opacity-25" />
+      </div>
 
       <TopBar />
       <Sidebar />
