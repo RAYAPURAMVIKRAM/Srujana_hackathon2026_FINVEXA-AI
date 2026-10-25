@@ -1,4 +1,3 @@
-// src/components/TopBar.tsx
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -10,15 +9,11 @@ import {
   LogOut,
   Coins,
   ShieldCheck,
-  Sun,
-  Moon,
-  Globe,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import FinvexaLogo from './FinvexaLogo'
 import CloudAssetManager from './CloudAssetManager'
 import RbiAccountAggregatorModal from './RbiAccountAggregatorModal'
-import { SUPPORTED_LANGUAGES } from '../i18n/translations'
 
 export default function TopBar() {
   const navigate = useNavigate()
@@ -30,14 +25,10 @@ export default function TopBar() {
     bankConsent,
     resetOnboardingDemo,
     themeMode,
-    toggleThemeMode,
-    lang,
-    setLang,
     t,
   } = useApp()
 
   const [showUserMenu, setShowUserMenu] = useState(false)
-  const [showLangMenu, setShowLangMenu] = useState(false)
   const [isAssetManagerOpen, setIsAssetManagerOpen] = useState(false)
   const [isRbiModalOpen, setIsRbiModalOpen] = useState(false)
 
@@ -118,97 +109,9 @@ export default function TopBar() {
             </button>
           </div>
 
-          {/* Right Action Tools: Language + Theme Toggle + Cloud Assets + User Avatar Pill */}
-          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-            {/* 1. Language Switcher Dropdown */}
-            <div className="relative">
-              <button
-                type="button"
-                onClick={() => {
-                  setShowLangMenu(!showLangMenu)
-                  setShowUserMenu(false)
-                }}
-                className={`flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-all shadow-xs ${
-                  isLight
-                    ? 'bg-slate-100 text-slate-800 border-slate-300 hover:bg-slate-200'
-                    : 'bg-slate-900/80 text-white border-white/15 hover:border-white/30'
-                }`}
-                title="Select Language (English, Hindi, Kannada, Telugu)"
-              >
-                <Globe size={13} className="text-blue-500" />
-                <span className="text-xs">
-                  {SUPPORTED_LANGUAGES.find(l => l.code === lang)?.flag}
-                </span>
-                <span className="hidden md:inline font-semibold">
-                  {SUPPORTED_LANGUAGES.find(l => l.code === lang)?.nativeName}
-                </span>
-                <ChevronDown size={12} className="text-slate-400" />
-              </button>
-
-              {showLangMenu && (
-                <div
-                  className={`absolute right-0 top-11 w-48 p-1.5 rounded-2xl border shadow-2xl z-50 animate-fade-in ${
-                    isLight
-                      ? 'bg-white border-slate-200 text-slate-900 shadow-slate-300'
-                      : 'bg-slate-900/95 border-white/10 text-white backdrop-blur-xl'
-                  }`}
-                >
-                  <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-200/50 dark:border-white/10 mb-1">
-                    Select Language / भाषा
-                  </div>
-                  {SUPPORTED_LANGUAGES.map(opt => (
-                    <button
-                      key={opt.code}
-                      onClick={() => {
-                        setLang(opt.code)
-                        setShowLangMenu(false)
-                      }}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-colors ${
-                        lang === opt.code
-                          ? isLight
-                            ? 'bg-blue-100 text-blue-800'
-                            : 'bg-blue-500/25 text-blue-300'
-                          : isLight
-                          ? 'hover:bg-slate-100 text-slate-700'
-                          : 'hover:bg-white/10 text-slate-300 hover:text-white'
-                      }`}
-                    >
-                      <span className="flex items-center gap-2">
-                        <span>{opt.flag}</span>
-                        <span>{opt.nativeName}</span>
-                        <span className="text-[10px] text-slate-400 font-normal">({opt.label})</span>
-                      </span>
-                      {lang === opt.code && <span className="text-blue-500 font-black">✓</span>}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* 2. Theme Toggle Switcher: Light Mode / Dark Mode */}
-            <button
-              onClick={toggleThemeMode}
-              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs ${
-                isLight
-                  ? 'bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200'
-                  : 'bg-indigo-500/20 text-indigo-200 border border-indigo-500/30 hover:bg-indigo-500/30'
-              }`}
-              title={isLight ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-            >
-              {isLight ? (
-                <>
-                  <Moon size={14} className="text-indigo-600" />
-                  <span className="hidden sm:inline font-bold">🌙 Dark</span>
-                </>
-              ) : (
-                <>
-                  <Sun size={14} className="text-amber-400" />
-                  <span className="hidden sm:inline font-bold">☀️ Light</span>
-                </>
-              )}
-            </button>
-
-            {/* 3. Cloud Assets Button */}
+          {/* Right Action Tools: Cloud Assets + User Avatar Pill (sitting gracefully alongside GlobalTopControls) */}
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 mr-0 sm:mr-[270px] lg:mr-[290px]">
+            {/* 1. Cloud Assets Button */}
             <button
               onClick={() => setIsAssetManagerOpen(true)}
               className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
@@ -227,7 +130,6 @@ export default function TopBar() {
               <button
                 onClick={() => {
                   setShowUserMenu(!showUserMenu)
-                  setShowLangMenu(false)
                 }}
                 className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl border transition-all duration-150 shadow-xs ${
                   isLight

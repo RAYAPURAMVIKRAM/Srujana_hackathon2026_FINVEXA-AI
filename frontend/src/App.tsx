@@ -6,6 +6,7 @@ import Sidebar from './components/Sidebar'
 import BottomNav from './components/BottomNav'
 import Footer from './components/Footer'
 import CloudAssetManager from './components/CloudAssetManager'
+import GlobalTopControls from './components/GlobalTopControls'
 import SplashScreen from './pages/SplashScreen'
 import Auth from './pages/Auth'
 import OnboardingPersonality from './pages/OnboardingPersonality'
@@ -38,6 +39,7 @@ export default function App() {
   if (isOnboardingOrSplash) {
     return (
       <div className={`min-h-screen font-sans selection:bg-blue-500/30 ${isLight ? 'bg-slate-50 text-slate-900' : 'bg-slate-950 text-white selection:text-white'}`}>
+        <GlobalTopControls />
         <Routes>
           <Route path="/" element={<SplashScreen />} />
           <Route path="/auth" element={<Auth />} />
@@ -56,6 +58,7 @@ export default function App() {
           : `bg-slate-950 text-slate-100 bg-gradient-to-br ${theme.meshClass} selection:bg-blue-500/30 selection:text-white`
       }`}
     >
+      <GlobalTopControls />
       {/* Dynamic 3-Orb Radiant Aurora Mesh Background */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         {!isLight ? (
