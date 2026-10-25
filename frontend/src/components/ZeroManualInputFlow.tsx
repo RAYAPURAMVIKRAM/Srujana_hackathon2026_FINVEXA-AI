@@ -1,5 +1,4 @@
-// src/components/ZeroManualInputFlow.tsx
-import { useState, useId } from 'react'
+import { useState, useId, useRef } from 'react'
 import {
   AreaChart,
   Area,
@@ -420,6 +419,7 @@ export default function ZeroManualInputFlow() {
   const [isExtracting, setIsExtracting] = useState(false)
   const [extractedFileName, setExtractedFileName] = useState<string | null>(null)
   const [copiedFixId, setCopiedFixId] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
 
   const preset = PRESETS[activePreset]
 
@@ -440,17 +440,23 @@ export default function ZeroManualInputFlow() {
     setCustomHidden(p.hiddenCostBuffer)
     setCustomBatches(p.splitBatches)
     setAppliedFix(null)
-    setExtractedFileName(null)
   }
 
-  // File drop / simulation helper
+  // File drop / upload helper
   const handleSimulateDrop = (fileName: string) => {
     setIsExtracting(true)
     setTimeout(() => {
       setIsExtracting(false)
       setExtractedFileName(fileName)
-      handleSelectPreset('tshirt')
-    }, 600)
+      const lower = fileName.toLowerCase()
+      if (lower.includes('freelancer')) {
+        handleSelectPreset('freelancer')
+      } else if (lower.includes('laptop') || lower.includes('student')) {
+        handleSelectPreset('laptop')
+      } else {
+        handleSelectPreset('tshirt')
+      }
+    }, 500)
   }
 
   // Apply fix handler
@@ -565,15 +571,27 @@ export default function ZeroManualInputFlow() {
           </span>
         </div>
 
+        {/* Hidden File Input for Real Testing with sample_data */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".csv,.json,.pdf,.png,.jpg,.jpeg"
+          className="hidden"
+          onChange={e => {
+            const file = e.target.files?.[0]
+            if (file) handleSimulateDrop(file.name)
+          }}
+        />
+
         {/* Clean Yellow & White Dropzone */}
         <div
           onDragOver={e => e.preventDefault()}
           onDrop={e => {
             e.preventDefault()
             const file = e.dataTransfer.files[0]
-            handleSimulateDrop(file ? file.name : 'PO_TShirt_ApexFabrics.pdf')
+            handleSimulateDrop(file ? file.name : 'tshirt_order_ledger.csv')
           }}
-          onClick={() => handleSimulateDrop('PO_TShirt_ApexFabrics.pdf')}
+          onClick={() => fileInputRef.current?.click()}
           className="border-2 border-dashed border-amber-300 hover:border-yellow-500 bg-amber-50/50 hover:bg-amber-50 rounded-2xl p-6 text-center cursor-pointer transition-all duration-200 group relative"
         >
           {isExtracting ? (

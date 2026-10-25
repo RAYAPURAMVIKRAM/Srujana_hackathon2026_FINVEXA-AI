@@ -15,9 +15,9 @@
 
 ---
 
-## 📄 Full 15-Section Official Hackathon Report
-For the complete technical breakdown, mathematical liquidity formulations, architecture diagrams, user testing metrics, and future roadmap, read our official submission document:
-👉 **[Read the Full 15-Section PROJECT_REPORT.md](./PROJECT_REPORT.md)**
+## 📄 [Read Full 15-Section Detailed Project Report (PROJECT_REPORT.md)](./PROJECT_REPORT.md)
+For the official 15-point submission document (Track F-03: Predictive Cash-Flow Management for Small Businesses), covering technical architecture, liquidity formulas, test matrices, and regulatory compliance, open:
+👉 **[PROJECT_REPORT.md](./PROJECT_REPORT.md)**
 
 ---
 
@@ -30,6 +30,9 @@ For the complete technical breakdown, mathematical liquidity formulations, archi
 
 ### 2. "Zero-Manual-Input" 3-Step Guided Workflow
 Users never have to struggle with complex forms or 5 different sliders to understand their cash position:
+
+![Workflow Preview](./docs/workflow_preview.svg)
+
 - **STEP 1: 1-Click Auto-Extract or 1-Click Presets**
   - Interactive dropzone: *"📄 Drop Purchase Order / Invoice PDF or Ledger CSV (AI Auto-Fills Everything — Zero Manual Typing)"*.
   - 3 Instant Demo Buttons:
@@ -46,7 +49,7 @@ Users never have to struggle with complex forms or 5 different sliders to unders
   - **Option A**: 45% Advance (₹45,000) $\rightarrow$ Covers the ₹35,000 shortage + leaves ₹10,000 safety buffer.
   - **Option B**: Split into 2 Batches of 500 Shirts $\rightarrow$ Fund Batch 2 with Batch 1 delivery cash with ₹0 shortage.
   - **Option C**: 25% Advance + 14-Day Supplier Credit Extension.
-  - **Clicking "✨ Apply This Fix"** immediately turns the Red Crash Line green (`✅ SAFE: Cash Balance Stays Above ₹0`) and gives a pre-written WhatsApp script to send to the buyer.
+  - **Clicking "✨ Apply This Fix"** immediately turns the Red Crash Line green (`✅ SAFE: Cash Balance Stays Above ₹0`) and gives a pre-written WhatsApp negotiation script.
 
 ### 3. Practical Fraud & Risk Detection (Zero Bank APIs Required!)
 Instead of relying on impossible, costly, or privacy-intrusive live bank core APIs, FINVEXA cross-checks incoming invoices and payment screenshots directly against the user's **own exported bank statement CSV** (which any Indian account holder can download in 10 seconds):
@@ -59,7 +62,17 @@ Instead of relying on impossible, costly, or privacy-intrusive live bank core AP
 
 ---
 
+## 📂 Ready-to-Test Sample Files in `sample_data/`
+Judges can upload these sample files directly into the web application to test all simulation and fraud checks live:
+- [`sample_data/tshirt_order_ledger.csv`](./sample_data/tshirt_order_ledger.csv) — 30-row realistic small-business bank ledger showing ₹50,000 balance, delayed customer receipts, and historical payments to Apex Fabrics (`XXXX4491`).
+- [`sample_data/duplicate_and_altered_invoice_INV204.json`](./sample_data/duplicate_and_altered_invoice_INV204.json) — Test invoice showing altered bank account (`XXXX8820`), duplicate invoice `#INV-204`, and ₹5,000 unquoted freight fee.
+- [`sample_data/freelancer_cashflow_ledger.csv`](./sample_data/freelancer_cashflow_ledger.csv) — Freelancer statement showing delayed ₹65,000 invoice and upcoming ₹15,000 rent commitment.
+
+---
+
 ## 🏛️ System Architecture
+
+![Architecture Diagram](./docs/architecture_diagram.svg)
 
 ```mermaid
 flowchart TD
@@ -126,17 +139,11 @@ cd Srujana_hackathon2026_PocketGuardAI
 ```bash
 cd frontend
 npm install
-npm run dev
-# App opens at http://localhost:5173
+npm run build   # Confirms 0 TypeScript errors
+npm run dev     # App opens at http://localhost:5173
 ```
 
-### 3. Build Verification (Zero Errors)
-```bash
-npm run build
-# Compiles via tsc -b && vite build to frontend/dist
-```
-
-### 4. Optional Python Backend
+### 3. Optional Python Backend
 ```bash
 cd backend
 python -m venv venv
@@ -155,13 +162,16 @@ uvicorn main:app --reload --port 8000
 ## 🔒 Security & Privacy Statement
 Per Section 14 of the submission guidelines:
 - **Zero API Keys in Repository**: No API keys, credentials, or production tokens are tracked in git. All `.env` files are strictly gitignored.
+- **Environment Templates Provided**: [`frontend/.env.example`](./frontend/.env.example) and [`backend/.env.example`](./backend/.env.example) are tracked with clean placeholder keys.
 - **100% Deterministic Offline Fallback**: The frontend runs completely self-contained without requiring external network keys. Even if third-party LLM or Supabase endpoints are offline, every chart, fraud check, and auto-fix works reliably for judges.
 - **Read-Only Architecture**: Operates under RBI Sahamati Account Aggregator principles. No credentials or transaction rights are ever requested.
 
 ---
 
 ## 👥 Hackathon Team
-- **Project**: FINVEXA (PocketGuardAI)
+- **Project**: FINVEXA (PocketGuard AI)
+- **Track**: F-03 Predictive Cash-Flow Management for Small Businesses
 - **Event**: Srujana Innovation Hackathon 2026
+- **Lead**: Rayapuram Vikram & Team
 - **Repository**: [PocketGuardAI / FINVEXA](https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_PocketGuardAI)
 - **Full Report**: [PROJECT_REPORT.md](./PROJECT_REPORT.md)

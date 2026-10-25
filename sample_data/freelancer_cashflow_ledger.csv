@@ -1,0 +1,16 @@
+Date,Transaction_ID,Description,Category,Type,Amount,Balance,Counterparty,Notes
+2026-08-01,FL_TXN_001,Opening Freelance Savings,Balance,CREDIT,32000.00,32000.00,AXIS_BANK,Initial funds
+2026-08-05,FL_TXN_002,Figma Professional Annual Subscription,Software,DEBIT,12000.00,20000.00,FIGMA_INC,Design tools
+2026-08-10,FL_TXN_003,Co-Working Hot Desk Membership,Workspace,DEBIT,6500.00,13500.00,WEWORK_IND,Office space
+2026-08-15,FL_TXN_004,Client Milestones UI/UX - FinTech App,Client Payment,CREDIT,45000.00,58500.00,NEXUS_TECH,Cleared milestone
+2026-08-20,FL_TXN_005,Fiber High-Speed Internet,Utilities,DEBIT,1299.00,57201.00,AIRTEL_FIBER,Work utility
+2026-09-01,FL_TXN_006,Apartment Rent,Rent,DEBIT,15000.00,42201.00,LANDLORD_UPI,Monthly fixed rent
+2026-09-08,FL_TXN_007,Adobe Creative Cloud Monthly,Software,DEBIT,4200.00,38001.00,ADOBE_SYSTEMS,Design software
+2026-09-15,FL_TXN_008,Freelance Invoice #INV-65 Sent to 'HyperGrowth Media',Invoice Receivable,PENDING,65000.00,38001.00,HYPERGROWTH_LTD,Due Sept 30 (Still unpaid after 25 days)
+2026-09-22,FL_TXN_009,Hardware Replacement SSD & RAM,Equipment,DEBIT,8500.00,29501.00,AMAZON_PAY,Work laptop upgrade
+2026-10-01,FL_TXN_010,Apartment Rent,Rent,DEBIT,15000.00,14501.00,LANDLORD_UPI,Monthly fixed rent
+2026-10-05,FL_TXN_011,Emergency Medical Prescription,Personal,DEBIT,2500.00,12001.00,APOLLO_PHARM,Personal health
+2026-10-12,FL_TXN_012,Mobile Recharge & Travel,Transport,DEBIT,1800.00,10201.00,JIO_MOBILITY,Utilities
+2026-10-18,FL_TXN_013,HyperGrowth Client Followup #2,Client Payment,PENDING,65000.00,10201.00,HYPERGROWTH_LTD,Client delayed: Promises payment in Nov
+2026-10-25,FL_TXN_014,Current Ledger Balance,Balance,CREDIT,0.00,10201.00,AXIS_BANK,Live cash before upcoming Nov 1 rent
+2026-11-01,FL_TXN_015,Scheduled Upcoming Rent Commitment,Rent Commitment,UPCOMING,15000.00,-4799.00,LANDLORD_UPI,DEFICIT ALERT: Cash shortfall if 65k delayed

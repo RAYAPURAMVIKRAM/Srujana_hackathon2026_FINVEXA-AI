@@ -1,0 +1,31 @@
+Date,Transaction_ID,Description,Category,Type,Amount,Balance,Counterparty_Account,Notes
+2026-08-01,TXN90281001,Opening Balance Forward,Balance,CREDIT,45000.00,45000.00,HDFC0001822,Month start balance
+2026-08-03,TXN90281002,Apex Fabrics - Yarn Purchase Batch 1,Raw Materials,DEBIT,18000.00,27000.00,HDFC0004491,Verified Vendor Account
+2026-08-05,TXN90281003,Workshop Power Bill BESCOM,Utilities,DEBIT,3200.00,23800.00,BESCOM001,Monthly utility
+2026-08-08,TXN90281004,Metro Retail - Inv #MR-098 (Due July 12),Customer Receipt,CREDIT,35000.00,58800.00,ICIC0009120,Paid 27 days late
+2026-08-10,TXN90281005,Staff Wages - Cutting & Tailoring,Salaries,DEBIT,12000.00,46800.00,INTERNAL01,2 Helpers wage
+2026-08-12,TXN90281006,Apex Fabrics - Cotton Ribbing & Dye,Raw Materials,DEBIT,8500.00,38300.00,HDFC0004491,Verified Vendor Account
+2026-08-15,TXN90281007,Local Retail Walk-in Sales,Cash Sales,CREDIT,9400.00,47700.00,UPI_QR_STORE,Counter sales
+2026-08-18,TXN90281008,Screen Printing Inks & Chemicals,Consumables,DEBIT,4200.00,43500.00,PAYTM00389,Direct payment
+2026-08-22,TXN90281009,Delivery Tempo Charges,Logistics,DEBIT,2100.00,41400.00,CASH_VOUCHER,Local transport
+2026-08-28,TXN90281010,Apex Fabrics - Sample Swatches,Raw Materials,DEBIT,3500.00,37900.00,HDFC0004491,Verified Vendor Account
+2026-09-01,TXN90281011,Workshop Commercial Rent,Rent,DEBIT,15000.00,22900.00,KOTAK00912,Locked commitment
+2026-09-04,TXN90281012,Apex Fabrics - Winter Fleece Roll,Raw Materials,DEBIT,14000.00,8900.00,HDFC0004491,Verified Vendor Account
+2026-09-07,TXN90281013,Metro Retail - Inv #MR-104 (Due Aug 15),Customer Receipt,CREDIT,48000.00,56900.00,ICIC0009120,Paid 23 days late
+2026-09-10,TXN90281014,Staff Wages - Printing & Packing,Salaries,DEBIT,12000.00,44900.00,INTERNAL01,2 Helpers wage
+2026-09-14,TXN90281015,Packaging Polybags & Cartons,Packaging,DEBIT,3100.00,41800.00,UPI_VENDOR9,Packing supplies
+2026-09-18,TXN90281016,Apex Fabrics - Inv #INV-204 (Original),Raw Materials,DEBIT,22000.00,19800.00,HDFC0004491,Original Paid Invoice INV-204
+2026-09-22,TXN90281017,Corporate T-Shirt Advance (50%),Customer Advance,CREDIT,30000.00,49800.00,SBIN002910,Tech conference merch
+2026-09-25,TXN90281018,Courier & Cargo Freight to Delhi,Logistics,DEBIT,4800.00,45000.00,DELHIVERY9,Interstate dispatch
+2026-09-29,TXN90281019,Thread, Buttons & Accessories,Trims,DEBIT,2600.00,42400.00,CASH_STORE,Accessories
+2026-10-01,TXN90281020,Workshop Commercial Rent,Rent,DEBIT,15000.00,27400.00,KOTAK00912,Locked commitment
+2026-10-03,TXN90281021,Metro Retail - Inv #MR-112 (Due Sept 08),Customer Receipt,CREDIT,42000.00,69400.00,ICIC0009120,Paid 25 days late
+2026-10-05,TXN90281022,Apex Fabrics - Single Jersey Fabric,Raw Materials,DEBIT,19500.00,49900.00,HDFC0004491,Verified Vendor Account
+2026-10-08,TXN90281023,Workshop Electricity & Water,Utilities,DEBIT,3400.00,46500.00,BESCOM001,Monthly utility
+2026-10-10,TXN90281024,Staff Wages - Advance Stitched Lots,Salaries,DEBIT,8000.00,38500.00,INTERNAL01,Bi-weekly wage
+2026-10-14,TXN90281025,Online Shopify Orders Settlement,E-Commerce,CREDIT,18200.00,56700.00,RAZORPAY_SETTL,Direct DTC sales
+2026-10-18,TXN90281026,Equipment Maintenance & Sewing Oil,Maintenance,DEBIT,1900.00,54800.00,CASH_MAINT,Juki machine tuning
+2026-10-21,TXN90281027,Tagging & Barcode Label Printing,Packaging,DEBIT,1800.00,53000.00,PRINT_HUB,Barcodes
+2026-10-23,TXN90281028,Apex Fabrics - GSM Testing Samples,Raw Materials,DEBIT,1200.00,51800.00,HDFC0004491,Verified Vendor Account
+2026-10-24,TXN90281029,Packaging Tape & Outer Sacks,Packaging,DEBIT,1800.00,50000.00,LOCAL_MART,Final packing materials
+2026-10-25,TXN90281030,Current Closing Ledger Balance,Balance,CREDIT,0.00,50000.00,HDFC0001822,Live starting cash in bank

@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="100%" height="100%">
+  <defs>
+    <linearGradient id="wfBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDF7" />
+      <stop offset="100%" stop-color="#FEF9C3" />
+    </linearGradient>
+    <linearGradient id="goldBtn" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FACC15" />
+      <stop offset="100%" stop-color="#EAB308" />
+    </linearGradient>
+    <filter id="wfShadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0F172A" flood-opacity="0.06" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="700" fill="url(#wfBg)" />
+  <rect x="20" y="20" width="1160" height="660" rx="16" fill="#FFFFFF" stroke="#FDE047" stroke-width="2" filter="url(#wfShadow)" />
+
+  <!-- Main Banner -->
+  <rect x="45" y="45" width="260" height="32" rx="6" fill="url(#goldBtn)" />
+  <text x="58" y="66" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#0F172A" letter-spacing="1">ZERO-MANUAL-INPUT WORKFLOW</text>
+  <text x="320" y="68" font-family="system-ui, sans-serif" font-size="20" font-weight="800" fill="#0F172A">FINVEXA 3-Step Guided Cash-Flow &amp; Fraud Defense</text>
+
+  <!-- ==================== STEP 1 ==================== -->
+  <g transform="translate(45, 100)">
+    <rect width="345" height="550" rx="12" fill="#FFFDF7" stroke="#FDE047" stroke-width="1.5" filter="url(#wfShadow)" />
+    
+    <!-- Step Badge -->
+    <rect x="15" y="15" width="315" height="42" rx="8" fill="#FEF08A" stroke="#EAB308" stroke-width="1" />
+    <circle cx="36" cy="36" r="13" fill="#EAB308" />
+    <text x="32" y="41" font-family="system-ui, sans-serif" font-size="14" font-weight="900" fill="#FFFFFF">1</text>
+    <text x="58" y="34" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#854D0E">STEP 1: 1-CLICK AUTO-EXTRACT</text>
+    <text x="58" y="48" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#A16207">Zero typing required — drop or tap preset</text>
+
+    <!-- Dropzone Box -->
+    <rect x="15" y="70" width="315" height="130" rx="10" fill="#FFFFFF" stroke="#EAB308" stroke-width="2" stroke-dasharray="6,6" />
+    <circle cx="172" cy="105" r="20" fill="#FEF9C3" />
+    <text x="165" y="112" font-size="20">📄</text>
+    <text x="172" y="142" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#0F172A" text-anchor="middle">Drop Invoice / PO or CSV Ledger</text>
+    <text x="172" y="160" font-family="system-ui, sans-serif" font-size="10" font-weight="500" fill="#64748B" text-anchor="middle">AI extracts amounts, vendor, bank details &amp; dates</text>
+    <rect x="110" y="172" width="124" height="20" rx="4" fill="#FEF08A" />
+    <text x="172" y="186" font-family="system-ui, sans-serif" font-size="9" font-weight="800" fill="#854D0E" text-anchor="middle">⚡ Auto-Filled in 0.4s</text>
+
+    <!-- Presets Header -->
+    <text x="15" y="222" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#475569" letter-spacing="0.5">OR CLICK AN INSTANT DEMO SCENARIO:</text>
+
+    <!-- Preset 1 (Active) -->
+    <rect x="15" y="235" width="315" height="52" rx="8" fill="#FEF08A" stroke="#EAB308" stroke-width="2" />
+    <text x="25" y="256" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#0F172A">🏪 T-Shirt Shop: ₹1,00,000 Order (ACTIVE)</text>
+    <text x="25" y="274" font-family="system-ui, sans-serif" font-size="10" font-weight="500" fill="#713F12">Raw materials ₹65k • 25-day buyer payment delay</text>
+
+    <!-- Preset 2 -->
+    <rect x="15" y="295" width="315" height="50" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.2" />
+    <text x="25" y="316" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#334155">💻 Freelancer: ₹65,000 Delayed Invoice</text>
+    <text x="25" y="333" font-family="system-ui, sans-serif" font-size="10" font-weight="500" fill="#64748B">HyperGrowth Media client • ₹15k rent due 1st</text>
+
+    <!-- Preset 3 -->
+    <rect x="15" y="352" width="315" height="50" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.2" />
+    <text x="25" y="373" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#334155">🎓 Individual: ₹55,000 Laptop Purchase</text>
+    <text x="25" y="390" font-family="system-ui, sans-serif" font-size="10" font-weight="500" fill="#64748B">₹30k salary • Zero-cost EMI hidden charges</text>
+
+    <!-- Collapsible Accordion Box -->
+    <rect x="15" y="415" width="315" height="115" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+    <rect x="25" y="425" width="295" height="30" rx="6" fill="#F1F5F9" />
+    <text x="35" y="444" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#475569">⚙️ Manual Sliders (Optional — Hidden by default)</text>
+    <text x="25" y="475" font-family="system-ui, sans-serif" font-size="10" fill="#64748B">• Order Value: ₹1,00,000</text>
+    <text x="25" y="492" font-family="system-ui, sans-serif" font-size="10" fill="#64748B">• Upfront Raw Materials: ₹65,000</text>
+    <text x="25" y="509" font-family="system-ui, sans-serif" font-size="10" fill="#64748B">• Customer Payment Delay: 25 Days</text>
+    <text x="25" y="524" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#16A34A">✅ Sliders stay tucked away unless tweaking</text>
+  </g>
+
+  <!-- ==================== STEP 2 ==================== -->
+  <g transform="translate(410, 100)">
+    <rect width="400" height="550" rx="12" fill="#FFFDF7" stroke="#FDE047" stroke-width="1.5" filter="url(#wfShadow)" />
+    
+    <!-- Step Badge -->
+    <rect x="15" y="15" width="370" height="42" rx="8" fill="#FEF08A" stroke="#EAB308" stroke-width="1" />
+    <circle cx="36" cy="36" r="13" fill="#EAB308" />
+    <text x="32" y="41" font-family="system-ui, sans-serif" font-size="14" font-weight="900" fill="#FFFFFF">2</text>
+    <text x="58" y="34" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#854D0E">STEP 2: 90-DAY CASH &amp; RISK CROSS-CHECK</text>
+    <text x="58" y="48" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#A16207">Side-by-side: Visual cash trajectory + 6 instant checks</text>
+
+    <!-- Mini Chart Simulation Canvas -->
+    <rect x="15" y="68" width="370" height="165" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" />
+    <text x="25" y="88" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#0F172A">90-DAY LIQUIDITY SIMULATION</text>
+    
+    <!-- Legend -->
+    <line x1="210" y1="84" x2="225" y2="84" stroke="#16A34A" stroke-width="2.5" />
+    <text x="230" y="88" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#16A34A">Expected</text>
+    <line x1="285" y1="84" x2="300" y2="84" stroke="#DC2626" stroke-width="2.5" />
+    <text x="305" y="88" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#DC2626">Real Balance</text>
+
+    <!-- Graph Axis & Lines -->
+    <line x1="35" y1="180" x2="365" y2="180" stroke="#94A3B8" stroke-width="1" stroke-dasharray="2,2" />
+    <text x="368" y="183" font-family="system-ui, sans-serif" font-size="8" fill="#94A3B8">₹0 Danger</text>
+
+    <!-- Expected Line (Green) -->
+    <polyline points="40,160 120,150 200,135 280,120 350,110" fill="none" stroke="#16A34A" stroke-width="3" />
+
+    <!-- Real Line (Red crashing into deficit) -->
+    <polyline points="40,155 100,165 160,205 220,215 280,140 350,130" fill="none" stroke="#DC2626" stroke-width="3" />
+
+    <!-- Crash Marker -->
+    <circle cx="160" cy="205" r="5" fill="#DC2626" />
+    <rect x="110" y="212" width="105" height="16" rx="3" fill="#FEE2E2" stroke="#EF4444" stroke-width="0.8" />
+    <text x="162" y="223" font-family="system-ui, sans-serif" font-size="8" font-weight="800" fill="#B91C1C" text-anchor="middle">💥 Day 18: -₹35,000</text>
+
+    <!-- 6 Risk Checks List -->
+    <text x="15" y="250" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#0F172A">PRACTICAL FRAUD &amp; RISK CHECKS (ZERO BANK API)</text>
+
+    <!-- Check 1: Bank Swap -->
+    <rect x="15" y="260" width="370" height="42" rx="6" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1" />
+    <text x="25" y="277" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#991B1B">🚨 Vendor Bank/IFSC Swap Alert</text>
+    <text x="25" y="293" font-family="system-ui, sans-serif" font-size="9" fill="#7F1D1D">Apex Fabrics bill shows XXXX8820 instead of past cleared XXXX4491</text>
+
+    <!-- Check 2: Duplicate Bill -->
+    <rect x="15" y="307" width="370" height="40" rx="6" fill="#FFFBEB" stroke="#FCD34D" stroke-width="1" />
+    <text x="25" y="323" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#92400E">⚠️ Duplicate Bill Match</text>
+    <text x="25" y="339" font-family="system-ui, sans-serif" font-size="9" fill="#78350F">Invoice #INV-204 already paid on Sept 18 in your CSV ledger</text>
+
+    <!-- Check 3: Fake UTR -->
+    <rect x="15" y="352" width="370" height="40" rx="6" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1" />
+    <text x="25" y="368" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#991B1B">❌ Fake WhatsApp UTR Screenshot</text>
+    <text x="25" y="384" font-family="system-ui, sans-serif" font-size="9" fill="#7F1D1D">UTR 429811004912 absent in exported statement — do not dispatch!</text>
+
+    <!-- Check 4: Locked Commitment -->
+    <rect x="15" y="397" width="370" height="40" rx="6" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1" />
+    <text x="25" y="413" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#166534">🔒 Commitment Protection Active</text>
+    <text x="25" y="429" font-family="system-ui, sans-serif" font-size="9" fill="#14532D">₹20,000 locked for workshop rent and worker salaries</text>
+
+    <!-- Check 5: Hidden Cost -->
+    <rect x="15" y="442" width="370" height="40" rx="6" fill="#FFFBEB" stroke="#FCD34D" stroke-width="1" />
+    <text x="25" y="458" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#92400E">📦 Hidden Unquoted Cost Discovered</text>
+    <text x="25" y="474" font-family="system-ui, sans-serif" font-size="9" fill="#78350F">₹5,000 unquoted emergency freight found in line items</text>
+
+    <!-- Check 6: Delay Latency -->
+    <rect x="15" y="487" width="370" height="42" rx="6" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1" />
+    <text x="25" y="503" font-family="system-ui, sans-serif" font-size="10" font-weight="800" fill="#1E40AF">⏳ Buyer Payment Latency Record</text>
+    <text x="25" y="519" font-family="system-ui, sans-serif" font-size="9" fill="#1E3A8A">Metro Retail paid 23–27 days late on last 3 orders in CSV</text>
+  </g>
+
+  <!-- ==================== STEP 3 ==================== -->
+  <g transform="translate(825, 100)">
+    <rect width="330" height="550" rx="12" fill="#FFFDF7" stroke="#FDE047" stroke-width="1.5" filter="url(#wfShadow)" />
+    
+    <!-- Step Badge -->
+    <rect x="15" y="15" width="300" height="42" rx="8" fill="#FEF08A" stroke="#EAB308" stroke-width="1" />
+    <circle cx="36" cy="36" r="13" fill="#EAB308" />
+    <text x="32" y="41" font-family="system-ui, sans-serif" font-size="14" font-weight="900" fill="#FFFFFF">3</text>
+    <text x="58" y="34" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#854D0E">STEP 3: 1-CLICK SAFE RESCUE</text>
+    <text x="58" y="48" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#A16207">Instant fixes turn red crash line green</text>
+
+    <!-- Option A (Recommended) -->
+    <rect x="15" y="68" width="300" height="135" rx="8" fill="#FFFFFF" stroke="#FACC15" stroke-width="2" />
+    <rect x="25" y="78" width="130" height="18" rx="4" fill="#FEF08A" />
+    <text x="30" y="91" font-family="system-ui, sans-serif" font-size="9" font-weight="800" fill="#854D0E">⭐ OPTION A (MOST POPULAR)</text>
+    <text x="25" y="114" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#0F172A">Ask for 45% Advance</text>
+    <text x="25" y="132" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Collect ₹45,000 upfront deposit.</text>
+    <text x="25" y="148" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#16A34A">Covers ₹35k shortage + ₹10k safety buffer</text>
+    <rect x="25" y="160" width="280" height="32" rx="6" fill="url(#goldBtn)" />
+    <text x="165" y="181" font-family="system-ui, sans-serif" font-size="11" font-weight="800" fill="#0F172A" text-anchor="middle">✨ Apply This Fix (Turns Safe)</text>
+
+    <!-- Option B -->
+    <rect x="15" y="213" width="300" height="120" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.2" />
+    <text x="25" y="233" font-family="system-ui, sans-serif" font-size="9" font-weight="800" fill="#64748B">OPTION B: ZERO ADVANCE NEEDED</text>
+    <text x="25" y="252" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#0F172A">Split into 2 Batches of 500</text>
+    <text x="25" y="270" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Deliver Batch 1, collect cash, and fund Batch 2</text>
+    <text x="25" y="286" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#16A34A">Zero cash deficit without demanding deposit</text>
+    <rect x="25" y="296" width="280" height="28" rx="6" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1" />
+    <text x="165" y="314" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#334155" text-anchor="middle">Apply Batch Split Strategy</text>
+
+    <!-- Option C -->
+    <rect x="15" y="343" width="300" height="95" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.2" />
+    <text x="25" y="362" font-family="system-ui, sans-serif" font-size="9" font-weight="800" fill="#64748B">OPTION C: SUPPLIER CREDIT EXTENSION</text>
+    <text x="25" y="380" font-family="system-ui, sans-serif" font-size="12" font-weight="800" fill="#0F172A">25% Advance + 14-Day Credit</text>
+    <text x="25" y="398" font-family="system-ui, sans-serif" font-size="10" fill="#475569">Negotiate 14 extra credit days with Apex Fabrics</text>
+    <text x="25" y="414" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#16A34A">Shifts shortage date past buyer collection</text>
+
+    <!-- Outcome Card -->
+    <rect x="15" y="448" width="300" height="85" rx="8" fill="#DCFCE7" stroke="#86EFAC" stroke-width="1.5" />
+    <text x="25" y="470" font-family="system-ui, sans-serif" font-size="11" font-weight="900" fill="#15803D">✅ RESULT: CASH POSITION SAFE</text>
+    <text x="25" y="488" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#166534">• Bank balance stays &gt; ₹10,000 throughout 90 days</text>
+    <text x="25" y="504" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#166534">• WhatsApp script generated to send to buyer</text>
+    <text x="25" y="520" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#14532D">🎉 Order accepted with 100% confidence</text>
+  </g>
+</svg>

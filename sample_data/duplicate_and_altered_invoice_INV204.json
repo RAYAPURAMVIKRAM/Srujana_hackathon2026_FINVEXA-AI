@@ -1,0 +1,80 @@
+{
+  "invoice_metadata": {
+    "invoice_number": "INV-204",
+    "invoice_date": "2026-10-25",
+    "due_date": "2026-11-10",
+    "status": "UNPAID_PENDING_REVIEW"
+  },
+  "seller_details": {
+    "legal_name": "Apex Fabrics Private Limited",
+    "trade_name": "Apex Textile Mill",
+    "gstin": "29AABCA1234F1Z8",
+    "pan": "AABCA1234F",
+    "address": "Plot 42, Peenya Industrial Area, Stage 2, Bengaluru, Karnataka - 560058",
+    "contact_email": "billing@apexfabrics.com",
+    "contact_phone": "+91 98450 11293"
+  },
+  "buyer_details": {
+    "business_name": "Srujana Merch Co. (PocketGuard Demo User)",
+    "gstin": "29AAAAA0000A1Z5",
+    "delivery_address": "Workshop Unit 4, Commercial Road, Bengaluru - 560001"
+  },
+  "payment_remittance_instructions": {
+    "beneficiary_name": "Apex Fabrics Pvt Ltd",
+    "bank_name": "Kotak Mahindra Bank",
+    "account_number": "91028300008820",
+    "masked_account": "XXXX8820",
+    "ifsc_code": "KKBK0008129",
+    "branch": "Indiranagar Branch",
+    "disclaimer_flag": "URGENT: New bank details effective Oct 2026. Please update remit address!"
+  },
+  "line_items": [
+    {
+      "item_id": 1,
+      "description": "Premium Combed Bio-Wash Cotton Yarn (180 GSM, Black & White)",
+      "hsn_code": "5205",
+      "quantity": 1000,
+      "unit": "KG",
+      "unit_price_inr": 22.00,
+      "total_inr": 22000.00
+    },
+    {
+      "item_id": 2,
+      "description": "Unquoted Emergency Express Inter-State Freight & Delivery Surge",
+      "hsn_code": "9965",
+      "quantity": 1,
+      "unit": "LOT",
+      "unit_price_inr": 5000.00,
+      "total_inr": 5000.00,
+      "note": "Surge delivery cost not mentioned in initial WhatsApp quotation"
+    }
+  ],
+  "financial_summary": {
+    "subtotal_inr": 27000.00,
+    "cgst_inr": 1350.00,
+    "sgst_inr": 1350.00,
+    "total_payable_inr": 29700.00
+  },
+  "finvexa_cross_check_signals": {
+    "risk_1_bank_account_swap": {
+      "status": "FAIL_HIGH_RISK",
+      "detected_account": "XXXX8820",
+      "expected_historical_account": "XXXX4491",
+      "historical_paid_transactions_count": 5,
+      "verdict": "CRITICAL: Vendor bank account has changed compared to last 5 successfully cleared transactions. Risk of invoice interception / spear phishing. Call vendor directly to confirm before transferring."
+    },
+    "risk_2_duplicate_bill_detected": {
+      "status": "FAIL_DUPLICATE_FOUND",
+      "matched_ledger_txn_id": "TXN90281016",
+      "matched_ledger_date": "2026-09-18",
+      "matched_amount_inr": 22000.00,
+      "verdict": "WARNING: Invoice #INV-204 was already recorded as paid on 2026-09-18 in your exported ledger. Do not double pay."
+    },
+    "risk_3_hidden_cost_uncovered": {
+      "status": "UNQUOTED_SURGE_DISCOVERED",
+      "unquoted_amount_inr": 5000.00,
+      "item": "Unquoted Emergency Express Freight",
+      "verdict": "₹5,000 extra logistic charge added on invoice that was absent from original quote."
+    }
+  }
+}
