@@ -1,10 +1,11 @@
-# FINVEXA 🛡️
+# FINVEXA-AI 🛡️
 ### Universal Financial Digital Twin & Multi-Risk Decision Engine
 > **"Smart Money Decisions in 8th-Grade Simple English Before You Spend a Single Rupee"**
 
 <div align="center">
 
-[![Srujana Hackathon 2026](https://img.shields.io/badge/Srujana%20Hackathon-2026%20Finalist-FACC15?style=for-the-badge&logoColor=0F172A)](https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_PocketGuardAI)
+[![Srujana Hackathon 2026](https://img.shields.io/badge/Srujana%20Hackathon-2026%20Finalist-FACC15?style=for-the-badge&logoColor=0F172A)](https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_FINVEXA-AI)
+[![Team Astrix](https://img.shields.io/badge/Team-Astrix-6366F1?style=for-the-badge&logoColor=white)](https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_FINVEXA-AI)
 [![Project Report](https://img.shields.io/badge/Full%2015--Section-Project%20Report-10B981?style=for-the-badge&logo=googledocs&logoColor=white)](./PROJECT_REPORT.md)
 [![Vercel Deployment](https://img.shields.io/badge/Vercel-Live%20Demo-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://chanakya-psi.vercel.app)
 [![UI Theme](https://img.shields.io/badge/Theme-Clean%20Yellow%20%26%20White-FEF08A?style=for-the-badge&logoColor=0F172A)](https://chanakya-psi.vercel.app)
@@ -52,7 +53,7 @@ Users never have to struggle with complex forms or 5 different sliders to unders
   - **Clicking "✨ Apply This Fix"** immediately turns the Red Crash Line green (`✅ SAFE: Cash Balance Stays Above ₹0`) and gives a pre-written WhatsApp negotiation script.
 
 ### 3. Practical Fraud & Risk Detection (Zero Bank APIs Required!)
-Instead of relying on impossible, costly, or privacy-intrusive live bank core APIs, FINVEXA cross-checks incoming invoices and payment screenshots directly against the user's **own exported bank statement CSV** (which any Indian account holder can download in 10 seconds):
+Instead of relying on impossible, costly, or privacy-intrusive live bank core APIs, FINVEXA-AI cross-checks incoming invoices and payment screenshots directly against the user's **own exported bank statement CSV** (which any Indian account holder can download in 10 seconds):
 1. **Vendor Bank/IFSC Swap Detection**: Flags if an incoming bill from a recurring vendor lists an unknown bank account (`XXXX8820`) different from historical paid records (`XXXX4491`).
 2. **Duplicate Invoice Match**: Flags if invoice `#INV-204` was already paid last month in the user's CSV ledger.
 3. **Fake WhatsApp Screenshot / UTR Check**: Checks if a 12-digit UTR (`429811004912`) claimed in a buyer's payment screenshot actually exists in the exported bank ledger before goods are dispatched.
@@ -118,7 +119,7 @@ flowchart TD
 | `/onboarding/bank-link` | **Bank Safety (AA)** | Read-only RBI Sahamati standard Account Aggregator simulation with 1-click consent. |
 | `/dashboard` | **🏠 Command Center** | Features the **Zero-Manual-Input 3-Step Flow**, 4 big KPI cards, and 24/7 AI banking chatbot. |
 | `/simulator` | **🔮 90-Day Simulator** | Deep-dive cash curve simulation, Supabase scenario persistence, and Judge Validation panel. |
-| `/goal-strategy` | **🎯 Goal & Strategy** | Side-by-side comparison (*Without FINVEXA* vs. *With FINVEXA*) and verified earning links. |
+| `/goal-strategy` | **🎯 Goal & Strategy** | Side-by-side comparison (*Without FINVEXA-AI* vs. *With FINVEXA-AI*) and verified earning links. |
 | `/risk-matrix` | **🛡️ 6 Safety Checks** | Deep-dive fraud checks, bank swap detection, and practical mitigation steps. |
 | `/leaks` | **💸 Hidden Money Finder** | Hangout group bill detection, solo vs. group split calculator, and WhatsApp reminder generator. |
 | `/scanner` | **📸 Camera & Forensics** | Live camera viewfinder (`getUserMedia`), GPS geotagging (`geolocation`), and 4-point receipt verification. |
@@ -131,8 +132,8 @@ flowchart TD
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_PocketGuardAI.git
-cd Srujana_hackathon2026_PocketGuardAI
+git clone https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_FINVEXA-AI.git
+cd Srujana_hackathon2026_FINVEXA-AI
 ```
 
 ### 2. Run Frontend
@@ -168,10 +169,16 @@ Per Section 14 of the submission guidelines:
 
 ---
 
-## 👥 Hackathon Team
-- **Project**: FINVEXA (PocketGuard AI)
+## 👥 Hackathon Team (Team Astrix)
+- **Project**: FINVEXA-AI
 - **Track**: F-03 Predictive Cash-Flow Management for Small Businesses
 - **Event**: Srujana Innovation Hackathon 2026
-- **Lead**: Rayapuram Vikram & Team
-- **Repository**: [PocketGuardAI / FINVEXA](https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_PocketGuardAI)
+- **Team Name**: Astrix
+- **Repository**: [https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_FINVEXA-AI](https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_FINVEXA-AI)
 - **Full Report**: [PROJECT_REPORT.md](./PROJECT_REPORT.md)
+
+### Team Astrix Members & Contributions
+- **Meghana P Banda (Team Lead)**: Product vision, financial domain modelling, Track F-03 problem alignment, 6-vector pre-payment audit rules, and jury presentation strategy.
+- **Rayapuram Vikram**: Full-stack system architecture, React + TypeScript 90-day simulation engine, FastAPI + Gemini AI integration, Supabase cloud setup, and CI/CD deployment.
+- **Keerthana S**: Yellow & White 3-Step UI/UX workflow design, multi-language accessibility (English, Telugu, Kannada, Hindi), and interactive scenario comparison components.
+- **Aishwarya H R**: Synthetic dataset curation (`sample_data/`), edge-case validation testing, rescue plan mathematical verification, and project documentation.

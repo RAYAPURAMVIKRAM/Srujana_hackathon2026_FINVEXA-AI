@@ -20,7 +20,7 @@
   <!-- Main Banner -->
   <rect x="45" y="45" width="260" height="32" rx="6" fill="url(#goldBtn)" />
   <text x="58" y="66" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#0F172A" letter-spacing="1">ZERO-MANUAL-INPUT WORKFLOW</text>
-  <text x="320" y="68" font-family="system-ui, sans-serif" font-size="20" font-weight="800" fill="#0F172A">FINVEXA 3-Step Guided Cash-Flow &amp; Fraud Defense</text>
+  <text x="320" y="68" font-family="system-ui, sans-serif" font-size="20" font-weight="800" fill="#0F172A">FINVEXA-AI 3-Step Guided Cash-Flow &amp; Fraud Defense (Team Astrix)</text>
 
   <!-- ==================== STEP 1 ==================== -->
   <g transform="translate(45, 100)">

@@ -521,7 +521,7 @@ export default function ZeroManualInputFlow() {
               3-Step Before-You-Spend Decision Engine
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
-              Drop an invoice or pick a sample order below. PocketGuard simulates your real bank balance across 90 days and fixes cash shortages in 1 click.
+              Drop an invoice or pick a sample order below. FINVEXA-AI simulates your real bank balance across 90 days and fixes cash shortages in 1 click.
             </p>
           </div>
 
@@ -782,15 +782,16 @@ export default function ZeroManualInputFlow() {
       {/* STEP 2: Instant 90-Day Cash Position & Practical Ledger Check (Side-by-Side) */}
       {/* ========================================================================= */}
       <div className="space-y-4">
-        <div className="flex items-center gap-2.5">
-          <span className="w-7 h-7 rounded-full bg-yellow-400 text-slate-950 font-black flex items-center justify-center text-sm shadow-xs">
+        {/* Crisp White/Yellow Step 2 Header Banner */}
+        <div className="bg-white text-slate-900 border-2 border-yellow-400 rounded-2xl p-4 sm:p-5 shadow-sm flex items-center gap-3.5">
+          <span className="w-8 h-8 rounded-full bg-yellow-400 text-slate-950 font-black flex items-center justify-center text-base shadow-xs shrink-0">
             2
           </span>
           <div>
             <h2 className="text-base sm:text-lg font-black text-slate-950">
-              STEP 2: Instant 90-Day Cash Position & Practical Ledger Check (Side-by-Side)
+              STEP 2: Instant 90-Day Cash Position &amp; Practical Ledger Check (Side-by-Side)
             </h2>
-            <p className="text-xs text-slate-600 font-medium">
+            <p className="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">
               Graph on left proves the exact day you hit cash shortage. Audit on right verifies bills against your exported CSV ledger (Zero Bank API required).
             </p>
           </div>

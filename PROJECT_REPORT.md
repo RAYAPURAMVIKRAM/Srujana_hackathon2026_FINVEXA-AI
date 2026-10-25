@@ -1,22 +1,23 @@
-# FINVEXA — Comprehensive Project Report
+# FINVEXA-AI — Comprehensive Project Report
 ## Srujana Innovation Hackathon 2026
 **Official Submission Track**: `F-03: Predictive Cash-Flow Management for Small Businesses`  
-**Project Title**: `FINVEXA (Universal Financial Digital Twin & Multi-Risk Decision Engine)`  
-**Project Repository**: [GitHub: Srujana_hackathon2026_PocketGuardAI](https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_PocketGuardAI)  
+**Project Title**: `FINVEXA-AI (Universal Financial Digital Twin & Multi-Risk Decision Engine)`  
+**Team Name**: `Astrix`  
+**Project Repository**: [GitHub: Srujana_hackathon2026_FINVEXA-AI](https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_FINVEXA-AI)  
 **Live Vercel Production**: [https://chanakya-psi.vercel.app](https://chanakya-psi.vercel.app)  
 **Documentation & Visuals**: [docs/architecture_diagram.svg](./docs/architecture_diagram.svg) · [docs/workflow_preview.svg](./docs/workflow_preview.svg)  
 **Sample Test Datasets**: [`sample_data/`](./sample_data/)
 
 ---
 
-## 1. Project Overview (Title: FINVEXA, Track: F-03 Predictive Cash-Flow Management for Small Businesses)
+## 1. Project Overview (Title: FINVEXA-AI, Track: F-03 Predictive Cash-Flow Management for Small Businesses)
 
 ### 1.1 Executive Summary
-**FINVEXA** is a universal financial digital twin and multi-risk decision engine engineered specifically for India's 63 million micro, small, and medium enterprises (MSMEs), 15 million freelancers, and young earners. Rather than serving as another passive bookkeeping ledger or presenting backward-looking balance sheets shrouded in accounting jargon, FINVEXA operates on one guiding principle:
+**FINVEXA-AI** is a universal financial digital twin and multi-risk decision engine engineered by **Team Astrix** specifically for India's 63 million micro, small, and medium enterprises (MSMEs), 15 million freelancers, and young earners. Rather than serving as another passive bookkeeping ledger or presenting backward-looking balance sheets shrouded in accounting jargon, FINVEXA-AI operates on one guiding principle:
 
 > **"Smart Money Decisions in 8th-Grade Simple English Before You Spend a Single Rupee."**
 
-Before a business owner accepts a wholesale purchase order, before a freelancer signs a delayed client milestone, or before an individual purchases equipment on EMI, FINVEXA simulates their real bank balance across the next 90 days. It reveals the exact calendar date of any cash shortage, audits incoming invoices against the user's exported CSV statement to catch fraud without requiring core-banking APIs, and provides 1-click structural remedies (advance deposits, batch delivery splits) that keep the business cash-flow positive.
+Before a business owner accepts a wholesale purchase order, before a freelancer signs a delayed client milestone, or before an individual purchases equipment on EMI, FINVEXA-AI simulates their real bank balance across the next 90 days. It reveals the exact calendar date of any cash shortage, audits incoming invoices against the user's exported CSV statement to catch fraud without requiring core-banking APIs, and provides 1-click structural remedies (advance deposits, batch delivery splits) that keep the business cash-flow positive.
 
 ### 1.2 Pivot Addressing Evaluation Committee Feedback
 In direct response to feedback from the Srujana Tech Fest evaluation panel, the project underwent three major architectural improvements:
@@ -49,7 +50,7 @@ Small businesses and freelancers lack enterprise fraud security teams and are ro
 
 ## 3. Proposed Solution (Clean Yellow & White Zero-Manual-Input 3-Step Workflow)
 
-FINVEXA simplifies complex cashflow forecasting and risk mitigation into **3 Crystal-Clear Visual Steps** on a single unified canvas:
+FINVEXA-AI simplifies complex cashflow forecasting and risk mitigation into **3 Crystal-Clear Visual Steps** on a single unified canvas:
 
 ![Workflow Preview](./docs/workflow_preview.svg)
 
@@ -85,7 +86,7 @@ Displays three actionable remedies tailored to the transaction:
 
 ## 4. Innovation and Differentiation (Self-contained CSV + Invoice fraud & cash-flow check without needing impossible bank APIs)
 
-| Dimension | Conventional Accounting (Tally / Zoho) | Banking Apps (YONO / iMobile) | Predatory Credit Apps | FINVEXA (PocketGuard AI) |
+| Dimension | Conventional Accounting (Tally / Zoho) | Banking Apps (YONO / iMobile) | Predatory Credit Apps | FINVEXA-AI (Team Astrix) |
 |---|---|---|---|---|
 | **Timeline Focus** | Backward-looking historical records | Static point-in-time balance | Immediate debt origination | **Predictive 90-Day Pre-Spend Simulation** |
 | **Language & Tone** | Complex accounting jargon (DSCR, EBITDA) | Raw transaction numbers | Misleading "Instant Cash" marketing | **8th-Grade Plain English Explanations** |
@@ -98,7 +99,7 @@ Displays three actionable remedies tailored to the transaction:
 
 ## 5. System Architecture (with embedded diagram)
 
-FINVEXA employs a clean 4-tier modular architecture designed for instant sub-second responsiveness, offline reliability, and zero credential leakage:
+FINVEXA-AI employs a clean 4-tier modular architecture designed for instant sub-second responsiveness, offline reliability, and zero credential leakage:
 
 ![Architecture Diagram](./docs/architecture_diagram.svg)
 
@@ -173,7 +174,7 @@ In compliance with Srujana Hackathon evaluation guidelines:
 
 ### 10.1 Live Production Access
 - **Production URL**: [https://chanakya-psi.vercel.app](https://chanakya-psi.vercel.app)
-- **GitHub Repository**: [https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_PocketGuardAI](https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_PocketGuardAI)
+- **GitHub Repository**: [https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_FINVEXA-AI](https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_FINVEXA-AI)
 
 ### 10.2 60-Second Demonstration Script for Judges
 1. **Open Application**: Lands directly on the clean Yellow & White dashboard.
@@ -187,8 +188,8 @@ In compliance with Srujana Hackathon evaluation guidelines:
 ## 11. Limitations and Incomplete Work (Honest disclosure: No live core-banking fraud feed; works on user-uploaded CSVs/invoices; decision-support simulator only)
 
 In adherence to Section 11 of the Srujana evaluation guidelines:
-1. **No Live Core-Banking Fraud Feed**: FINVEXA does not connect to live NPCI or bank core clearing engines; fraud detection operates by cross-referencing user-uploaded CSVs and invoices.
-2. **Decision-Support Simulator Only**: FINVEXA does not initiate automatic bank transfers or debit sweeps. It provides the financial roadmap and negotiation scripts for human execution.
+1. **No Live Core-Banking Fraud Feed**: FINVEXA-AI does not connect to live NPCI or bank core clearing engines; fraud detection operates by cross-referencing user-uploaded CSVs and invoices.
+2. **Decision-Support Simulator Only**: FINVEXA-AI does not initiate automatic bank transfers or debit sweeps. It provides the financial roadmap and negotiation scripts for human execution.
 3. **Handwritten Slips**: OCR performance is optimized for printed digital PDFs, computer tax bills, and clear WhatsApp receipts. Scrawled regional slips require user verification.
 4. **Fixed Exchange Rate**: Multi-currency conversion uses a benchmark rate ($1 = ₹84). Live real-time Forex tick streaming is reserved for v2.
 
@@ -231,9 +232,9 @@ Judges can test the application immediately using the ready-to-use sample files 
 
 ### 14.3 Local Setup Commands
 ```bash
-# Clone
-git clone https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_PocketGuardAI.git
-cd Srujana_hackathon2026_PocketGuardAI
+# Clone the repository
+git clone https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_FINVEXA-AI.git
+cd Srujana_hackathon2026_FINVEXA-AI
 
 # Run Frontend
 cd frontend
@@ -251,12 +252,13 @@ uvicorn main:app --reload --port 8000
 
 ---
 
-## 15. Team Contributions and References (Lead: Rayapuram Vikram & Team Members)
+## 15. Team Contributions and References (Team Astrix)
 
-### 15.1 Project Team
-- **Rayapuram Vikram (Team Lead)**: System Architecture, 3-Step Zero-Input Guided Workflow, Dual-Curve Mathematical Engine, Yellow & White Design Tokens, Client-Side Forensic Parser, and Deployment.
-- **PocketGuard AI Team Members**: Market Research, MSME User Testing, Accounting Logic Validation, and Presentation.
-- **AI Development Tools**: Antigravity IDE (Gemini 3.8 Flash) for automated CSS stabilization, documentation drafting, and edge-case verification.
+### 15.1 Team Astrix Members & Contributions
+- **Meghana P Banda (Team Lead)**: Product vision, financial domain modelling, Track F-03 problem alignment, 6-vector pre-payment audit rules, and jury presentation strategy.
+- **Rayapuram Vikram**: Full-stack system architecture, React + TypeScript 90-day simulation engine, FastAPI + Gemini AI integration, Supabase cloud setup, and CI/CD deployment.
+- **Keerthana S**: Yellow & White 3-Step UI/UX workflow design, multi-language accessibility (English, Telugu, Kannada, Hindi), and interactive scenario comparison components.
+- **Aishwarya H R**: Synthetic dataset curation (`sample_data/`), edge-case validation testing, rescue plan mathematical verification, and project documentation.
 
 ### 15.2 Key References & Legal Standards
 1. *Reserve Bank of India (RBI)*: Master Directions on NBFC - Account Aggregator Directions, 2016.
@@ -265,4 +267,4 @@ uvicorn main:app --reload --port 8000
 4. *Digital Personal Data Protection (DPDP) Act, 2023*: Client-side data minimization standards.
 
 ---
-*Submitted for Srujana Innovation Hackathon 2026 Evaluation · All deliverables tested, audited, and deployed.*
+*Submitted for Srujana Innovation Hackathon 2026 Evaluation by Team Astrix · All deliverables tested, audited, and deployed.*

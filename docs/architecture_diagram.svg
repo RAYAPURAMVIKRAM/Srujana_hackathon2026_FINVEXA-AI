@@ -20,7 +20,7 @@
   <!-- Title Header -->
   <rect x="50" y="45" width="220" height="34" rx="8" fill="url(#goldGrad)" />
   <text x="65" y="68" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#0F172A" letter-spacing="1">SYSTEM ARCHITECTURE</text>
-  <text x="290" y="70" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="800" fill="#0F172A">FINVEXA Universal Financial Digital Twin</text>
+  <text x="290" y="70" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="800" fill="#0F172A">FINVEXA-AI Universal Financial Digital Twin (Team Astrix)</text>
   <text x="290" y="92" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#64748B">Zero-Bank-API Cross-Check &amp; Real-Time Cash Liquidity Simulation Stack</text>
 
   <!-- LAYER 1: CLIENT PRESENTATION LAYER -->

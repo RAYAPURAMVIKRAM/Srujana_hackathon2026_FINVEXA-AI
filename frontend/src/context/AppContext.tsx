@@ -1127,23 +1127,69 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const setPersona = useCallback(
     (p: PersonaType, preserveActiveCost = false) => {
       setPersonaState(p)
-      const nextCost =
-        preserveActiveCost && simulator.decisionCost
-          ? simulator.decisionCost
-          : p === 'salaried'
-          ? (simulator.decisionCost && simulator.decisionCost < 1_000_000 ? simulator.decisionCost : 50000)
-          : p === 'freelancer'
-          ? (simulator.decisionCost && simulator.decisionCost < 1_000_000 ? simulator.decisionCost : 45000)
-          : p === 'business'
-          ? (simulator.decisionCost && simulator.decisionCost < 100_000_000 ? simulator.decisionCost : 60000)
-          : 1450000000 // Enterprise CapEx $1.45B
-      const nextDays = p === 'salaried' ? 8 : p === 'freelancer' ? 22 : p === 'business' ? 25 : 48
+
+      // Tier default configurations (Individual ₹55K, Freelancer ₹45K, SME ₹1L, Enterprise $2.4B)
+      const tierDefaults: Record<
+        PersonaType,
+        {
+          cost: number
+          days: number
+          title: string
+          category: string
+          upfront: number
+          hidden: number
+          batches: number
+        }
+      > = {
+        salaried: {
+          cost: 55000,
+          days: 8,
+          title: 'Individual / Student: ₹55,000 Coding Laptop & Fees',
+          category: 'tech',
+          upfront: 30,
+          hidden: 8,
+          batches: 2,
+        },
+        freelancer: {
+          cost: 45000,
+          days: 22,
+          title: 'Freelancer / Studio: ₹45,000 Invoices & Studio Gear',
+          category: 'freelance',
+          upfront: 25,
+          hidden: 10,
+          batches: 2,
+        },
+        business: {
+          cost: 100000,
+          days: 25,
+          title: 'SME / Factory: ₹1,00,000 Corporate Order (1,000 T-Shirts)',
+          category: 'business',
+          upfront: 15,
+          hidden: 8,
+          batches: 1,
+        },
+        enterprise: {
+          cost: 1450000000,
+          days: 48,
+          title: 'Global High-Speed Rail & Semiconductor Fab EPC Contract ($2.40B / ₹20,000 Cr)',
+          category: 'enterprise',
+          upfront: 15,
+          hidden: 9,
+          batches: 1,
+        },
+      }
+
+      const tier = tierDefaults[p]
+      const nextCost = preserveActiveCost && simulator.decisionCost ? simulator.decisionCost : tier.cost
+      const nextDays = preserveActiveCost && simulator.paymentDelayDays ? simulator.paymentDelayDays : tier.days
+      const nextTitle = preserveActiveCost && userGoal.title ? userGoal.title : tier.title
+
       const nextSim: SimulatorState = {
         decisionCost: nextCost,
         paymentDelayDays: nextDays,
-        upfrontPercent: p === 'enterprise' ? 15 : p === 'business' ? 15 : p === 'freelancer' ? 25 : 30,
-        hiddenCostBuffer: p === 'enterprise' ? 9 : p === 'freelancer' ? 10 : 8,
-        splitBatches: p === 'enterprise' ? 1 : p === 'business' ? 1 : 2,
+        upfrontPercent: tier.upfront,
+        hiddenCostBuffer: tier.hidden,
+        splitBatches: tier.batches,
       }
       setSimulatorState(nextSim)
       try {
@@ -1152,20 +1198,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         // ignore
       }
 
-      if (p === 'enterprise') {
-        const entGoal: UserGoal = {
-          title: 'Global High-Speed Rail & Semiconductor Fab EPC Contract ($2.40B / ₹20,000 Cr)',
-          targetAmount: 1450000000,
-          targetMonths: 12,
-          category: 'enterprise',
-          downpaymentPercent: 15,
-        }
-        setUserGoalState(entGoal)
-        try {
-          localStorage.setItem('finvexa_user_goal', JSON.stringify(entGoal))
-        } catch {
-          // ignore
-        }
+      // Synchronize userGoal to clear stale title and amount in state and storage
+      const updatedGoal: UserGoal = {
+        title: nextTitle,
+        targetAmount: nextCost,
+        targetMonths: Math.max(1, Math.round(nextDays / 30)),
+        category: tier.category,
+        downpaymentPercent: tier.upfront,
+      }
+      setUserGoalState(updatedGoal)
+      try {
+        localStorage.setItem('finvexa_user_goal', JSON.stringify(updatedGoal))
+      } catch {
+        // ignore
       }
 
       try {
