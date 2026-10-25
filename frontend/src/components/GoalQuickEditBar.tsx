@@ -10,7 +10,7 @@ export default function GoalQuickEditBar() {
 
   const [isOpen, setIsOpen] = useState(false)
   const [goalText, setGoalText] = useState(userGoal.title || '')
-  const [goalAmount, setGoalAmount] = useState<number>(simulator.decisionCost || userGoal.targetAmount || 55000)
+  const [goalAmount, setGoalAmount] = useState<number>(simulator.decisionCost || userGoal.targetAmount || 50000)
   const [goalDays, setGoalDays] = useState<number>(simulator.paymentDelayDays || 15)
   const [justSaved, setJustSaved] = useState(false)
 
@@ -24,8 +24,8 @@ export default function GoalQuickEditBar() {
   const quickPresets: Record<string, { title: string; cost: number; days: number }[]> = {
     salaried: [
       {
-        title: `Buy a ₹${(simulator?.decisionCost || 55000).toLocaleString('en-IN')} Laptop / Bike`,
-        cost: simulator?.decisionCost || 55000,
+        title: `Buy a ₹${(simulator?.decisionCost || 50000).toLocaleString('en-IN')} Laptop / Bike`,
+        cost: simulator?.decisionCost || 50000,
         days: 60,
       },
       { title: 'Save for ₹75,000 Electric Scooter', cost: 75000, days: 90 },
@@ -129,7 +129,7 @@ export default function GoalQuickEditBar() {
               : 'text-slate-200 bg-white/5 hover:bg-white/10 border border-white/15'
           }`}
         >
-          <span>🎯 Edit My Goal & Amount</span>
+          <span>🎯 Quick Edit My Goal &amp; Amount (₹)</span>
           {isOpen ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
         </button>
       </div>
@@ -178,7 +178,7 @@ export default function GoalQuickEditBar() {
                   step="1000"
                   value={goalAmount}
                   onChange={e => setGoalAmount(Number(e.target.value) || 0)}
-                  placeholder="55000"
+                  placeholder={String(simulator.decisionCost || 50000)}
                   className={`w-full text-xs font-bold bg-transparent focus:outline-none ${
                     isLight ? 'text-slate-900' : 'text-white'
                   }`}

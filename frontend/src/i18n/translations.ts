@@ -63,27 +63,27 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     // 6 Core Pitch Checks
     'check1.title': 'Cash-Flow Prediction',
     'check1.question': 'Will you run out of money while doing the work?',
-    'check1.desc': 'Shows exactly when and how much money could be short by comparing when you must spend vs. when money comes in.',
+    'check1.desc': 'Shows exactly when and how much money will be short by comparing when you spend vs. when money arrives.',
 
     'check2.title': 'Commitment Protection (Home Loan, Salaries & Rent)',
     'check2.question': 'Will money still be available for other needs?',
-    'check2.desc': 'Protects upcoming commitments like Home Loan EMIs, Staff Salaries, House/Shop Rent, and fees before approving a new expense or order.',
+    'check2.desc': 'Locks and protects upcoming Home Loan EMIs, Staff Salaries, Rent, and college fees first.',
 
     'check3.title': 'Customer & Incoming Payment Analysis',
     'check3.question': 'How reliable are your incoming payments?',
-    'check3.desc': 'Checks past payment delays and upcoming money to tell you exact advance % to ask for.',
+    'check3.desc': 'Checks past payment history and delays to tell you the exact advance % to ask for.',
 
     'check4.title': 'Hidden-Cost Discovery',
     'check4.question': 'Did you forget any costs?',
-    'check4.desc': 'Highlights overlooked expenses like delivery, packaging, late-night surge fees, or auto-debit subscriptions that reduce your money.',
+    'check4.desc': 'Catches extra delivery charges, packaging fees, 1 AM food surge fees, and forgotten auto-debit subscriptions.',
 
     'check5.title': 'Suspicious-Record & Fraud Alerts',
     'check5.question': 'Does anything look suspicious?',
-    'check5.desc': 'Flags unusual payments, repeated duplicate bills, unverified payment screenshots, or changed bank details for verification.',
+    'check5.desc': 'Flags fake payment screenshots, repeated duplicate bills, or changed bank details for verification.',
 
-    'check6.title': 'Risk & Scenario Comparison',
+    'check6.title': 'Risk & Scenario Analysis',
     'check6.question': "What if things don't go as planned?",
-    'check6.desc': 'Tests late payments, rising costs, or multiple expenses arriving together and shows safe fixes.',
+    'check6.desc': 'Tests late payments, rising costs, or multiple expenses arriving together and compares safe options.',
 
     // Simulator
     'sim.title': '90-Day Real-Life Money Simulator',
@@ -95,11 +95,11 @@ export const TRANSLATIONS: Record<string, Record<string, string>> = {
     'sim.advanceSafe': '🛡️ How Much Advance You Need to Stay Safe',
 
     // Edge Cases / Rubric
-    'rubric.panelTitle': '🧪 Judge Validation: Edge-Case Stress Tests, Assumptions & Limitations',
+    'rubric.panelTitle': '🧪 Rubric Validation: Edge-Case Tests, Assumptions & Limitations',
     'rubric.panelSubtitle': 'Srujana 2026 Evaluation Standard · Category: Robustness, Validation & Professional Boundaries (30 Points)',
-    'rubric.test1Btn': 'Test Missing Payment History (New Customer/User)',
-    'rubric.test2Btn': 'Test Contradictory / Unusual Input (Cost > 3x Balance)',
-    'rubric.test3Btn': 'Test Simultaneous Multi-Order / Emergency Collision',
+    'rubric.test1Btn': '[Test Edge Case 1: Missing Payment History]',
+    'rubric.test2Btn': '[Test Edge Case 2: Extreme Expense (>3x Bank Balance)]',
+    'rubric.test3Btn': '[Test Edge Case 3: Simultaneous Emergency + Late Payment]',
     'rubric.resetBtn': 'Reset to Standard Scenario',
     'rubric.assumptionsTitle': '📌 Explicit Model Assumptions',
     'rubric.assumptionsText': 'Projections assume locked commitments (Home Loan, Rent, Salaries) are fixed on scheduled dates and inflation/cost buffers remain within the user-selected range.',

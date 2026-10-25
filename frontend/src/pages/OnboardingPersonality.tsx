@@ -32,11 +32,11 @@ const PERSONALITIES: PersonalityOption[] = [
     highlight: '₹18,000 Rent & Fees Locked · ₹3,200 Delivery Leak Protection',
     defaultIncome: 45000,
     color: '#a855f7',
-    defaultGoal: 'Buy a ₹55,000 laptop in 2 months',
-    defaultAmount: 55000,
+    defaultGoal: 'Buy a laptop or bike in 2 months',
+    defaultAmount: 50000,
     defaultDays: 60,
     goalChips: [
-      { title: 'Buy a ₹55,000 laptop in 2 months', cost: 55000, days: 60 },
+      { title: 'Buy a laptop or bike in 2 months', cost: 50000, days: 60 },
       { title: 'Save for a ₹75,000 electric bike in 4 months', cost: 75000, days: 120 },
       { title: 'Build a ₹25,000 emergency fund in 3 months', cost: 25000, days: 90 },
     ],
@@ -83,14 +83,18 @@ const PERSONALITIES: PersonalityOption[] = [
 
 export default function OnboardingPersonality() {
   const navigate = useNavigate()
-  const { authUser, applyUserGoalToEntireApp } = useApp()
+  const { authUser, userGoal, simulator, applyUserGoalToEntireApp } = useApp()
 
   const [name, setName] = useState(authUser?.name !== 'Guest Explorer' ? authUser?.name || '' : '')
   const [selectedPersona, setSelectedPersona] = useState<PersonaType>('salaried')
   const [income, setIncome] = useState<number>(45000)
-  const [goalInput, setGoalInput] = useState<string>('Buy a ₹55,000 laptop in 2 months')
-  const [goalAmount, setGoalAmount] = useState<number>(55000)
-  const [goalDays, setGoalDays] = useState<number>(60)
+  const [goalInput, setGoalInput] = useState<string>(
+    userGoal?.title || 'Buy a laptop or bike in 2 months'
+  )
+  const [goalAmount, setGoalAmount] = useState<number>(
+    userGoal?.targetAmount || simulator.decisionCost || 50000
+  )
+  const [goalDays, setGoalDays] = useState<number>(simulator.paymentDelayDays || 60)
 
   const currentOption = PERSONALITIES.find(p => p.type === selectedPersona) || PERSONALITIES[0]
 
@@ -214,7 +218,7 @@ export default function OnboardingPersonality() {
                   type="text"
                   value={goalInput}
                   onChange={e => setGoalInput(e.target.value)}
-                  placeholder="e.g. Buy a ₹55,000 laptop in 2 months"
+                  placeholder="e.g. Buy a laptop or bike in 2 months"
                   className="w-full text-xs font-bold text-white placeholder:text-slate-500 bg-transparent focus:outline-none"
                 />
               </div>
@@ -231,7 +235,7 @@ export default function OnboardingPersonality() {
                   step="1000"
                   value={goalAmount}
                   onChange={e => setGoalAmount(Number(e.target.value) || 0)}
-                  placeholder="55000"
+                  placeholder={String(goalAmount || 50000)}
                   className="w-full text-xs font-bold text-white bg-transparent focus:outline-none"
                 />
               </div>

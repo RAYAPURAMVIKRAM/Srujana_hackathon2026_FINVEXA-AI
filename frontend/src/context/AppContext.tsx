@@ -115,7 +115,7 @@ export const PERSONAS: Record<PersonaType, PersonaData> = {
     creditScore: 710,
     incomeLabel: 'Monthly Salary / Pocket-Money',
     purchaseLabel: 'Laptop or Bike Purchase',
-    defaultDecisionCost: 55000,
+    defaultDecisionCost: 50000,
     sliderLabels: {
       decisionCost: 'Purchase Goal Price',
       paymentDelay: 'Salary / Allowance Delay (Days)',
@@ -138,8 +138,35 @@ export const PERSONAS: Record<PersonaType, PersonaData> = {
     },
     riskCards: [
       {
+        id: 'salary-delay-shock',
+        title: 'Salary & Pocket Money Inflow Timing',
+        plainTitle: 'Paycheck & Inflow Delay Squeeze',
+        metricLabel: 'Only ₹3,400 Safety Room',
+        warningText: 'If your salary or allowance is delayed by 8 days, you have only ₹3,400 left before commitments are due.',
+        advice: 'Shows exactly when and how much money will be short by comparing when you spend vs. when money arrives.',
+        severity: 'warning',
+      },
+      {
+        id: 'rent-lock',
+        title: 'Untouchable Rent & Fees Floor',
+        plainTitle: 'Hostel Rent & College Exam Fees',
+        metricLabel: '₹18,000 100% Untouchable',
+        warningText: '₹18,000 is strictly locked for hostel rent and college exam fees due on the 5th.',
+        advice: 'Never dip below this floor—hostels levy a ₹200/day late penalty for delayed rent.',
+        severity: 'critical',
+      },
+      {
+        id: 'student-credit',
+        title: 'Credit Score & Loan Trust (710)',
+        plainTitle: 'Credit Card & Gadget EMI Trust',
+        metricLabel: '710 / 850 Good Score',
+        warningText: 'Good score for starter cards, but paying bills even 3 days late drops it below 650.',
+        advice: 'Keep card usage below 30% to keep climbing to a 750+ score.',
+        severity: 'safe',
+      },
+      {
         id: 'midnight-food',
-        title: 'Money Wasted on 1 AM Snacks',
+        title: '1 AM Delivery Surge & Hidden Fees',
         plainTitle: '1 AM Late-Night Food Delivery Surge',
         metricLabel: '₹3,200 Spent on 1 AM Orders',
         warningText: 'You spent ₹3,200 on late-night food deliveries with surge pricing. That is almost 20% of your rent money!',
@@ -163,33 +190,6 @@ export const PERSONAS: Record<PersonaType, PersonaData> = {
         warningText: 'A close friend still owes you ₹400 from last Friday dinner that has not entered your bank.',
         advice: 'Tap 1-click WhatsApp Web reminder with auto-filled UPI link to collect it without feeling awkward.',
         severity: 'safe',
-      },
-      {
-        id: 'rent-lock',
-        title: 'Untouchable Rent & Fees Floor',
-        plainTitle: 'Hostel Rent & College Exam Fees',
-        metricLabel: '₹18,000 100% Untouchable',
-        warningText: '₹18,000 is strictly locked for hostel rent and college exam fees due on the 5th.',
-        advice: 'Never dip below this floor—hostels levy a ₹200/day late penalty for delayed rent.',
-        severity: 'critical',
-      },
-      {
-        id: 'student-credit',
-        title: 'Credit Score & Loan Trust (710)',
-        plainTitle: 'Credit Card & Gadget EMI Trust',
-        metricLabel: '710 / 850 Good Score',
-        warningText: 'Good score for starter cards, but paying bills even 3 days late drops it below 650.',
-        advice: 'Keep card usage below 30% to keep climbing to a 750+ score.',
-        severity: 'safe',
-      },
-      {
-        id: 'salary-delay-shock',
-        title: 'Salary Delay Safety Buffer',
-        plainTitle: '8-Day Paycheck Delay Squeeze',
-        metricLabel: 'Only ₹3,400 Safety Room',
-        warningText: 'If your salary or allowance is delayed by 8 days, you have only ₹3,400 left before rent is due.',
-        advice: 'Keep a ₹5,000 buffer so delayed salary never threatens your hostel room.',
-        severity: 'warning',
       },
     ],
     rescuePlans: [
@@ -273,12 +273,12 @@ export const PERSONAS: Record<PersonaType, PersonaData> = {
     },
     riskCards: [
       {
-        id: 'unverified-upi',
-        title: 'Fake or Delayed Payment Proof',
-        plainTitle: 'Client Sent WhatsApp Payment Screenshot',
-        metricLabel: '₹65,000 NOT in Bank Yet',
-        warningText: 'Your client sent a WhatsApp payment screenshot, but the money has NOT entered your bank yet. Fake payment slips are very common!',
-        advice: 'Never send high-res original project files until the money actually shows up inside your official bank balance.',
+        id: 'irregular-income',
+        title: 'Rollercoaster Income Cashflow',
+        plainTitle: 'You Will Be Short by ₹14,500 on the 18th',
+        metricLabel: 'Shortfall on Day 18',
+        warningText: 'Because the client pays 22 days late, you will run out of cash and be short on the 18th of this month.',
+        advice: 'Ask for a 40% advance payment before you begin the final editing work.',
         severity: 'critical',
       },
       {
@@ -291,13 +291,13 @@ export const PERSONAS: Record<PersonaType, PersonaData> = {
         severity: 'critical',
       },
       {
-        id: 'irregular-income',
-        title: 'Rollercoaster Income Risk',
-        plainTitle: 'You Will Be Short by ₹14,500 on the 18th',
-        metricLabel: 'Shortfall on Day 18',
-        warningText: 'Because the client pays 22 days late, you will run out of cash and be short by ₹14,500 on the 18th of this month.',
-        advice: 'Ask for a 40% advance payment before you begin the final editing work.',
-        severity: 'critical',
+        id: 'delayed-invoice-trap',
+        title: '22-Day Client Delay Trap',
+        plainTitle: 'Waiting 22 Days for Client to Transfer Cash',
+        metricLabel: '22 Days of Zero Inflow',
+        warningText: 'Waiting 22 days with zero incoming cash means any unexpected emergency forces you to borrow from relatives.',
+        advice: 'Send a Razorpay instant payment link for 25% advance right now.',
+        severity: 'warning',
       },
       {
         id: 'tax-tds-cut',
@@ -309,21 +309,21 @@ export const PERSONAS: Record<PersonaType, PersonaData> = {
         severity: 'warning',
       },
       {
+        id: 'unverified-upi',
+        title: 'Fake or Delayed Payment Proof',
+        plainTitle: 'Client Sent WhatsApp Payment Screenshot',
+        metricLabel: '₹65,000 NOT in Bank Yet',
+        warningText: 'Your client sent a WhatsApp payment screenshot, but the money has NOT entered your bank yet. Fake payment slips are very common!',
+        advice: 'Never send high-res original project files until the money actually shows up inside your official bank balance.',
+        severity: 'critical',
+      },
+      {
         id: 'freelancer-score',
         title: 'Freelancer Bank Trust Score (660)',
         plainTitle: 'Approval for Credit Cards & Loans',
         metricLabel: '660 / 850 Fair Trust',
         warningText: 'Banks do not give easy loans to freelancers without regular salary slips unless you keep a healthy balance.',
         advice: 'Keeping at least ₹15,000 in your bank at all times unlocks instant online loan and credit card approvals.',
-        severity: 'warning',
-      },
-      {
-        id: 'delayed-invoice-trap',
-        title: '22-Day Client Delay Trap',
-        plainTitle: 'Waiting 22 Days for Client to Transfer Cash',
-        metricLabel: '22 Days of Zero Inflow',
-        warningText: 'Waiting 22 days with zero incoming cash means any unexpected emergency forces you to borrow from relatives.',
-        advice: 'Send a Razorpay instant payment link for 25% advance right now.',
         severity: 'warning',
       },
     ],
@@ -417,6 +417,15 @@ export const PERSONAS: Record<PersonaType, PersonaData> = {
         severity: 'critical',
       },
       {
+        id: 'worker-salary-lock',
+        title: 'Staff Salaries & Shop Rent Floor',
+        plainTitle: 'Tailor Wages & Shop Rent Due on the 1st',
+        metricLabel: '₹20,000 100% Untouchable',
+        warningText: 'Your 2 tailors and shop landlord must be paid on the 1st of next month. If you do not pay them, your shop shuts down.',
+        advice: 'Keep ₹20,000 locked in a separate bank account so production never stops.',
+        severity: 'critical',
+      },
+      {
         id: 'repeat-late-buyer',
         title: 'Buyer Pays Late Every Single Time',
         plainTitle: 'This Buyer Paid 18 Days Late on Last 3 Orders',
@@ -433,15 +442,6 @@ export const PERSONAS: Record<PersonaType, PersonaData> = {
         warningText: 'Transporters and parcel companies charge an extra ₹5,000 for heavy boxes and loading fees that you forgot to quote to the buyer.',
         advice: 'Add ₹5,000 delivery and packing charges clearly as a separate line on your invoice.',
         severity: 'warning',
-      },
-      {
-        id: 'worker-salary-lock',
-        title: 'Staff Salaries & Shop Rent Floor',
-        plainTitle: 'Tailor Wages & Shop Rent Due on the 1st',
-        metricLabel: '₹20,000 100% Untouchable',
-        warningText: 'Your 2 tailors and shop landlord must be paid on the 1st of next month. If you do not pay them, your shop shuts down.',
-        advice: 'Keep ₹20,000 locked in a separate bank account so production never stops.',
-        severity: 'critical',
       },
       {
         id: 'trade-credit',
@@ -574,7 +574,7 @@ export function parseGoalTextAndAmount(
 
   // Fallback defaults per persona if still 0
   if (!cost || cost <= 0) {
-    cost = personaType === 'business' ? 100000 : personaType === 'freelancer' ? 45000 : 55000
+    cost = personaType === 'business' ? 100000 : personaType === 'freelancer' ? 45000 : 50000
   }
 
   // 2. Timeline parsing if not directly provided
@@ -652,10 +652,14 @@ interface AppContextType {
   userGoal: UserGoal
   updateUserGoal: (goal: Partial<UserGoal>) => void
   applyUserGoalToEntireApp: (rawGoalText: string, customCost?: number, customDays?: number) => void
+  decisionCost: number
+  decisionTitle: string
+  delayDays: number
+  paymentDelayDays: number
 }
 
 const DEFAULT_SIMULATOR: SimulatorState = {
-  decisionCost: 55000,
+  decisionCost: 50000,
   paymentDelayDays: 8,
   upfrontPercent: 30,
   hiddenCostBuffer: 8,
@@ -803,7 +807,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         return null
       }
     })()
-    const savedCost = savedSimRaw ? JSON.parse(savedSimRaw).decisionCost || 55000 : 55000
+    const savedCost = savedSimRaw ? JSON.parse(savedSimRaw).decisionCost || 50000 : 50000
     return {
       title: `Buy a ₹${savedCost.toLocaleString('en-IN')} laptop in 2 months`,
       targetAmount: savedCost,
@@ -880,10 +884,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         preserveActiveCost && simulator.decisionCost
           ? simulator.decisionCost
           : p === 'salaried'
-          ? 55000
+          ? (simulator.decisionCost || 50000)
           : p === 'freelancer'
-          ? 45000
-          : 60000
+          ? (simulator.decisionCost || 45000)
+          : (simulator.decisionCost || 60000)
       const nextDays = p === 'salaried' ? 8 : p === 'freelancer' ? 22 : 25
       const nextSim: SimulatorState = {
         decisionCost: nextCost,
@@ -958,49 +962,49 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const currentDays = simulator.paymentDelayDays || (persona === 'salaried' ? 8 : persona === 'freelancer' ? 22 : 25)
     const goalName = userGoal.title || base.purchaseLabel
 
-    // Team Pitch Table 6 Core Checks mapping
+    // Team Pitch Table 6 Core Checks mapping (Simple 8th-Grade Words)
     const pitchTableChecks = [
       {
         num: 1,
         title: 'Cash-Flow Prediction',
         question: 'Will you run out of money while doing the work?',
         explanation:
-          'Shows exactly when and how much money could be short by comparing when you must spend vs. when money comes in.',
+          'Shows exactly when and how much money will be short by comparing when you spend vs. when money arrives.',
       },
       {
         num: 2,
         title: 'Commitment Protection (Home Loan, Salaries & Rent)',
         question: 'Will money still be available for other needs?',
         explanation:
-          'Protects upcoming commitments like Home Loan EMIs, Staff Salaries, House/Shop Rent, and fees before approving a new expense or order.',
+          'Locks and protects upcoming Home Loan EMIs, Staff Salaries, Rent, and college fees first.',
       },
       {
         num: 3,
         title: 'Customer & Incoming Payment Analysis',
         question: 'How reliable are your incoming payments?',
         explanation:
-          'Checks past payment delays and upcoming money to tell you exact advance % to ask for.',
+          'Checks past payment history and delays to tell you the exact advance % to ask for.',
       },
       {
         num: 4,
         title: 'Hidden-Cost Discovery',
         question: 'Did you forget any costs?',
         explanation:
-          'Highlights overlooked expenses like delivery, packaging, late-night surge fees, or auto-debit subscriptions that reduce your money.',
+          'Catches extra delivery charges, packaging fees, 1 AM food surge fees, and forgotten auto-debit subscriptions.',
       },
       {
         num: 5,
         title: 'Suspicious-Record & Fraud Alerts',
         question: 'Does anything look suspicious?',
         explanation:
-          'Flags unusual payments, repeated duplicate bills, unverified payment screenshots, or changed bank details for verification.',
+          'Flags fake payment screenshots, repeated duplicate bills, or changed bank details for verification.',
       },
       {
         num: 6,
-        title: 'Risk & Scenario Comparison',
+        title: 'Risk & Scenario Analysis',
         question: "What if things don't go as planned?",
         explanation:
-          'Tests late payments, rising costs, or multiple expenses arriving together and shows safe fixes.',
+          'Tests late payments, rising costs, or multiple expenses arriving together and compares safe options.',
       },
     ]
 
@@ -1282,7 +1286,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setPersonaState(selectedPersona)
       setIsOnboardingDone(true)
 
-      const costToUse = customGoalCost || simulator.decisionCost || 55000
+      const costToUse = customGoalCost || simulator.decisionCost || 50000
       const daysToUse = customGoalDays || simulator.paymentDelayDays || 15
       const titleToUse =
         customGoalTitle || (userGoal.title ? userGoal.title : `₹${costToUse.toLocaleString('en-IN')} Goal`)
@@ -1363,7 +1367,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       id: 'demo-judge-001',
       email: 'judge@finvexa.ai',
       name: 'Demo Judge',
-      monthlyIncome: 55000,
+      monthlyIncome: 45000,
     }
     setAuthUser(demoJudge)
     setPersona('salaried')
@@ -1431,6 +1435,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         userGoal,
         updateUserGoal,
         applyUserGoalToEntireApp,
+        decisionCost: simulator.decisionCost,
+        decisionTitle: userGoal.title || dynamicPersonaData.purchaseLabel,
+        delayDays: simulator.paymentDelayDays,
+        paymentDelayDays: simulator.paymentDelayDays,
       }}
     >
       {children}
@@ -1443,3 +1451,5 @@ export function useApp() {
   if (!ctx) throw new Error('useApp must be used within AppProvider')
   return ctx
 }
+
+export const useAppContext = useApp

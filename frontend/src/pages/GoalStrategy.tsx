@@ -38,7 +38,7 @@ export default function GoalStrategy() {
         : `Accept a ₹${simulator.decisionCost.toLocaleString('en-IN')} T-Shirt order in 30 days`)
   )
   const [amount, setAmount] = useState<number>(
-    userGoal?.targetAmount || simulator.decisionCost || (persona === 'salaried' ? 55000 : persona === 'freelancer' ? 45000 : 60000)
+    userGoal?.targetAmount || simulator.decisionCost || 50000
   )
   const [months, setMonths] = useState<number>(userGoal?.targetMonths || 2)
   const [isAnalyzed, setIsAnalyzed] = useState(false)
@@ -64,7 +64,7 @@ export default function GoalStrategy() {
   // Preset goal chips per persona
   const goalPresets: Record<string, { title: string; amt: number; m: number }[]> = {
     salaried: [
-      { title: 'Buy a ₹55,000 laptop in 2 months', amt: 55000, m: 2 },
+      { title: `Buy a ₹${simulator.decisionCost.toLocaleString('en-IN')} laptop in 2 months`, amt: simulator.decisionCost, m: 2 },
       { title: 'Buy a ₹75,000 electric scooter in 4 months', amt: 75000, m: 4 },
       { title: 'Build ₹30,000 emergency fund in 3 months', amt: 30000, m: 3 },
     ],
@@ -210,7 +210,7 @@ export default function GoalStrategy() {
               type="text"
               value={goalText}
               onChange={e => setGoalText(e.target.value)}
-              placeholder="e.g. Buy a ₹55,000 laptop in 2 months"
+              placeholder={`e.g. Buy a ₹${simulator.decisionCost.toLocaleString('en-IN')} laptop in 2 months`}
               className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950/80 border border-white/15 text-sm font-semibold text-white focus:outline-none focus:border-blue-400"
             />
           </div>
