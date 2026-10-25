@@ -2,7 +2,30 @@
 import React, { createContext, useContext, useState, useCallback } from 'react'
 
 export type PersonaType = 'salaried' | 'freelancer' | 'business'
-export type AuthUser = { id: string; email: string; name: string } | null
+export type ThemeMode = 'light' | 'dark'
+
+export interface AuthUser {
+  id: string
+  name: string
+  email?: string
+  phone?: string
+  isGuest?: boolean
+  monthlyIncome?: number
+}
+
+export interface SavedUserProfile {
+  id: string
+  identifier: string // phone or email or 'guest'
+  name: string
+  email?: string
+  phone?: string
+  isGuest?: boolean
+  persona: PersonaType
+  monthlyIncome: number
+  onboardingDone: boolean
+  bankConsent?: BankConsentState
+  lastLoginAt: string
+}
 
 export interface SimulatorState {
   decisionCost: number
@@ -497,19 +520,27 @@ export interface BankConsentState {
 }
 
 interface AppContextType {
+  themeMode: ThemeMode
+  toggleThemeMode: () => void
   persona: PersonaType
   setPersona: (p: PersonaType) => void
   personaData: PersonaData
   simulator: SimulatorState
   setSimulator: (s: Partial<SimulatorState>) => void
-  authUser: AuthUser
-  setAuthUser: (u: AuthUser) => void
+  authUser: AuthUser | null
+  setAuthUser: (u: AuthUser | null) => void
   demoLogin: () => void
   logout: () => void
   bankConsent: BankConsentState
   setBankConsent: React.Dispatch<React.SetStateAction<BankConsentState>>
   linkBankSuccess: (bankName: string, bankId: string, accountMasked?: string) => void
   revokeBankConsent: () => void
+  isOnboardingDone: boolean
+  loginAsReturningUser: (profile: SavedUserProfile) => void
+  loginAsNewUser: (identifier: string, type: 'phone' | 'email' | 'guest', name?: string) => void
+  completeOnboarding: (name: string, monthlyIncome: number, selectedPersona: PersonaType) => void
+  resetOnboardingDemo: () => void
+  getSavedUserByIdentifier: (identifier: string) => SavedUserProfile | null
 }
 
 const DEFAULT_SIMULATOR: SimulatorState = {
@@ -523,8 +554,65 @@ const DEFAULT_SIMULATOR: SimulatorState = {
 const AppContext = createContext<AppContextType | null>(null)
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [persona, setPersonaState] = useState<PersonaType>('salaried')
-  const [authUser, setAuthUser] = useState<AuthUser>(null)
+  // Theme Mode
+  const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
+    try {
+      const saved = localStorage.getItem('finvexa_theme_mode') as ThemeMode
+      if (saved === 'light' || saved === 'dark') return saved
+    } catch {
+      // ignore
+    }
+    return 'dark'
+  })
+
+  const toggleThemeMode = useCallback(() => {
+    setThemeMode(prev => {
+      const next = prev === 'dark' ? 'light' : 'dark'
+      try {
+        localStorage.setItem('finvexa_theme_mode', next)
+      } catch {
+        // ignore
+      }
+      return next
+    })
+  }, [])
+
+  // Onboarding Done state
+  const [isOnboardingDone, setIsOnboardingDone] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('finvexa_onboarding_done') === 'true'
+    } catch {
+      return false
+    }
+  })
+
+  // Auth User
+  const [authUser, setAuthUser] = useState<AuthUser | null>(() => {
+    try {
+      const saved = localStorage.getItem('finvexa_auth_session')
+      if (saved) return JSON.parse(saved)
+    } catch {
+      // ignore
+    }
+    return null
+  })
+
+  // Persona State
+  const [persona, setPersonaState] = useState<PersonaType>(() => {
+    try {
+      const savedUser = localStorage.getItem('finvexa_auth_session')
+      if (savedUser) {
+        const parsed = JSON.parse(savedUser)
+        if (parsed.persona && PERSONAS[parsed.persona as PersonaType]) {
+          return parsed.persona as PersonaType
+        }
+      }
+    } catch {
+      // ignore
+    }
+    return 'salaried'
+  })
+
   const [simulator, setSimulatorState] = useState<SimulatorState>(DEFAULT_SIMULATOR)
 
   const setPersona = useCallback((p: PersonaType) => {
@@ -554,22 +642,32 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         splitBatches: 1,
       })
     }
+
+    // Also update saved user session if exists
+    try {
+      const session = localStorage.getItem('finvexa_auth_session')
+      if (session) {
+        const parsed = JSON.parse(session)
+        parsed.persona = p
+        localStorage.setItem('finvexa_auth_session', JSON.stringify(parsed))
+
+        const savedUsersRaw = localStorage.getItem('finvexa_saved_users')
+        if (savedUsersRaw) {
+          const users: Record<string, SavedUserProfile> = JSON.parse(savedUsersRaw)
+          const key = parsed.phone || parsed.email || parsed.id
+          if (users[key]) {
+            users[key].persona = p
+            localStorage.setItem('finvexa_saved_users', JSON.stringify(users))
+          }
+        }
+      }
+    } catch {
+      // ignore
+    }
   }, [])
 
   const setSimulator = useCallback((s: Partial<SimulatorState>) => {
     setSimulatorState(prev => ({ ...prev, ...s }))
-  }, [])
-
-  const demoLogin = useCallback(() => {
-    setAuthUser({
-      id: 'demo-judge-001',
-      email: 'judge@finvexa.ai',
-      name: 'Demo Judge',
-    })
-  }, [])
-
-  const logout = useCallback(() => {
-    setAuthUser(null)
   }, [])
 
   const [bankConsent, setBankConsent] = useState<BankConsentState>(() => {
@@ -613,6 +711,21 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setBankConsent(consent)
     try {
       localStorage.setItem('finvexa_bank_consent', JSON.stringify(consent))
+
+      // Also persist to current session & saved users
+      const session = localStorage.getItem('finvexa_auth_session')
+      if (session) {
+        const parsed = JSON.parse(session)
+        const key = parsed.phone || parsed.email || parsed.id
+        const savedUsersRaw = localStorage.getItem('finvexa_saved_users')
+        if (savedUsersRaw) {
+          const users: Record<string, SavedUserProfile> = JSON.parse(savedUsersRaw)
+          if (users[key]) {
+            users[key].bankConsent = consent
+            localStorage.setItem('finvexa_saved_users', JSON.stringify(users))
+          }
+        }
+      }
     } catch {
       // ignore
     }
@@ -636,6 +749,177 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setBankConsent(resetConsent)
     try {
       localStorage.removeItem('finvexa_bank_consent')
+      const session = localStorage.getItem('finvexa_auth_session')
+      if (session) {
+        const parsed = JSON.parse(session)
+        const key = parsed.phone || parsed.email || parsed.id
+        const savedUsersRaw = localStorage.getItem('finvexa_saved_users')
+        if (savedUsersRaw) {
+          const users: Record<string, SavedUserProfile> = JSON.parse(savedUsersRaw)
+          if (users[key]) {
+            users[key].bankConsent = resetConsent
+            localStorage.setItem('finvexa_saved_users', JSON.stringify(users))
+          }
+        }
+      }
+    } catch {
+      // ignore
+    }
+  }, [])
+
+  // Helper: Find saved user by phone or email
+  const getSavedUserByIdentifier = useCallback((identifier: string): SavedUserProfile | null => {
+    try {
+      const clean = identifier.trim().toLowerCase()
+      const savedUsersRaw = localStorage.getItem('finvexa_saved_users')
+      if (!savedUsersRaw) return null
+      const users: Record<string, SavedUserProfile> = JSON.parse(savedUsersRaw)
+      return users[clean] || Object.values(users).find(u => u.identifier.toLowerCase() === clean || u.email?.toLowerCase() === clean || u.phone === clean) || null
+    } catch {
+      return null
+    }
+  }, [])
+
+  // Login as returning user
+  const loginAsReturningUser = useCallback((profile: SavedUserProfile) => {
+    const user: AuthUser = {
+      id: profile.id,
+      name: profile.name,
+      email: profile.email,
+      phone: profile.phone,
+      isGuest: profile.isGuest,
+      monthlyIncome: profile.monthlyIncome,
+    }
+    setAuthUser(user)
+    setPersona(profile.persona)
+    setIsOnboardingDone(true)
+
+    if (profile.bankConsent?.isLinked) {
+      setBankConsent(profile.bankConsent)
+      try {
+        localStorage.setItem('finvexa_bank_consent', JSON.stringify(profile.bankConsent))
+      } catch {
+        // ignore
+      }
+    }
+
+    try {
+      localStorage.setItem('finvexa_auth_session', JSON.stringify({ ...user, persona: profile.persona }))
+      localStorage.setItem('finvexa_onboarding_done', 'true')
+    } catch {
+      // ignore
+    }
+  }, [setPersona])
+
+  // Login as new user / guest
+  const loginAsNewUser = useCallback((identifier: string, type: 'phone' | 'email' | 'guest', name = '') => {
+    const isGuest = type === 'guest'
+    const cleanId = isGuest ? `guest_${Date.now()}` : identifier.trim()
+    const displayName = isGuest ? 'Guest Explorer' : name || (type === 'email' ? identifier.split('@')[0] : `User ${identifier.slice(-4)}`)
+
+    const user: AuthUser = {
+      id: `usr_${Date.now()}`,
+      name: displayName,
+      email: type === 'email' ? cleanId : undefined,
+      phone: type === 'phone' ? cleanId : undefined,
+      isGuest,
+      monthlyIncome: 45000,
+    }
+    setAuthUser(user)
+    setIsOnboardingDone(false)
+
+    try {
+      localStorage.setItem('finvexa_auth_session', JSON.stringify(user))
+      localStorage.removeItem('finvexa_onboarding_done')
+    } catch {
+      // ignore
+    }
+  }, [])
+
+  // Complete onboarding wizard
+  const completeOnboarding = useCallback((name: string, monthlyIncome: number, selectedPersona: PersonaType) => {
+    setPersona(selectedPersona)
+    setIsOnboardingDone(true)
+
+    setAuthUser(prev => {
+      const updated: AuthUser = {
+        id: prev?.id || `usr_${Date.now()}`,
+        name: name || prev?.name || 'Explorer',
+        email: prev?.email,
+        phone: prev?.phone,
+        isGuest: prev?.isGuest,
+        monthlyIncome,
+      }
+
+      // Persist to session and saved_users
+      try {
+        localStorage.setItem('finvexa_auth_session', JSON.stringify({ ...updated, persona: selectedPersona }))
+        localStorage.setItem('finvexa_onboarding_done', 'true')
+
+        const key = updated.phone || updated.email || updated.id
+        const savedUsersRaw = localStorage.getItem('finvexa_saved_users')
+        const users: Record<string, SavedUserProfile> = savedUsersRaw ? JSON.parse(savedUsersRaw) : {}
+        users[key] = {
+          id: updated.id,
+          identifier: key,
+          name: updated.name,
+          email: updated.email,
+          phone: updated.phone,
+          isGuest: updated.isGuest,
+          persona: selectedPersona,
+          monthlyIncome,
+          onboardingDone: true,
+          bankConsent,
+          lastLoginAt: new Date().toISOString(),
+        }
+        localStorage.setItem('finvexa_saved_users', JSON.stringify(users))
+      } catch {
+        // ignore
+      }
+
+      return updated
+    })
+  }, [setPersona, bankConsent])
+
+  // Demo Login (One-click judge demo)
+  const demoLogin = useCallback(() => {
+    const demoJudge: AuthUser = {
+      id: 'demo-judge-001',
+      email: 'judge@finvexa.ai',
+      name: 'Demo Judge',
+      monthlyIncome: 55000,
+    }
+    setAuthUser(demoJudge)
+    setPersona('salaried')
+    setIsOnboardingDone(true)
+
+    try {
+      localStorage.setItem('finvexa_auth_session', JSON.stringify({ ...demoJudge, persona: 'salaried' }))
+      localStorage.setItem('finvexa_onboarding_done', 'true')
+    } catch {
+      // ignore
+    }
+  }, [setPersona])
+
+  // Reset Onboarding (For hackathon pitch demo)
+  const resetOnboardingDemo = useCallback(() => {
+    setAuthUser(null)
+    setIsOnboardingDone(false)
+    revokeBankConsent()
+    try {
+      localStorage.removeItem('finvexa_auth_session')
+      localStorage.removeItem('finvexa_onboarding_done')
+      localStorage.removeItem('finvexa_bank_consent')
+    } catch {
+      // ignore
+    }
+  }, [revokeBankConsent])
+
+  // Logout
+  const logout = useCallback(() => {
+    setAuthUser(null)
+    try {
+      localStorage.removeItem('finvexa_auth_session')
     } catch {
       // ignore
     }
@@ -644,6 +928,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   return (
     <AppContext.Provider
       value={{
+        themeMode,
+        toggleThemeMode,
         persona,
         setPersona,
         personaData: PERSONAS[persona],
@@ -657,6 +943,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setBankConsent,
         linkBankSuccess,
         revokeBankConsent,
+        isOnboardingDone,
+        loginAsReturningUser,
+        loginAsNewUser,
+        completeOnboarding,
+        resetOnboardingDemo,
+        getSavedUserByIdentifier,
       }}
     >
       {children}

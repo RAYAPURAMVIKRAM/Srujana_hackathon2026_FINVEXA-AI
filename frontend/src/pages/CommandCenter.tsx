@@ -1,15 +1,14 @@
 // src/pages/CommandCenter.tsx
 import { useNavigate } from 'react-router-dom'
 import {
-  TrendingDown,
   AlertTriangle,
   CreditCard,
-  Zap,
   Shield,
   ArrowRight,
   Sparkles,
   Flame,
   CheckCircle2,
+  Lock,
 } from 'lucide-react'
 import { useApp, PERSONAS } from '../context/AppContext'
 import type { PersonaType } from '../context/AppContext'
@@ -36,7 +35,7 @@ export default function CommandCenter() {
     personaType: personaData.type,
   })
 
-  const { shortage, valleyDays } = computeRiskMetrics(cashflow, personaData.lockedReserves)
+  const { shortage } = computeRiskMetrics(cashflow, personaData.lockedReserves)
 
   const liquidityStatus =
     personaData.balance > personaData.lockedReserves * 1.5
@@ -44,10 +43,6 @@ export default function CommandCenter() {
       : personaData.balance > personaData.lockedReserves
       ? 'warning'
       : 'critical'
-
-  const stressStatus = shortage === 0 ? 'safe' : shortage < 20000 ? 'warning' : 'critical'
-  const creditStatus =
-    personaData.creditScore >= 700 ? 'safe' : personaData.creditScore >= 620 ? 'warning' : 'critical'
 
   const personaKeys: PersonaType[] = ['salaried', 'freelancer', 'business']
 
@@ -165,44 +160,50 @@ export default function CommandCenter() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           <KpiCard
-            label="Money Safe in Bank Right Now"
+            label="Money Safe in Bank"
             value={`₹${personaData.balance.toLocaleString('en-IN')}`}
             sub={`Untouchable: ₹${personaData.lockedReserves.toLocaleString('en-IN')}`}
             status={liquidityStatus}
             icon={<CreditCard size={18} />}
             trend={
               liquidityStatus === 'safe'
-                ? '↑ Safe balance above rent & fees'
+                ? '↑ Safe balance in your bank'
                 : '⚠ Very close to your untouchable money'
             }
           />
           <KpiCard
-            label="How Much Money You Will Be Short Next Month"
-            value={shortage > 0 ? `−₹${shortage.toLocaleString('en-IN')}` : '₹0'}
-            sub={shortage > 0 ? `In the danger zone for ${valleyDays} days` : 'Zero cash shortage projected'}
-            status={stressStatus}
-            icon={<TrendingDown size={18} />}
-            trend={
-              shortage === 0
-                ? '✓ 100% Cash-flow positive after all bills'
-                : `Shortage of ₹${shortage.toLocaleString('en-IN')} if you buy today`
-            }
+            label="Untouchable Bills Locked (Rent/Salaries/Fees)"
+            value={`₹${personaData.lockedReserves.toLocaleString('en-IN')}`}
+            sub="Rent, college fees, salaries & emergency EMI"
+            status="safe"
+            icon={<Lock size={18} />}
+            trend="100% Protected from impulse spending"
           />
           <KpiCard
-            label="Sneaky Hidden Fees & Forgotten Bills"
+            label="Sneaky Money Leaks Found"
             value={`₹${personaData.hiddenLeaks.toLocaleString('en-IN')}/mo`}
-            sub="Auto-debits, food delivery surge & fees"
+            sub="Friend bill splits, surge fees & auto-debits"
             status="warning"
             icon={<AlertTriangle size={18} />}
-            trend="Found 3 easy leaks you can cancel today"
+            trend="Tap 'Hidden Money Finder' tab to recover"
           />
           <KpiCard
-            label="Loan Trust Score & How to Get Approved Fast"
-            value={`${personaData.creditScore} / 850`}
-            sub="Bank & EMI credit trust rating"
-            status={creditStatus}
-            icon={<Zap size={18} />}
-            trend={creditStatus === 'safe' ? 'Eligible for 0-paperwork approval' : 'Pay bills on time to hit 720+'}
+            label="Safe to Spend Today"
+            value={`₹${Math.max(0, personaData.balance - personaData.lockedReserves - Math.max(0, shortage)).toLocaleString('en-IN')}`}
+            sub={shortage > 0 ? `Shortage of ₹${shortage.toLocaleString('en-IN')} if purchase made` : 'After locking rent, bills & buffer'}
+            status={
+              personaData.balance - personaData.lockedReserves - Math.max(0, shortage) > 10000
+                ? 'safe'
+                : personaData.balance - personaData.lockedReserves - Math.max(0, shortage) > 0
+                ? 'warning'
+                : 'critical'
+            }
+            icon={<CheckCircle2 size={18} />}
+            trend={
+              shortage === 0
+                ? '✓ Spend freely without breaking emergency fund'
+                : '⚠ Buying now will push you into cash shortage'
+            }
           />
         </div>
       </div>
