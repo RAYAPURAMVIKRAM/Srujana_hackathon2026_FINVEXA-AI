@@ -4,7 +4,6 @@ import {
   Upload,
   FileText,
   Receipt,
-  CreditCard,
   Image,
   CheckCircle2,
   AlertTriangle,
@@ -18,8 +17,6 @@ import {
   Stamp,
 } from 'lucide-react'
 import { uploadDocument, isSupabaseConfigured } from '../lib/supabase'
-import Tilt3DCard from '../components/Tilt3DCard'
-import { useApp } from '../context/AppContext'
 
 interface ScanResult {
   type: string
@@ -39,7 +36,7 @@ interface ScanResult {
 
 const SAMPLE_RESULTS: Record<string, ScanResult> = {
   invoice: {
-    type: 'Bill & Purchase Order Spy',
+    type: 'Wholesale Invoice & Tax Bill Check',
     extractedTerms: [
       { key: 'Seller Name', value: 'StarTech Supplies Pvt Ltd', risk: 'low' },
       { key: 'Bill Number', value: 'INV-2024-07841', risk: 'low' },
@@ -49,12 +46,12 @@ const SAMPLE_RESULTS: Record<string, ScanResult> = {
       { key: 'Delivery Time', value: '7 to 14 business days', risk: 'low' },
     ],
     hiddenFees: [
-      { description: 'Transport & handling fee (hidden in fine print)', amount: 4800, severity: 'high' },
+      { description: 'Transport & handling fee (hidden in fine print clause 8)', amount: 4800, severity: 'high' },
       { description: 'Extra GST on transport fee', amount: 864, severity: 'medium' },
       { description: 'Box packaging surcharge', amount: 600, severity: 'low' },
     ],
     fraudFlags: [
-      { flag: 'Wrong State GST Number', detail: 'The bill claims Mumbai (MH) but the GST code starts with 29 (Karnataka). Verify address before paying!', risk: 'high' },
+      { flag: 'Mismatched State GST Code', detail: 'The bill claims Mumbai (MH) but the GST code starts with 29 (Karnataka). Verify address before paying!', risk: 'high' },
       { flag: 'Fishy Round Numbers', detail: 'Every single line item is an exact round number like ₹500, which genuine wholesale bills rarely do.', risk: 'medium' },
     ],
     utrStatus: 'not_applicable',
@@ -62,13 +59,13 @@ const SAMPLE_RESULTS: Record<string, ScanResult> = {
     summary: 'Caught ₹6,264 in sneaky unadvertised transport fees and a mismatched GST state code. Do not pay until the seller removes the surprise delivery fee!',
     legalVerdict: {
       isGenuine: false,
-      verdictTitle: '⚠️ Suspicious Terms & Tax Mismatch Detected',
-      confidenceScore: 78,
+      verdictTitle: '🚨 Fake / Edited Payment Screenshot Detected',
+      confidenceScore: 84,
       checks: [
-        { name: '12-Digit UTR Bank Check', status: 'pass', detail: 'Not applicable for pre-payment tax invoice' },
-        { name: 'Merchant GSTIN Format & State Check', status: 'fail', detail: 'State code 29 (KA) conflicts with Mumbai (MH) header' },
-        { name: 'Pixel & Font Tampering Analysis', status: 'pass', detail: 'Original vector PDF text layout verified' },
-        { name: 'Hidden Fee & Fine Print Discovery', status: 'warn', detail: 'Undisclosed ₹6,264 freight surcharge detected in clause 8' },
+        { name: '12-Digit Bank UTR Number Check', status: 'pass', detail: 'Tax invoice before bank debit (No UTR needed yet)' },
+        { name: 'Shop GST Number Check', status: 'fail', detail: 'State code 29 (KA) conflicts with Mumbai (MH) invoice header' },
+        { name: 'Font/Pixel Editing Check', status: 'warn', detail: 'Inconsistent font kerning on total amount box indicates digital edit' },
+        { name: 'Hidden Delivery/Penalty Fee Check', status: 'fail', detail: 'Undisclosed ₹6,264 freight surcharge hidden in clause 8 fine print' },
       ],
     },
   },
@@ -88,7 +85,7 @@ const SAMPLE_RESULTS: Record<string, ScanResult> = {
       { description: 'Forgotten gym trial monthly auto-debit', amount: 999, severity: 'high' },
     ],
     fraudFlags: [
-      { flag: 'Midnight Food Delivery Habit', detail: '₹8,200 spent on food delivery apps between 11 PM and 3 AM. Squeezing your rent safety cushion!', risk: 'medium' },
+      { flag: 'Midnight Food Delivery Surge', detail: '₹8,200 spent on food delivery apps between 11 PM and 3 AM. Squeezing your rent safety cushion!', risk: 'medium' },
       { flag: 'Double-Charged Vendor Payment', detail: 'Streaming service charged twice in 24 hours on Sep 4 and Sep 5.', risk: 'high' },
     ],
     utrStatus: 'not_applicable',
@@ -96,56 +93,57 @@ const SAMPLE_RESULTS: Record<string, ScanResult> = {
     summary: 'Found ₹3,794 in forgotten subscription leaks and a ₹649 duplicate charge. You can save ₹4,443 every single month by canceling 3 unused apps today!',
     legalVerdict: {
       isGenuine: true,
-      verdictTitle: '✅ Genuine Bank Statement with Subscription Creep',
-      confidenceScore: 94,
+      verdictTitle: '✅ Genuine Legal Receipt',
+      confidenceScore: 98,
       checks: [
-        { name: 'Bank Ledger Hash & Balance Consistency', status: 'pass', detail: 'Daily closing balances balance to the rupee' },
-        { name: 'Mandate Registration Verification', status: 'warn', detail: '6 active e-mandates draining ₹3,840/month' },
-        { name: 'Timestamp Spikes Analysis', status: 'warn', detail: 'High concentration of 11 PM–3 AM surge debits' },
-        { name: 'Duplicate Transaction Flag', status: 'fail', detail: 'Two identical charges within 24 hours flagged for dispute' },
+        { name: '12-Digit Bank UTR Number Check', status: 'pass', detail: 'All 24 IMPS/UPI transaction reference numbers match NPCI format' },
+        { name: 'Shop GST Number Check', status: 'pass', detail: 'Official bank IFSC and GST numbers validated' },
+        { name: 'Font/Pixel Editing Check', status: 'pass', detail: 'Vector PDF metadata and digital signature cryptographic hash verified' },
+        { name: 'Hidden Delivery/Penalty Fee Check', status: 'pass', detail: 'Minimum balance maintenance penalty flagged on Day 14' },
       ],
     },
   },
   upi: {
-    type: 'UPI Screenshot & UTR Authenticity Check',
+    type: 'WhatsApp Payment Screenshot Check',
     extractedTerms: [
-      { key: '12-Digit Bank UTR', value: '424082534798', risk: 'low' },
-      { key: 'Sender UPI ID', value: 'rahul.sharma@okicici', risk: 'low' },
-      { key: 'Receiver UPI ID', value: 'merchant@paytm', risk: 'low' },
-      { key: 'Amount Transferred', value: '₹25,000', risk: 'low' },
-      { key: 'Date & Time', value: 'Sep 22, 2024 at 2:32 PM', risk: 'low' },
-      { key: 'Bank Status', value: 'SUCCESS', risk: 'low' },
+      { key: 'Payer Name', value: 'Vikram R', risk: 'low' },
+      { key: 'Receiver Name', value: 'Kiran Cloth Mills', risk: 'low' },
+      { key: 'Amount Displayed', value: '₹65,000.00', risk: 'low' },
+      { key: 'Transaction UTR', value: '428910482910', risk: 'low' },
+      { key: 'Reported Timestamp', value: 'Today, 2:45 PM', risk: 'low' },
     ],
     hiddenFees: [],
     fraudFlags: [
-      { flag: 'NPCI 12-Digit Format: VERIFIED', detail: 'Reference number matches the genuine 12-digit Indian bank routing format. No visual font tampering found.', risk: 'low' },
+      { flag: 'Tampered Font Detected', detail: 'The currency symbol ₹ and total numbers have jagged compression noise, common in prank payment generator apps!', risk: 'high' },
+      { flag: 'Unconfirmed UTR on NPCI', detail: 'Reference UTR 428910482910 has not settled inside your bank account within the standard 45-minute TAT window.', risk: 'high' },
     ],
-    utrStatus: 'verified',
-    overallRisk: 'safe',
-    summary: 'The 12-digit bank UTR reference is verified and matches NPCI banking standards. No photo editing or fake fonts detected. Safe to proceed.',
+    utrStatus: 'suspicious',
+    overallRisk: 'critical',
+    summary: 'High Alert: This payment screenshot shows font tampering and the ₹65,000 has NOT entered your bank account yet. Do not release final products or original files!',
     legalVerdict: {
-      isGenuine: true,
-      verdictTitle: '✅ 100% Genuine Legal Payment Proof',
-      confidenceScore: 98,
+      isGenuine: false,
+      verdictTitle: '🚨 Fake / Edited Payment Screenshot Detected',
+      confidenceScore: 92,
       checks: [
-        { name: '12-Digit Bank UTR Format Check', status: 'pass', detail: 'Matches NPCI checksum and issuing bank sequence' },
-        { name: 'Merchant / Recipient VPA Validation', status: 'pass', detail: 'Registered @paytm PSP handle active' },
-        { name: 'Pixel & Font Tampering Analysis', status: 'pass', detail: 'Clean anti-aliasing; zero Photoshop font replacement detected' },
-        { name: 'Server Timestamp Synchrony', status: 'pass', detail: 'Transaction timestamp matches clearing house clock' },
+        { name: '12-Digit Bank UTR Number Check', status: 'fail', detail: 'UTR 428910482910 not found in linked bank statement ledger' },
+        { name: 'Shop GST Number Check', status: 'warn', detail: 'Screenshot is missing merchant registered VPA handle' },
+        { name: 'Font/Pixel Editing Check', status: 'fail', detail: 'Font pixel mismatch: Amount digits were overlaid on a template' },
+        { name: 'Hidden Delivery/Penalty Fee Check', status: 'pass', detail: 'Zero hidden fees (Payment proof verification only)' },
       ],
     },
   },
 }
 
 const RISK_CFG = {
-  safe: { bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.35)', text: '#34d399', label: '✓ 100% SAFE & CLEAN' },
-  warning: { bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.35)', text: '#fbbf24', label: '⚠ SNEAKY CHARGES CAUGHT' },
-  critical: { bg: 'rgba(244,63,94,0.1)', border: 'rgba(244,63,94,0.35)', text: '#fb7185', label: '✗ HIGH DANGER / FAKE PROOF' },
+  safe: { label: 'CLEAN & VERIFIED', bg: '#ecfdf5', text: '#047857', border: '#a7f3d0' },
+  warning: { label: 'SNEAKY CHARGES FOUND', bg: '#fffbeb', text: '#b45309', border: '#fde68a' },
+  critical: { label: 'FAKE PROOF WARNING', bg: '#fef2f2', text: '#b91c1c', border: '#fecaca' },
 }
 
-async function callScanAPI(file: File | null, sampleType?: string): Promise<ScanResult> {
-  if (sampleType && SAMPLE_RESULTS[sampleType]) return SAMPLE_RESULTS[sampleType]
-
+async function callScanAPI(file: File | null, docType?: string): Promise<ScanResult> {
+  if (!file && docType && SAMPLE_RESULTS[docType]) {
+    return SAMPLE_RESULTS[docType]
+  }
   try {
     const form = new FormData()
     if (file) form.append('file', file)
@@ -172,9 +170,6 @@ export default function Scanner() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-
-  const { personaData } = useApp()
-  const theme = personaData.theme
 
   // Stop camera tracks
   const stopCamera = useCallback(() => {
@@ -214,8 +209,8 @@ export default function Scanner() {
           videoRef.current.srcObject = fallbackStream
           videoRef.current.play()
         }
-      } catch (err: unknown) {
-        setCameraError('Unable to access device camera. Please check browser permissions or upload a file directly.')
+      } catch {
+        setCameraError('Unable to access device camera. Please check browser permissions or upload a receipt photo directly.')
       }
     }
   }
@@ -232,7 +227,7 @@ export default function Scanner() {
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
       canvas.toBlob(blob => {
         if (blob) {
-          const file = new File([blob], `live-scan-${Date.now()}.jpg`, { type: 'image/jpeg' })
+          const file = new File([blob], `live-receipt-${Date.now()}.jpg`, { type: 'image/jpeg' })
           stopCamera()
           handleFile(file)
         }
@@ -307,26 +302,19 @@ export default function Scanner() {
   )
 
   return (
-    <div className="space-y-7 animate-fade-in max-w-6xl mx-auto pb-12">
+    <div className="space-y-6 animate-fade-in max-w-6xl mx-auto pb-12 text-slate-800">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
         <div>
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-md border mb-2"
-            style={{
-              borderColor: `${theme.primaryHex}50`,
-              background: `${theme.primaryHex}15`,
-              color: theme.primaryHex,
-            }}
-          >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 mb-2">
             <Sparkles size={13} />
             <span>AI Bill, Receipt & Fake-Payment Spy</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            Catch Sneaky Hidden Fees & Fake Payment Proofs
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            AI Document & Receipt Scanner
           </h1>
-          <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
-            Upload or capture any bill, vendor contract, or WhatsApp UPI payment screenshot. We verify 12-digit UTRs, GSTIN state codes, and fine-print fees in seconds:
+          <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl">
+            Upload or snap a photo of any bill, vendor invoice, or WhatsApp payment screenshot. We verify 12-digit UTRs, GST numbers, font tampering, and hidden fees:
           </p>
         </div>
 
@@ -334,54 +322,54 @@ export default function Scanner() {
         <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
           <button
             onClick={handleOpenLiveCamera}
-            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white flex items-center gap-1.5 shadow-md transition-all hover:scale-105"
+            className="px-4 py-2.5 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1.5 shadow-sm transition-all"
           >
-            <Camera size={14} />
-            <span>📸 Open Live Camera</span>
+            <Camera size={15} />
+            <span>📸 Turn On Live Camera (Scan Bill / QR / Receipt)</span>
           </button>
 
           <button
             onClick={handleTagLocation}
             disabled={isGettingLocation}
-            className="px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-all"
+            className="px-3.5 py-2.5 rounded-xl text-xs font-bold bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 flex items-center gap-1.5 transition-all shadow-xs"
           >
-            <MapPin size={14} className={locationTag ? 'text-emerald-400' : 'text-slate-400'} />
-            <span>{isGettingLocation ? 'Verifying...' : locationTag ? '📍 Location Tagged' : '📍 Tag Live Location'}</span>
+            <MapPin size={14} className={locationTag ? 'text-emerald-600' : 'text-slate-400'} />
+            <span>{isGettingLocation ? 'Verifying...' : locationTag ? '📍 Location Verified' : '📍 Verify Live GPS Location'}</span>
           </button>
         </div>
       </div>
 
       {/* Location Badge */}
       {locationTag && (
-        <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-300 flex items-center justify-between gap-2 animate-in fade-in">
+        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 flex items-center justify-between gap-2 animate-in fade-in shadow-xs">
           <div className="flex items-center gap-2">
-            <Stamp size={14} className="text-emerald-400" />
+            <Stamp size={15} className="text-emerald-600" />
             <span><strong>Forensic Geotag Attached:</strong> {locationTag}</span>
           </div>
-          <button onClick={() => setLocationTag(null)} className="text-slate-400 hover:text-white">
-            <X size={13} />
+          <button onClick={() => setLocationTag(null)} className="text-slate-400 hover:text-slate-700">
+            <X size={14} />
           </button>
         </div>
       )}
 
       {/* Live Camera Viewfinder Modal */}
       {isCameraOpen && (
-        <Tilt3DCard className="glass-card p-6 border-2 border-blue-500/60 bg-slate-950/90 rounded-3xl relative overflow-hidden space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-            <div className="flex items-center gap-2 text-white font-bold text-sm">
-              <Camera size={16} className="text-blue-400" />
+        <div className="bg-white p-6 border-2 border-blue-500 rounded-3xl shadow-xl space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="flex items-center gap-2 text-slate-900 font-bold text-sm">
+              <Camera size={16} className="text-blue-600" />
               <span>Live Camera Viewfinder (Bill / Receipt / QR Scanner)</span>
             </div>
             <button
               onClick={stopCamera}
-              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10"
+              className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100"
             >
               <X size={18} />
             </button>
           </div>
 
           {cameraError ? (
-            <div className="p-6 text-center text-xs text-rose-300 bg-rose-950/30 rounded-2xl border border-rose-500/30 space-y-2">
+            <div className="p-6 text-center text-xs text-red-700 bg-red-50 rounded-2xl border border-red-200 space-y-2">
               <p>{cameraError}</p>
               <button
                 onClick={stopCamera}
@@ -392,7 +380,7 @@ export default function Scanner() {
             </div>
           ) : (
             <div className="flex flex-col items-center gap-4">
-              <div className="relative w-full max-w-md aspect-video bg-black rounded-2xl overflow-hidden border border-blue-500/30 flex items-center justify-center">
+              <div className="relative w-full max-w-md aspect-video bg-black rounded-2xl overflow-hidden border border-slate-300 flex items-center justify-center shadow-inner">
                 <video
                   ref={videoRef}
                   autoPlay
@@ -400,10 +388,10 @@ export default function Scanner() {
                   muted
                   className="w-full h-full object-cover"
                 />
-                {/* Document Scan Frame Overlay */}
-                <div className="absolute inset-4 border-2 border-dashed border-emerald-400/70 rounded-xl pointer-events-none flex items-center justify-center">
-                  <span className="text-[10px] bg-black/60 text-emerald-300 px-2.5 py-0.5 rounded-full font-mono">
-                    Align Receipt / QR inside frame
+                {/* Green Document Scan Frame Overlay */}
+                <div className="absolute inset-4 border-2 border-dashed border-emerald-400 rounded-xl pointer-events-none flex items-center justify-center">
+                  <span className="text-[11px] bg-black/70 text-emerald-300 px-3 py-1 rounded-full font-mono font-bold">
+                    Align Receipt / QR inside green frame
                   </span>
                 </div>
               </div>
@@ -411,26 +399,25 @@ export default function Scanner() {
               <div className="flex items-center gap-3">
                 <button
                   onClick={handleCapturePhoto}
-                  className="px-6 py-2.5 rounded-2xl text-xs font-bold text-white shadow-xl flex items-center gap-2 transition-transform hover:scale-105"
-                  style={{ background: 'linear-gradient(135deg, #2563EB 0%, #10B981 100%)' }}
+                  className="px-6 py-2.5 rounded-xl text-xs font-bold text-white shadow-md flex items-center gap-2 transition-all bg-emerald-600 hover:bg-emerald-700"
                 >
                   <Camera size={15} />
-                  <span>Capture & Analyze Photo</span>
+                  <span>🔴 Capture Photo & Verify Receipt</span>
                 </button>
                 <button
                   onClick={stopCamera}
-                  className="px-4 py-2.5 rounded-2xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+                  className="px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
                 >
                   Cancel
                 </button>
               </div>
             </div>
           )}
-        </Tilt3DCard>
+        </div>
       )}
 
       {/* Upload Zone */}
-      <Tilt3DCard
+      <div
         onDragOver={e => {
           e.preventDefault()
           setDragging(true)
@@ -438,8 +425,8 @@ export default function Scanner() {
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
-        className={`glass-card p-8 sm:p-12 cursor-pointer border-2 border-dashed flex flex-col items-center justify-center text-center transition-all duration-300 ${
-          dragging ? 'border-emerald-400 bg-emerald-500/10' : 'border-slate-700 hover:border-emerald-500/50'
+        className={`bg-white p-8 sm:p-12 cursor-pointer border-2 border-dashed rounded-2xl flex flex-col items-center justify-center text-center transition-all shadow-xs ${
+          dragging ? 'border-blue-500 bg-blue-50/50' : 'border-slate-300 hover:border-blue-400 hover:bg-slate-50'
         }`}
       >
         <input
@@ -450,64 +437,64 @@ export default function Scanner() {
           onChange={e => e.target.files?.[0] && handleFile(e.target.files[0])}
         />
 
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-teal-400/20 flex items-center justify-center text-emerald-400 mb-3 border border-emerald-500/30">
-          <Upload size={28} />
+        <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center mb-4 shadow-xs">
+          <Upload size={26} />
         </div>
 
-        <div className="text-base font-bold text-white mb-1">
-          {dragging ? 'Drop to scan right now!' : 'Click or Drag & Drop Any Document Here'}
-        </div>
-        <div className="text-xs text-slate-400 max-w-md">
-          Supports Invoices, Bills, Bank Statements (CSV), and UPI Screenshots (PNG, JPG, PDF up to 10MB)
-        </div>
+        <p className="text-base font-bold text-slate-900">
+          Drop your bill, receipt, or screenshot here, or <span className="text-blue-600 underline">browse files</span>
+        </p>
+        <p className="text-xs text-slate-500 mt-1">
+          Supports PDF, CSV, PNG, JPG receipts up to 25 MB
+        </p>
 
-        {/* Sample Previews */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5 mt-5" onClick={e => e.stopPropagation()}>
-          <span className="text-[11px] text-slate-400 font-medium">Or try instant sample:</span>
+        {/* Quick Demo Pre-fills */}
+        <div
+          className="mt-6 flex flex-wrap justify-center gap-2.5"
+          onClick={e => e.stopPropagation()}
+        >
+          <span className="text-xs text-slate-400 self-center font-bold">Or test instant sample:</span>
           <button
             onClick={() => handleSample('invoice')}
-            disabled={scanning}
-            className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-colors"
+            className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 transition-colors flex items-center gap-1.5"
           >
-            <Receipt size={13} className="text-emerald-400" />
-            <span>🧾 Bill (₹6,264 Hidden Fees)</span>
+            <Receipt size={13} />
+            <span>Wholesale T-Shirt Bill</span>
           </button>
           <button
             onClick={() => handleSample('bank')}
-            disabled={scanning}
-            className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-colors"
+            className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 transition-colors flex items-center gap-1.5"
           >
-            <CreditCard size={13} className="text-amber-400" />
-            <span>🏦 Bank CSV (Auto-Debits)</span>
+            <FileText size={13} />
+            <span>Bank Statement (Auto-Debits)</span>
           </button>
           <button
             onClick={() => handleSample('upi')}
-            disabled={scanning}
-            className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-colors"
+            className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-red-50 hover:text-red-700 text-slate-700 border border-slate-200 transition-colors flex items-center gap-1.5"
           >
-            <Image size={13} className="text-cyan-400" />
-            <span>📱 UPI Payment Proof</span>
+            <Image size={13} />
+            <span>WhatsApp Fake UPI Slip</span>
           </button>
         </div>
-      </Tilt3DCard>
+      </div>
 
-      {/* Scanning Indicator */}
+      {/* Loading State */}
       {scanning && (
-        <Tilt3DCard className="glass-card p-8 flex flex-col items-center justify-center gap-3 border border-emerald-500/40">
-          <Loader2 size={36} className="text-emerald-400 animate-spin" />
-          <div className="text-sm font-bold text-white">Reading {fileName} with AI Forensics...</div>
-          <p className="text-xs text-slate-400">
-            Running 12-digit bank UTR checks, GSTIN validation, pixel tampering detection, and fine print fees...
+        <div className="bg-white p-12 text-center border border-slate-200 rounded-2xl shadow-xs space-y-3">
+          <Loader2 size={32} className="animate-spin text-blue-600 mx-auto" />
+          <h3 className="text-base font-bold text-slate-900">Analyzing Receipt & Verification Codes...</h3>
+          <p className="text-xs text-slate-500 max-w-sm mx-auto">
+            Checking 12-digit bank UTR numbers, GSTIN format, font pixel editing, and fine-print fees...
           </p>
-        </Tilt3DCard>
+        </div>
       )}
 
       {/* Scan Results */}
       {result && !scanning && (
         <div className="space-y-6">
           {/* Result Banner */}
-          <Tilt3DCard
-            className="glass-card p-5 border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+          <div
+            className="p-5 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs"
             style={{
               background: RISK_CFG[result.overallRisk].bg,
               borderColor: RISK_CFG[result.overallRisk].border,
@@ -515,19 +502,26 @@ export default function Scanner() {
           >
             <div className="flex items-center gap-3">
               {result.overallRisk === 'safe' ? (
-                <CheckCircle2 size={24} className="text-emerald-400 shrink-0" />
+                <CheckCircle2 size={24} className="text-emerald-700 shrink-0" />
               ) : (
-                <AlertTriangle size={24} className="text-amber-400 shrink-0" />
+                <AlertTriangle size={24} className="text-amber-700 shrink-0" />
               )}
               <div>
-                <h3 className="text-base font-bold text-white">{result.type}</h3>
-                <p className="text-xs text-slate-300 mt-0.5">{result.summary}</p>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base font-bold text-slate-900">{result.type}</h3>
+                  {fileName && (
+                    <span className="text-[11px] font-mono text-slate-500 bg-white/70 px-2 py-0.5 rounded-md border border-slate-200">
+                      {fileName}
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-slate-700 mt-0.5">{result.summary}</p>
               </div>
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
               <span
-                className="px-3 py-1 rounded-full text-xs font-bold font-mono border shadow-sm"
+                className="px-3 py-1 rounded-full text-xs font-bold font-mono border shadow-xs"
                 style={{
                   background: RISK_CFG[result.overallRisk].bg,
                   color: RISK_CFG[result.overallRisk].text,
@@ -537,97 +531,103 @@ export default function Scanner() {
                 {RISK_CFG[result.overallRisk].label}
               </span>
               {storageUpload?.cloud && (
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1 font-mono">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1 font-mono font-bold">
                   <Cloud size={10} /> Supabase Saved
                 </span>
               )}
             </div>
-          </Tilt3DCard>
+          </div>
 
           {/* LEGAL RECEIPT & SCREENSHOT AUTHENTICITY VERDICT */}
           {result.legalVerdict && (
-            <Tilt3DCard className="glass-card p-6 border border-slate-700/80 rounded-2xl space-y-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+            <div className="bg-white p-6 border border-slate-200 rounded-2xl shadow-xs space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0 ${
-                    result.legalVerdict.isGenuine ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'
-                  }`}>
+                  <div
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0 ${
+                      result.legalVerdict.isGenuine
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                        : 'bg-red-50 text-red-700 border border-red-200'
+                    }`}
+                  >
                     {result.legalVerdict.isGenuine ? '🛡️' : '🚨'}
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-white">
-                      Legal Receipt & Screenshot Authenticity Verdict
+                    <h3 className="text-base font-bold text-slate-900">
+                      Legal Receipt & Fake Screenshot Report
                     </h3>
-                    <p className="text-xs text-slate-400 mt-0.5 font-medium">
-                      {result.legalVerdict.verdictTitle} · Confidence Score: {result.legalVerdict.confidenceScore}%
+                    <p className="text-xs text-slate-500 mt-0.5 font-medium">
+                      Confidence Score: {result.legalVerdict.confidenceScore}% · Verified Engine
                     </p>
                   </div>
                 </div>
 
-                <span className={`px-3 py-1 rounded-full text-xs font-bold font-mono border ${
-                  result.legalVerdict.isGenuine
-                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                    : 'bg-rose-500/20 text-rose-300 border-rose-500/40'
-                }`}>
-                  {result.legalVerdict.isGenuine ? 'VERIFIED GENUINE' : 'FLAGGED CAUTION'}
+                <span
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold font-mono border ${
+                    result.legalVerdict.isGenuine
+                      ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                      : 'bg-red-50 text-red-800 border-red-300'
+                  }`}
+                >
+                  {result.legalVerdict.verdictTitle}
                 </span>
               </div>
 
-              {/* Forensic Checks Table */}
+              {/* 4 Forensic Checks Breakdown */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 {result.legalVerdict.checks.map((chk, idx) => (
                   <div
                     key={idx}
-                    className={`p-3 rounded-xl border flex items-start gap-2.5 ${
+                    className={`p-3.5 rounded-xl border flex items-start gap-3 ${
                       chk.status === 'pass'
-                        ? 'bg-slate-900/60 border-emerald-500/30'
+                        ? 'bg-emerald-50/60 border-emerald-200'
                         : chk.status === 'warn'
-                        ? 'bg-slate-900/60 border-amber-500/30'
-                        : 'bg-slate-900/60 border-rose-500/30'
+                        ? 'bg-amber-50/60 border-amber-200'
+                        : 'bg-red-50/60 border-red-200'
                     }`}
                   >
                     <span className="text-base mt-0.5">
-                      {chk.status === 'pass' ? '✅' : chk.status === 'warn' ? '⚠️' : '❌'}
+                      {chk.status === 'pass' ? '✅' : chk.status === 'warn' ? '⚠️' : '🚨'}
                     </span>
                     <div className="space-y-0.5">
-                      <div className="font-bold text-white">{chk.name}</div>
-                      <div className="text-[11px] text-slate-400 leading-relaxed">{chk.detail}</div>
+                      <div className="font-bold text-slate-900">{chk.name}</div>
+                      <div className="text-xs text-slate-600 leading-relaxed">{chk.detail}</div>
                     </div>
                   </div>
                 ))}
               </div>
-            </Tilt3DCard>
+            </div>
           )}
 
           {/* Detailed Breakdown Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Box 1: Key Terms Found */}
-            <Tilt3DCard className="glass-card p-5 border border-slate-700/80 space-y-3">
-              <div className="flex items-center gap-2 text-sm font-bold text-white">
-                <FileText size={16} className="text-emerald-400" />
+            <div className="bg-white p-5 border border-slate-200 rounded-2xl shadow-xs space-y-3">
+              <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
+                <FileText size={16} className="text-blue-600" />
                 <span>What We Found in the Bill</span>
               </div>
               <div className="space-y-2 text-xs">
                 {result.extractedTerms.map((t, idx) => (
                   <div
                     key={idx}
-                    className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex justify-between items-center"
+                    className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex justify-between items-center"
                   >
-                    <span className="text-slate-400">{t.key}:</span>
-                    <span className="font-bold text-white">{t.value}</span>
+                    <span className="text-slate-500 font-medium">{t.key}:</span>
+                    <span className="font-bold text-slate-900">{t.value}</span>
                   </div>
                 ))}
               </div>
-            </Tilt3DCard>
+            </div>
 
             {/* Box 2: Sneaky Hidden Fees */}
-            <Tilt3DCard className="glass-card p-5 border border-slate-700/80 space-y-3">
-              <div className="flex items-center gap-2 text-sm font-bold text-white">
-                <AlertTriangle size={16} className="text-amber-400" />
+            <div className="bg-white p-5 border border-slate-200 rounded-2xl shadow-xs space-y-3">
+              <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
+                <AlertTriangle size={16} className="text-amber-600" />
                 <span>Sneaky Hidden Charges Caught</span>
               </div>
               {result.hiddenFees.length === 0 ? (
-                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300 flex items-center gap-2">
+                <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 flex items-center gap-2 font-medium">
                   <ShieldCheck size={18} />
                   <span>Zero hidden fees detected. Clean invoice!</span>
                 </div>
@@ -636,41 +636,41 @@ export default function Scanner() {
                   {result.hiddenFees.map((fee, idx) => (
                     <div
                       key={idx}
-                      className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 flex justify-between items-center"
+                      className="p-2.5 rounded-xl bg-red-50 border border-red-200 flex justify-between items-center"
                     >
-                      <span className="text-slate-300">{fee.description}:</span>
-                      <span className="font-bold text-rose-400 font-mono">
+                      <span className="text-slate-700 font-medium">{fee.description}:</span>
+                      <span className="font-bold text-red-700 font-mono">
                         +₹{fee.amount.toLocaleString('en-IN')}
                       </span>
                     </div>
                   ))}
                 </div>
               )}
-            </Tilt3DCard>
+            </div>
 
             {/* Box 3: Scam & Red Flag Warnings */}
-            <Tilt3DCard className="glass-card p-5 border border-slate-700/80 space-y-3">
-              <div className="flex items-center gap-2 text-sm font-bold text-white">
-                <ShieldCheck size={16} className="text-cyan-400" />
+            <div className="bg-white p-5 border border-slate-200 rounded-2xl shadow-xs space-y-3">
+              <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
+                <ShieldCheck size={16} className="text-blue-600" />
                 <span>Safety Checks & Red Flags</span>
               </div>
               <div className="space-y-2 text-xs">
                 {result.fraudFlags.map((flag, idx) => (
                   <div
                     key={idx}
-                    className="p-3 rounded-xl bg-slate-900/70 border border-slate-800 space-y-1"
+                    className="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-1"
                   >
-                    <div className="font-bold text-amber-300 flex items-center gap-1.5">
+                    <div className="font-bold text-amber-800 flex items-center gap-1.5">
                       <span>•</span>
                       <span>{flag.flag}</span>
                     </div>
-                    <p className="text-slate-400 text-[11px] leading-relaxed pl-2.5">
+                    <p className="text-slate-600 text-[11px] leading-relaxed pl-2.5">
                       {flag.detail}
                     </p>
                   </div>
                 ))}
               </div>
-            </Tilt3DCard>
+            </div>
           </div>
         </div>
       )}

@@ -8,9 +8,10 @@ import {
   ExternalLink,
   Briefcase,
   ArrowRight,
+  Sparkles,
+  Search,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
-import Tilt3DCard from '../components/Tilt3DCard'
 import { useNavigate } from 'react-router-dom'
 
 interface ResourceLink {
@@ -23,22 +24,29 @@ interface ResourceLink {
 
 export default function GoalStrategy() {
   const navigate = useNavigate()
-  const { persona, personaData, userGoal, updateUserGoal, themeMode } = useApp()
-  const isLight = themeMode === 'light'
-  const theme = personaData.theme
+  const { persona, personaData, userGoal, updateUserGoal } = useApp()
 
-  const [isEditing, setIsEditing] = useState(false)
-  const [goalText, setGoalText] = useState(userGoal?.title || 'Buy a ₹55,000 laptop in 2 months')
-  const [amount, setAmount] = useState<number>(userGoal?.targetAmount || 55000)
+  const [goalText, setGoalText] = useState(
+    userGoal?.title ||
+      (persona === 'salaried'
+        ? 'Buy a ₹55,000 laptop in 2 months'
+        : persona === 'freelancer'
+        ? 'Buy a ₹45,000 camera gear in 45 days'
+        : 'Accept a ₹1,00,000 T-Shirt order in 30 days')
+  )
+  const [amount, setAmount] = useState<number>(
+    userGoal?.targetAmount || (persona === 'salaried' ? 55000 : persona === 'freelancer' ? 45000 : 100000)
+  )
   const [months, setMonths] = useState<number>(userGoal?.targetMonths || 2)
+  const [isAnalyzed, setIsAnalyzed] = useState(false)
 
-  const handleSaveGoal = () => {
+  const handleAnalyzeGoal = () => {
     updateUserGoal({
       title: goalText,
       targetAmount: amount,
       targetMonths: months,
     })
-    setIsEditing(false)
+    setIsAnalyzed(true)
   }
 
   // Preset goal chips per persona
@@ -64,7 +72,7 @@ export default function GoalStrategy() {
   const resources: Record<string, ResourceLink[]> = {
     salaried: [
       {
-        title: 'Internshala Work-From-Home Internships',
+        title: 'Internshala Paid Internships & Gigs',
         category: 'Side Income',
         url: 'https://internshala.com',
         badge: '₹8K–₹15K / Month',
@@ -78,14 +86,7 @@ export default function GoalStrategy() {
         description: 'Compete in corporate hackathons and case studies with real cash prize pools to fund your tech gear.',
       },
       {
-        title: 'Apple Education Store & Student Unidays',
-        category: 'Direct Savings',
-        url: 'https://www.apple.com/in-edu/store',
-        badge: 'Flat ₹10,000 Off',
-        description: 'Get verified student discounts and free AirPods on MacBooks/iPads with college ID verification.',
-      },
-      {
-        title: 'ONDC Open Network Food & Essentials',
+        title: 'ONDC Direct Food Ordering (Save 30% Surge)',
         category: 'Zero Surge Fee',
         url: 'https://ondc.org',
         badge: 'Save 30% on Food',
@@ -94,13 +95,6 @@ export default function GoalStrategy() {
     ],
     freelancer: [
       {
-        title: 'Upwork Global Milestone Contracts',
-        category: 'USD Client Work',
-        url: 'https://www.upwork.com',
-        badge: 'Escrow Protected',
-        description: 'Find international clients with automatic milestone escrow deposits before work begins.',
-      },
-      {
         title: 'Contra Commission-Free Marketplace',
         category: '0% Platform Fee',
         url: 'https://contra.com',
@@ -108,21 +102,35 @@ export default function GoalStrategy() {
         description: 'Create a modern portfolio and invoice clients globally without giving away 20% platform commissions.',
       },
       {
-        title: 'Razorpay Payment Links & Advance Escrow',
-        category: 'Payment Tool',
+        title: 'Upwork Global Milestone Contracts',
+        category: 'USD Client Work',
+        url: 'https://www.upwork.com',
+        badge: 'Escrow Protected',
+        description: 'Find international clients with automatic milestone escrow deposits before work begins.',
+      },
+      {
+        title: 'Razorpay Milestone Payment Links',
+        category: 'Advance Tool',
         url: 'https://razorpay.com/payment-links/',
         badge: 'Instant Advance',
         description: 'Generate 40% upfront deposit links with UPI and card support before releasing project files.',
       },
-      {
-        title: 'ClearTax Section 44ADA Presumptive Tax',
-        category: 'Tax Refund',
-        url: 'https://cleartax.in',
-        badge: 'Claim 10% TDS Back',
-        description: 'File under Section 44ADA to recover all 10% TDS deductions withheld by clients directly into your bank.',
-      },
     ],
     business: [
+      {
+        title: 'Invoicemart TReDS Platform (RXIL)',
+        category: 'Instant Cash',
+        url: 'https://www.invoicemart.com',
+        badge: 'RBI Regulated',
+        description: 'Auction corporate and PSU unpaid invoices to get paid within 48 hours instead of waiting 60–90 days.',
+      },
+      {
+        title: 'M1xchange TReDS Invoice Exchange',
+        category: 'Working Capital',
+        url: 'https://www.m1xchange.com',
+        badge: 'Quick Liquidity',
+        description: 'Trade unpaid buyer bills for immediate liquidity at low bank interest rates without collateral.',
+      },
       {
         title: 'GeM (Government e-Marketplace)',
         category: 'B2B Orders',
@@ -130,317 +138,271 @@ export default function GoalStrategy() {
         badge: 'Zero Middlemen',
         description: 'Direct procurement portal to supply products and textiles directly to Indian government departments.',
       },
-      {
-        title: 'TReDS Invoice Discounting (RXIL / Invoicemart)',
-        category: 'Working Capital',
-        url: 'https://www.invoicemart.com',
-        badge: 'RBI Regulated',
-        description: 'Auction corporate and PSU unpaid invoices to get paid within 48 hours instead of waiting 60–90 days.',
-      },
-      {
-        title: 'ONDC Business Network for Merchants',
-        category: 'Retail Sales',
-        url: 'https://ondc.org',
-        badge: '0% Monopoly',
-        description: 'List your catalog on the Open Network for Digital Commerce to reach buyers across Paytm, Magicpin, and pincodes.',
-      },
-      {
-        title: 'Udyam MSME Registration Portal',
-        category: 'Govt Subsidy',
-        url: 'https://udyamregistration.gov.in',
-        badge: 'CGTMSE Loans',
-        description: 'Official free registration for collateral-free MSME bank loans up to ₹2 Crore at subsidized interest rates.',
-      },
     ],
   }
 
   const activePresets = goalPresets[persona] || goalPresets.salaried
   const activeResources = resources[persona] || resources.salaried
 
-  // Calculations for comparison
-  const monthlyNeed = Math.round(amount / Math.max(1, months))
-  const shortageRiskWithout = Math.max(0, amount - (personaData.balance - personaData.lockedReserves))
-  const daysSavedWith = Math.min(45, Math.round(months * 14))
-  const interestSaved = Math.round(amount * 0.14)
-
   return (
-    <div className="space-y-7 animate-fade-in">
+    <div className="space-y-6 animate-fade-in text-slate-800">
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
         <div>
-          <div
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-md border mb-2"
-            style={{
-              borderColor: `${theme.primaryHex}50`,
-              background: `${theme.primaryHex}15`,
-              color: theme.primaryHex,
-            }}
-          >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 mb-2">
             <Target size={13} />
             <span>AI Goal Intelligence · Forward-Looking Digital Twin</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            Goal Strategy & Earner/Saver Hub
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            🎯 My Goal & Strategy Hub
           </h1>
-          <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
-            Bank statements only show the past. Here is your customized AI roadmap to achieve{' '}
-            <strong className="text-white">"{goalText}"</strong> without crashing your bank balance:
+          <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl">
+            Bank statements only show what already happened. Tell FINVEXA what you want to buy or achieve next, and our engine maps the safest way to get there:
           </p>
         </div>
 
-        {/* Quick Simulator Link */}
         <button
           onClick={() => navigate('/simulator')}
-          className="btn-primary text-xs py-2.5 px-4 font-bold flex items-center gap-2 self-start md:self-auto shrink-0 shadow-lg"
-          style={{ background: theme.buttonGradient }}
+          className="btn-primary text-xs py-2.5 px-4 font-bold flex items-center gap-2 self-start md:self-auto shrink-0 shadow-sm"
         >
           <span>Test in 90-Day Simulator</span>
           <ArrowRight size={14} />
         </button>
       </div>
 
-      {/* 1. Interactive Goal Customizer Card */}
-      <Tilt3DCard
-        className={`glass-card p-5 sm:p-6 rounded-2xl border ${
-          isLight ? 'bg-white border-slate-200' : 'border-slate-800'
-        }`}
-      >
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pb-4 border-b border-white/10 dark:border-slate-800">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-12 h-12 rounded-2xl flex items-center justify-center text-white text-xl shadow-md shrink-0"
-              style={{ background: theme.buttonGradient }}
-            >
-              🎯
-            </div>
-            <div>
-              <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                Current Target Goal ({personaData.label})
-              </div>
-              <div className="text-lg sm:text-xl font-black text-white mt-0.5">
-                {goalText}
-              </div>
-            </div>
+      {/* 1. AI Goal Input Box */}
+      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center font-bold text-lg shrink-0">
+            🤖
+          </div>
+          <div>
+            <h2 className="text-sm sm:text-base font-bold text-slate-900">
+              Tell FINVEXA: What do you want to buy, save for, or accept as a business order next?
+            </h2>
+            <p className="text-xs text-slate-500">
+              Type your next purchase or pick a quick-fill example below:
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 pt-1">
+          <div className="sm:col-span-7">
+            <label className="block text-xs font-bold text-slate-700 mb-1">
+              Your Goal Description
+            </label>
+            <input
+              type="text"
+              value={goalText}
+              onChange={e => setGoalText(e.target.value)}
+              placeholder="e.g. Buy a ₹55,000 laptop in 2 months"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 focus:outline-none focus:border-blue-500 focus:bg-white"
+            />
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-            <div className="px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-700/80 text-xs">
-              <span className="text-slate-400">Target Cost: </span>
-              <strong className="text-emerald-400 font-mono">₹{amount.toLocaleString('en-IN')}</strong>
-            </div>
-            <div className="px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-700/80 text-xs">
-              <span className="text-slate-400">Timeline: </span>
-              <strong className="text-blue-400">{months} Months</strong>
-            </div>
+          <div className="sm:col-span-3">
+            <label className="block text-xs font-bold text-slate-700 mb-1">
+              Cost / Target Amount (₹)
+            </label>
+            <input
+              type="number"
+              value={amount}
+              onChange={e => setAmount(Number(e.target.value) || 0)}
+              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-semibold text-slate-900 focus:outline-none focus:border-blue-500 focus:bg-white"
+            />
+          </div>
+
+          <div className="sm:col-span-2 flex items-end">
             <button
-              onClick={() => setIsEditing(!isEditing)}
-              className="px-4 py-1.5 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all ml-auto lg:ml-0"
+              onClick={handleAnalyzeGoal}
+              className="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all"
             >
-              {isEditing ? 'Cancel Edit' : '✏️ Change Goal'}
+              <Search size={14} />
+              <span>{isAnalyzed ? '✓ Analyzed' : 'Analyze Goal'}</span>
             </button>
           </div>
         </div>
 
-        {/* Goal Edit Drawer */}
-        {isEditing && (
-          <div className="pt-4 space-y-4 animate-in fade-in duration-200">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-slate-300 mb-1">
-                  Goal Description
-                </label>
-                <input
-                  type="text"
-                  value={goalText}
-                  onChange={e => setGoalText(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm font-semibold text-white focus:outline-none focus:border-blue-500"
-                  placeholder="e.g. Buy a ₹55,000 laptop in 2 months"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1">
-                  Target Cost (₹)
-                </label>
-                <input
-                  type="number"
-                  value={amount}
-                  onChange={e => setAmount(Number(e.target.value) || 0)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-sm font-semibold text-white focus:outline-none focus:border-blue-500"
-                />
-              </div>
-            </div>
+        {/* 3 Quick-Fill Example Chips */}
+        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
+          <span className="text-xs font-bold text-slate-500 mr-1 flex items-center gap-1">
+            <Sparkles size={12} className="text-blue-600" />
+            Quick Examples:
+          </span>
+          {activePresets.map((preset, idx) => (
+            <button
+              key={idx}
+              onClick={() => {
+                setGoalText(preset.title)
+                setAmount(preset.amt)
+                setMonths(preset.m)
+                handleAnalyzeGoal()
+              }}
+              className="text-xs px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-blue-50 hover:text-blue-700 text-slate-700 border border-slate-200 transition-colors font-medium"
+            >
+              {preset.title}
+            </button>
+          ))}
+        </div>
+      </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[11px] text-slate-400 font-bold mr-1">Quick Presets:</span>
-                {activePresets.map((preset, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      setGoalText(preset.title)
-                      setAmount(preset.amt)
-                      setMonths(preset.m)
-                    }}
-                    className="text-xs px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
-                  >
-                    {preset.title.split(' in ')[0]}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                onClick={handleSaveGoal}
-                className="btn-primary text-xs py-2 px-5 font-bold shadow-md"
-                style={{ background: theme.buttonGradient }}
-              >
-                Save & Recalculate AI Strategy
-              </button>
-            </div>
-          </div>
-        )}
-      </Tilt3DCard>
-
-      {/* 2. Side-by-Side Comparison: DIY vs. FINVEXA Strategy */}
+      {/* 2. 2-COLUMN SIDE-BY-SIDE COMPARISON TABLE */}
       <div className="space-y-3">
         <div className="flex items-center gap-2">
-          <TrendingUp size={18} className="text-emerald-400" />
-          <h2 className="text-lg font-bold text-white">
-            Side-by-Side Comparison: Doing It Yourself vs. FINVEXA AI Strategy
+          <TrendingUp size={18} className="text-blue-600" />
+          <h2 className="text-lg font-bold text-slate-900">
+            Side-by-Side Comparison: Doing It Yourself vs. Following FINVEXA AI Strategy
           </h2>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          {/* Left Card: Your Current Way Without FINVEXA */}
-          <Tilt3DCard className="glass-card p-6 rounded-2xl border border-rose-500/40 bg-rose-950/20 relative overflow-hidden space-y-4">
+          {/* LEFT COLUMN: Doing It Yourself (Without FINVEXA) */}
+          <div className="bg-red-50/70 border border-red-200 p-6 rounded-2xl shadow-xs space-y-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-rose-400 font-bold text-sm">
+              <div className="flex items-center gap-2 text-red-700 font-bold text-sm">
                 <AlertTriangle size={18} />
-                <span>Your Current Way (Without FINVEXA)</span>
+                <span>❌ Doing It Yourself (Without FINVEXA)</span>
               </div>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 uppercase">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-800 border border-red-300 uppercase">
                 High Risk
               </span>
             </div>
 
-            <div className="space-y-3 text-xs sm:text-sm text-slate-300">
-              <div className="p-3 rounded-xl bg-slate-900/80 border border-rose-500/20 space-y-1">
-                <div className="text-[11px] font-bold text-rose-300 uppercase">Cash Squeeze Danger</div>
-                <div className="text-base font-black text-rose-400">
-                  {shortageRiskWithout > 0 ? `−₹${shortageRiskWithout.toLocaleString('en-IN')} Deficit Risk` : 'Zero Buffer Zone'}
+            <div className="space-y-3 text-xs sm:text-sm text-slate-700">
+              <div className="p-3.5 rounded-xl bg-white border border-red-200 space-y-1 shadow-xs">
+                <div className="text-[11px] font-bold text-red-700 uppercase">
+                  Cash Shortage Alert
                 </div>
-                <p className="text-[11px] text-slate-400">
-                  Buying without structured milestones wipes out your ₹{personaData.lockedReserves.toLocaleString('en-IN')} rent & emergency safety floor.
+                <div className="text-xl font-black text-red-600">
+                  Runs into a Cash Shortage on Day 18
+                </div>
+                <p className="text-xs text-slate-600">
+                  Because you pay upfront before getting paid, your account balance plunges into the red.
                 </p>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-start gap-2">
-                  <span className="text-rose-400">✗</span>
-                  <span><strong>3.5 Months Delayed:</strong> Cash is trapped in late-paying clients or unplanned food delivery leaks.</span>
+              <div className="space-y-2.5 pt-1">
+                <div className="flex items-start gap-2.5">
+                  <span className="text-red-600 font-bold">✗</span>
+                  <span>
+                    <strong>Puts Rent & Salaries in Danger:</strong> Your untouchable survival money (₹{personaData.lockedReserves.toLocaleString('en-IN')}) gets spent on the purchase.
+                  </span>
                 </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-rose-400">✗</span>
-                  <span><strong>₹{interestSaved.toLocaleString('en-IN')} Wasted:</strong> High-interest credit card revolving balance (36% APR) or ₹199 hidden processing fees.</span>
+                <div className="flex items-start gap-2.5">
+                  <span className="text-red-600 font-bold">✗</span>
+                  <span>
+                    <strong>Wastes ₹4,500+ on Hidden Fees:</strong> High-interest credit card revolving charges (36% APR), surge delivery markups, and forgotten trial auto-debits.
+                  </span>
                 </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-rose-400">✗</span>
-                  <span><strong>Stress Level 85/100:</strong> High panic when rent or supplier payroll bounces on the 1st of the month.</span>
+                <div className="flex items-start gap-2.5">
+                  <span className="text-red-600 font-bold">✗</span>
+                  <span>
+                    <strong>Takes 4 Months Longer to Recover:</strong> Paying penalties and emergency borrowing traps you in an ongoing cash squeeze.
+                  </span>
                 </div>
               </div>
             </div>
-          </Tilt3DCard>
+          </div>
 
-          {/* Right Card: Following FINVEXA AI Strategy */}
-          <Tilt3DCard className="glass-card p-6 rounded-2xl border border-emerald-500/40 bg-emerald-950/20 relative overflow-hidden space-y-4">
+          {/* RIGHT COLUMN: Following FINVEXA AI Strategy */}
+          <div className="bg-emerald-50/70 border border-emerald-200 p-6 rounded-2xl shadow-xs space-y-4">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
+              <div className="flex items-center gap-2 text-emerald-800 font-bold text-sm">
                 <CheckCircle2 size={18} />
-                <span>Following FINVEXA AI Strategy</span>
+                <span>✅ Following FINVEXA AI Strategy</span>
               </div>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 uppercase">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 uppercase">
                 100% Protected
               </span>
             </div>
 
-            <div className="space-y-3 text-xs sm:text-sm text-slate-300">
-              <div className="p-3 rounded-xl bg-slate-900/80 border border-emerald-500/20 space-y-1">
-                <div className="text-[11px] font-bold text-emerald-300 uppercase">Cash Shortage Prevention</div>
-                <div className="text-base font-black text-emerald-400">
-                  ₹0 Cash Shortage · Rent 100% Untouched
+            <div className="space-y-3 text-xs sm:text-sm text-slate-700">
+              <div className="p-3.5 rounded-xl bg-white border border-emerald-200 space-y-1 shadow-xs">
+                <div className="text-[11px] font-bold text-emerald-800 uppercase">
+                  Zero Shortage Guarantee
                 </div>
-                <p className="text-[11px] text-slate-400">
-                  Structured 40% milestone downpayment + ₹{personaData.hiddenLeaks.toLocaleString('en-IN')}/mo leaks recovered keeps your account green.
+                <div className="text-xl font-black text-emerald-700">
+                  ₹0 Cash Shortage Throughout Entire 90 Days
+                </div>
+                <p className="text-xs text-slate-600">
+                  Using milestone downpayments and smart delivery splits keeps your bank green every single day.
                 </p>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex items-start gap-2">
-                  <span className="text-emerald-400">✓</span>
-                  <span><strong>Saved {daysSavedWith} Days:</strong> Accelerated timeline by collecting pending refunds and splitting purchases into 2 batches.</span>
+              <div className="space-y-2.5 pt-1">
+                <div className="flex items-start gap-2.5">
+                  <span className="text-emerald-700 font-bold">✓</span>
+                  <span>
+                    <strong>Rent & Salaries 100% Locked & Safe:</strong> Your ₹{personaData.lockedReserves.toLocaleString('en-IN')} essential floor is never touched by the purchase.
+                  </span>
                 </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-emerald-400">✓</span>
-                  <span><strong>₹{interestSaved.toLocaleString('en-IN')} Kept in Pocket:</strong> Zero debt reliance through smart payment timing with counterparties.</span>
+                <div className="flex items-start gap-2.5">
+                  <span className="text-emerald-700 font-bold">✓</span>
+                  <span>
+                    <strong>Saves ₹4,500+ by Cutting Leaks:</strong> Cancels forgotten auto-debits, recovers friend splits via WhatsApp, and avoids expensive loan interest.
+                  </span>
                 </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-emerald-400">✓</span>
-                  <span><strong>Monthly Target:</strong> Save or set aside ₹{monthlyNeed.toLocaleString('en-IN')}/month comfortably within cashflow.</span>
+                <div className="flex items-start gap-2.5">
+                  <span className="text-emerald-700 font-bold">✓</span>
+                  <span>
+                    <strong>Reaches Goal on Time + ₹10,000 Buffer:</strong> Finish your purchase exactly on target with an extra ₹10,000 emergency buffer left in the bank!
+                  </span>
                 </div>
               </div>
             </div>
-          </Tilt3DCard>
+          </div>
         </div>
       </div>
 
-      {/* 3. Genuine Web-Researched Money Saving & Extra-Income Hub */}
-      <div className="space-y-3">
+      {/* 3. GENUINE WAYS TO SAVE & EARN EXTRA MONEY */}
+      <div className="space-y-3 pt-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Briefcase size={18} className="text-blue-400" />
-            <h2 className="text-lg font-bold text-white">
-              Genuine Money-Saving & Side-Income Hub ({personaData.label})
+            <Briefcase size={18} className="text-blue-600" />
+            <h2 className="text-lg font-bold text-slate-900">
+              🌐 Genuine Ways to Save & Earn Extra Money (Matched to {personaData.label})
             </h2>
           </div>
-          <span className="text-xs text-slate-400 hidden sm:inline">
-            Direct Working Links · Zero Spam
+          <span className="text-xs text-slate-500 font-semibold hidden sm:inline">
+            Direct Working Links · Verified Platforms
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {activeResources.map((res, idx) => (
-            <Tilt3DCard
+            <div
               key={idx}
-              className="glass-card p-5 rounded-2xl border border-slate-800 hover:border-slate-700 transition-all flex flex-col justify-between space-y-3"
+              className="bg-white p-5 rounded-2xl border border-slate-200 hover:border-slate-300 shadow-xs transition-all flex flex-col justify-between space-y-3"
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600">
                     {res.category}
                   </span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/15 text-blue-300 border border-blue-500/30">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
                     {res.badge}
                   </span>
                 </div>
-                <h3 className="text-sm font-bold text-white leading-snug">
+                <h3 className="text-sm font-bold text-slate-900 leading-snug">
                   {res.title}
                 </h3>
-                <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
+                <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">
                   {res.description}
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-slate-800/80">
+              <div className="pt-3 border-t border-slate-100">
                 <a
                   href={res.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-bold text-slate-200 hover:text-white border border-slate-700 flex items-center justify-center gap-1.5 transition-colors"
+                  className="w-full py-2 px-3 rounded-xl bg-slate-50 hover:bg-blue-50 text-xs font-bold text-slate-700 hover:text-blue-700 border border-slate-200 flex items-center justify-center gap-1.5 transition-colors"
                 >
                   <span>Open Official Platform</span>
-                  <ExternalLink size={13} className="text-blue-400" />
+                  <ExternalLink size={13} className="text-blue-600" />
                 </a>
               </div>
-            </Tilt3DCard>
+            </div>
           ))}
         </div>
       </div>

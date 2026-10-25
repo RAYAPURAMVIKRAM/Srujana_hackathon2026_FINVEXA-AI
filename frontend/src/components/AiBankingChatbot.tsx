@@ -30,9 +30,7 @@ const QUICK_PROMPTS = [
 ]
 
 export default function AiBankingChatbot() {
-  const { persona, personaData, bankConsent, themeMode } = useApp()
-  const theme = personaData.theme
-  const isLight = themeMode === 'light'
+  const { persona, personaData, bankConsent } = useApp()
 
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -133,67 +131,53 @@ export default function AiBankingChatbot() {
 
   return (
     <Tilt3DCard
-      className={`glass-card rounded-2xl border overflow-hidden shadow-xl transition-all duration-300 ${
-        isLight ? 'bg-white border-slate-200' : 'border-slate-800'
-      }`}
-      style={{
-        boxShadow: !isLight ? `0 10px 40px -10px ${theme.primaryHex}20` : undefined,
-      }}
+      className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-xs transition-all duration-300"
     >
       {/* Header */}
       <div
-        className={`px-5 py-4 border-b flex flex-wrap items-center justify-between gap-3 ${
-          isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900/60 border-slate-800'
-        }`}
+        className="px-5 py-4 border-b border-slate-200 bg-slate-50 flex flex-wrap items-center justify-between gap-3"
       >
         <div className="flex items-center gap-3">
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-md shrink-0"
-            style={{ background: theme.buttonGradient }}
+            className="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-xs shrink-0 bg-blue-600"
           >
             <Bot size={20} />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className={`font-bold text-sm sm:text-base ${isLight ? 'text-slate-900' : 'text-white'}`}>
+              <h3 className="font-bold text-sm sm:text-base text-slate-900">
                 FINVEXA AI Bank & Account Assistant
               </h3>
-              <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+              <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-ping" />
                 Live 24/7
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-500 mt-0.5">
               Instant Plain-English answers to bank deductions, UPI disputes, e-mandates & RBI rules
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-[11px] text-slate-400">
-          <ShieldCheck size={14} className="text-emerald-500" />
+        <div className="flex items-center gap-2 text-[11px] font-semibold text-slate-500">
+          <ShieldCheck size={14} className="text-emerald-600" />
           <span>RBI AA Grounded · Zero Jargon</span>
         </div>
       </div>
 
       {/* Quick Prompt Chips */}
       <div
-        className={`px-4 py-2.5 border-b overflow-x-auto no-scrollbar flex items-center gap-2 ${
-          isLight ? 'bg-slate-100/60 border-slate-200' : 'bg-slate-950/40 border-slate-800/80'
-        }`}
+        className="px-4 py-2.5 border-b border-slate-200 bg-slate-50/80 overflow-x-auto no-scrollbar flex items-center gap-2"
       >
-        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-400 shrink-0 mr-1">
-          <HelpCircle size={13} className="text-blue-500" />
+        <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 shrink-0 mr-1">
+          <HelpCircle size={13} className="text-blue-600" />
           <span>Quick Ask:</span>
         </div>
         {QUICK_PROMPTS.map((prompt, idx) => (
           <button
             key={idx}
             onClick={() => handleSend(prompt)}
-            className={`text-xs px-3 py-1.5 rounded-xl whitespace-nowrap transition-all border shrink-0 ${
-              isLight
-                ? 'bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border-slate-200 hover:border-blue-300 shadow-sm'
-                : 'bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border-slate-700/80 hover:border-slate-500'
-            }`}
+            className="text-xs font-semibold px-3 py-1.5 rounded-xl whitespace-nowrap transition-all border border-slate-200 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 shadow-xs shrink-0"
           >
             {prompt}
           </button>
@@ -201,7 +185,7 @@ export default function AiBankingChatbot() {
       </div>
 
       {/* Chat Messages Area */}
-      <div className="p-4 sm:p-5 h-80 overflow-y-auto space-y-4">
+      <div className="p-4 sm:p-5 h-80 overflow-y-auto space-y-4 bg-white">
         {messages.map(msg => (
           <div
             key={msg.id}
@@ -213,10 +197,9 @@ export default function AiBankingChatbot() {
             <div
               className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-xs font-bold ${
                 msg.sender === 'user'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-white'
+                  ? 'bg-blue-600 text-white shadow-xs'
+                  : 'bg-slate-800 text-white shadow-xs'
               }`}
-              style={msg.sender === 'assistant' ? { background: theme.buttonGradient } : undefined}
             >
               {msg.sender === 'user' ? <User size={13} /> : <Bot size={13} />}
             </div>
@@ -225,26 +208,24 @@ export default function AiBankingChatbot() {
             <div
               className={`max-w-[85%] sm:max-w-[78%] rounded-2xl p-3.5 text-xs sm:text-sm leading-relaxed relative group ${
                 msg.sender === 'user'
-                  ? 'bg-blue-600 text-white rounded-tr-none shadow-md'
-                  : isLight
-                  ? 'bg-slate-100 text-slate-800 rounded-tl-none border border-slate-200'
-                  : 'bg-slate-900/90 text-slate-200 rounded-tl-none border border-slate-800 shadow-md'
+                  ? 'bg-blue-600 text-white rounded-tr-none shadow-xs'
+                  : 'bg-slate-50 text-slate-800 rounded-tl-none border border-slate-200 shadow-xs'
               }`}
             >
-              <div className="whitespace-pre-line">{msg.text}</div>
+              <div className="whitespace-pre-line font-medium">{msg.text}</div>
 
-              <div className="flex items-center justify-between gap-2 mt-2 pt-1 border-t border-black/5 dark:border-white/5 text-[10px] text-slate-400">
+              <div className="flex items-center justify-between gap-2 mt-2 pt-1 border-t border-slate-200/60 text-[10px] text-slate-400">
                 <span>{msg.timestamp}</span>
                 {msg.sender === 'assistant' && (
                   <button
                     onClick={() => handleCopy(msg.id, msg.text)}
-                    className="opacity-70 hover:opacity-100 transition-opacity flex items-center gap-1 text-[10px] text-slate-400 hover:text-blue-500"
+                    className="opacity-70 hover:opacity-100 transition-opacity flex items-center gap-1 text-[10px] text-slate-500 hover:text-blue-600 font-bold"
                     title="Copy answer"
                   >
                     {copiedId === msg.id ? (
                       <>
-                        <Check size={11} className="text-emerald-500" />
-                        <span className="text-emerald-500 font-semibold">Copied</span>
+                        <Check size={11} className="text-emerald-600" />
+                        <span className="text-emerald-600 font-semibold">Copied</span>
                       </>
                     ) : (
                       <>
@@ -262,18 +243,15 @@ export default function AiBankingChatbot() {
         {isLoading && (
           <div className="flex items-start gap-2.5">
             <div
-              className="w-7 h-7 rounded-full flex items-center justify-center text-white shrink-0"
-              style={{ background: theme.buttonGradient }}
+              className="w-7 h-7 rounded-full flex items-center justify-center text-white shrink-0 bg-slate-800"
             >
               <Bot size={13} />
             </div>
             <div
-              className={`rounded-2xl rounded-tl-none p-3.5 text-xs flex items-center gap-2 ${
-                isLight ? 'bg-slate-100 border border-slate-200' : 'bg-slate-900 border border-slate-800'
-              }`}
+              className="rounded-2xl rounded-tl-none p-3.5 text-xs flex items-center gap-2 bg-slate-50 border border-slate-200 shadow-xs"
             >
-              <RefreshCw size={13} className="text-blue-500 animate-spin" />
-              <span className="text-slate-400">Consulting Gemini & RBI Regulations...</span>
+              <RefreshCw size={13} className="text-blue-600 animate-spin" />
+              <span className="text-slate-600 font-medium">Consulting Gemini & RBI Regulations...</span>
             </div>
           </div>
         )}
@@ -282,9 +260,7 @@ export default function AiBankingChatbot() {
 
       {/* Input Box */}
       <div
-        className={`p-3 sm:p-4 border-t ${
-          isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-950/80 border-slate-800'
-        }`}
+        className="p-3 sm:p-4 border-t border-slate-200 bg-slate-50"
       >
         <form
           onSubmit={e => {
@@ -298,17 +274,12 @@ export default function AiBankingChatbot() {
             value={input}
             onChange={e => setInput(e.target.value)}
             placeholder="Ask anything about bank charges, failed UPI, e-mandates, or zero-cost EMIs..."
-            className={`flex-1 px-4 py-2.5 rounded-xl text-xs sm:text-sm focus:outline-none transition-all ${
-              isLight
-                ? 'bg-white border border-slate-300 text-slate-800 placeholder-slate-400 focus:border-blue-500'
-                : 'bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-blue-500'
-            }`}
+            className="flex-1 px-4 py-2.5 rounded-xl text-xs sm:text-sm bg-white border border-slate-300 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 shadow-xs"
           />
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="btn-primary px-4 py-2.5 text-xs sm:text-sm font-bold flex items-center gap-1.5 shrink-0 disabled:opacity-50 shadow-md"
-            style={{ background: theme.buttonGradient }}
+            className="px-4 py-2.5 text-xs sm:text-sm font-bold flex items-center gap-1.5 shrink-0 disabled:opacity-50 shadow-xs bg-blue-600 hover:bg-blue-700 text-white rounded-xl"
           >
             <span>Ask AI</span>
             <Send size={14} />

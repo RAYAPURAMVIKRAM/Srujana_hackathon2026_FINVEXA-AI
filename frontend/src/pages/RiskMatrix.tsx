@@ -160,36 +160,36 @@ export default function RiskMatrix() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-md border mb-2"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold border mb-2 shadow-xs"
             style={{
-              borderColor: `${theme.primaryHex}50`,
-              background: `${theme.primaryHex}15`,
+              borderColor: `${theme.primaryHex}40`,
+              background: `${theme.primaryHex}10`,
               color: theme.primaryHex,
             }}
           >
             <Sparkles size={13} />
             <span>6-Risk Forensic Radar · Zero Jargon</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
             6 Risks & Exactly How to Fix Them
           </h1>
-          <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
-            Custom-built for <strong className="text-white">{personaData.label}</strong>. Every card breaks down:
-            <span className="text-cyan-300 font-semibold"> (1) What AI Found</span>,
-            <span className="text-amber-300 font-semibold"> (2) Why It Hurts You in Simple English</span>, and
-            <span className="text-emerald-300 font-semibold"> (3) Actionable Fix Link</span>.
+          <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
+            Custom-built for <strong className="text-slate-900 font-bold">{personaData.label}</strong>. Every card breaks down:
+            <span className="text-sky-700 font-bold"> (1) What AI Found</span>,
+            <span className="text-rose-700 font-bold"> (2) Why It Hurts You in Simple English</span>, and
+            <span className="text-emerald-700 font-bold"> (3) Actionable Fix Link</span>.
           </p>
         </div>
 
         {/* Live Status Pill */}
-        <div className="glass-card px-4 py-2.5 rounded-2xl flex items-center gap-3 border border-slate-700 shrink-0">
+        <div className="bg-white px-4 py-2.5 rounded-2xl flex items-center gap-3 border border-slate-200 shadow-xs shrink-0">
           <div
             className="w-3 h-3 rounded-full animate-ping"
-            style={{ background: shortage === 0 ? '#10b981' : '#f43f5e' }}
+            style={{ background: shortage === 0 ? '#059669' : '#dc2626' }}
           />
           <div className="text-xs">
-            <div className="text-slate-400 uppercase font-mono text-[10px]">Real-Life Radar</div>
-            <div className="font-bold text-white">
+            <div className="text-slate-500 uppercase font-mono text-[10px] font-bold">Real-Life Radar</div>
+            <div className="font-black text-slate-900">
               {shortage === 0
                 ? 'All 6 Checks Safe'
                 : `₹${shortage.toLocaleString('en-IN')} Money Squeeze Detected`}
@@ -199,28 +199,28 @@ export default function RiskMatrix() {
       </div>
 
       {/* Quick Life Shock Test Buttons */}
-      <Tilt3DCard className="glass-card p-4 sm:p-5 border border-slate-700/80">
+      <Tilt3DCard className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="text-xs text-slate-300 font-medium">
-            <span className="font-bold text-white">⚡ Test Real-Life Surprises:</span> See what happens if things go wrong right now:
+          <div className="text-xs text-slate-700 font-medium">
+            <span className="font-bold text-slate-900">⚡ Test Real-Life Surprises:</span> See what happens if things go wrong right now:
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <button
               onClick={() =>
                 setSimulator({ paymentDelayDays: Math.min(60, simulator.paymentDelayDays + 10) })
               }
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-amber-300 border border-amber-500/30 flex items-center gap-1.5 transition-colors"
+              className="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 flex items-center gap-1.5 transition-colors shadow-xs"
             >
-              <Clock size={13} />
+              <Clock size={13} className="text-amber-600" />
               <span>+10 Days Late Pay</span>
             </button>
             <button
               onClick={() =>
                 setSimulator({ hiddenCostBuffer: Math.min(25, simulator.hiddenCostBuffer + 6) })
               }
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-rose-300 border border-rose-500/30 flex items-center gap-1.5 transition-colors"
+              className="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-300 flex items-center gap-1.5 transition-colors shadow-xs"
             >
-              <AlertTriangle size={13} />
+              <AlertTriangle size={13} className="text-rose-600" />
               <span>+₹5,000 Surprise Fee</span>
             </button>
             <button
@@ -230,7 +230,7 @@ export default function RiskMatrix() {
                   hiddenCostBuffer: 8,
                 })
               }
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-600 transition-colors"
+              className="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors shadow-xs"
             >
               Reset to Normal
             </button>
@@ -244,24 +244,24 @@ export default function RiskMatrix() {
           const isExpanded = expandedId === rc.id
           const details = getRiskDetails(rc.id)
           const severityColors = {
-            safe: { border: 'border-emerald-500/40', text: 'text-emerald-400', bg: 'bg-emerald-500/10', badge: 'SAFE' },
-            warning: { border: 'border-amber-500/40', text: 'text-amber-400', bg: 'bg-amber-500/10', badge: 'WARNING' },
-            critical: { border: 'border-rose-500/40', text: 'text-rose-400', bg: 'bg-rose-500/10', badge: 'ALERT' },
+            safe: { border: 'border-emerald-200', text: 'text-emerald-700', bg: 'bg-emerald-50', badge: 'SAFE', iconBg: 'bg-emerald-50 text-emerald-600 border-emerald-200' },
+            warning: { border: 'border-amber-200', text: 'text-amber-700', bg: 'bg-amber-50', badge: 'WARNING', iconBg: 'bg-amber-50 text-amber-600 border-amber-200' },
+            critical: { border: 'border-rose-200', text: 'text-rose-700', bg: 'bg-rose-50', badge: 'ALERT', iconBg: 'bg-rose-50 text-rose-600 border-rose-200' },
           }[rc.severity]
 
           return (
             <Tilt3DCard
               key={rc.id}
-              className={`glass-card p-5 border transition-all duration-300 flex flex-col justify-between ${severityColors.border}`}
+              className={`bg-white rounded-2xl p-5 border shadow-xs transition-all duration-300 flex flex-col justify-between hover:shadow-md ${severityColors.border}`}
             >
               <div className="space-y-3.5">
                 {/* Card Header */}
                 <div className="flex items-start justify-between gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-slate-900 border border-slate-700 shrink-0">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shrink-0 ${severityColors.iconBg}`}>
                     {getIconForIndex(idx)}
                   </div>
                   <span
-                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${severityColors.bg} ${severityColors.text} border border-current`}
+                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${severityColors.bg} ${severityColors.text} border border-current`}
                   >
                     {severityColors.badge}
                   </span>
@@ -269,50 +269,50 @@ export default function RiskMatrix() {
 
                 {/* Plain-English Titles */}
                 <div>
-                  <h3 className="text-base font-bold text-white leading-snug">{rc.plainTitle}</h3>
-                  <div className="text-xs text-slate-400 font-medium mt-0.5">{rc.title}</div>
+                  <h3 className="text-base font-bold text-slate-900 leading-snug">{rc.plainTitle}</h3>
+                  <div className="text-xs text-slate-500 font-semibold mt-0.5">{rc.title}</div>
                 </div>
 
                 {/* Metric Highlight */}
-                <div className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 font-mono text-xs font-bold text-slate-200">
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 font-mono text-xs font-bold text-slate-800">
                   {rc.metricLabel}
                 </div>
 
                 {/* Quick Warning Summary */}
-                <p className="text-xs text-slate-300 leading-relaxed">{rc.warningText}</p>
+                <p className="text-xs text-slate-600 leading-relaxed font-medium">{rc.warningText}</p>
 
                 {/* 3 Explicit Breakdown Sections: What AI Found, Why It Hurts, Actionable Fix */}
                 {isExpanded ? (
-                  <div className="pt-3 border-t border-slate-800 space-y-3 animate-in fade-in duration-200">
+                  <div className="pt-3 border-t border-slate-100 space-y-3 animate-in fade-in duration-200">
                     {/* Section 1: What AI Found */}
-                    <div className="p-3 rounded-xl bg-cyan-950/20 border border-cyan-800/40 space-y-1">
-                      <div className="text-[11px] font-black uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
-                        <Search size={12} />
+                    <div className="p-3 rounded-xl bg-sky-50 border border-sky-200 space-y-1">
+                      <div className="text-[11px] font-black uppercase tracking-wider text-sky-800 flex items-center gap-1.5">
+                        <Search size={12} className="text-sky-600" />
                         <span>(1) What AI Found</span>
                       </div>
-                      <p className="text-xs text-cyan-100/90 leading-relaxed font-sans">
+                      <p className="text-xs text-sky-900 leading-relaxed font-sans font-medium">
                         {details.aiFound}
                       </p>
                     </div>
 
                     {/* Section 2: Why It Hurts You in Simple English */}
-                    <div className="p-3 rounded-xl bg-rose-950/20 border border-rose-800/40 space-y-1">
-                      <div className="text-[11px] font-black uppercase tracking-wider text-rose-400 flex items-center gap-1.5">
-                        <AlertTriangle size={12} />
+                    <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 space-y-1">
+                      <div className="text-[11px] font-black uppercase tracking-wider text-rose-800 flex items-center gap-1.5">
+                        <AlertTriangle size={12} className="text-rose-600" />
                         <span>(2) Why It Hurts You (Simple English)</span>
                       </div>
-                      <p className="text-xs text-rose-100/90 leading-relaxed font-sans">
+                      <p className="text-xs text-rose-900 leading-relaxed font-sans font-medium">
                         {details.whyItHurts}
                       </p>
                     </div>
 
                     {/* Section 3: Actionable Fix Link */}
-                    <div className="p-3 rounded-xl bg-emerald-950/20 border border-emerald-800/40 space-y-2">
-                      <div className="text-[11px] font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                        <CheckCircle size={12} />
+                    <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 space-y-2">
+                      <div className="text-[11px] font-black uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
+                        <CheckCircle size={12} className="text-emerald-600" />
                         <span>(3) Actionable Fix</span>
                       </div>
-                      <p className="text-xs text-emerald-100/90 leading-relaxed font-sans">
+                      <p className="text-xs text-emerald-900 leading-relaxed font-sans font-medium">
                         {details.fixAction}
                       </p>
 
@@ -321,7 +321,7 @@ export default function RiskMatrix() {
                           href={details.fixLink}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm"
+                          className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-xs"
                         >
                           <span>{details.fixLinkText}</span>
                           <ExternalLink size={12} />
@@ -329,7 +329,7 @@ export default function RiskMatrix() {
                       ) : (
                         <Link
                           to={details.fixLink}
-                          className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm"
+                          className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-all shadow-xs"
                         >
                           <span>{details.fixLinkText}</span>
                           <ArrowRight size={12} />
@@ -338,7 +338,7 @@ export default function RiskMatrix() {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-[11px] text-slate-400 italic">
+                  <div className="text-[11px] text-slate-500 italic">
                     Tap below to see AI findings, impact, and verified fix link.
                   </div>
                 )}
@@ -347,7 +347,7 @@ export default function RiskMatrix() {
               {/* Expand Toggle */}
               <button
                 onClick={() => toggleExpand(rc.id)}
-                className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs font-semibold text-slate-300 hover:text-white transition-colors"
+                className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors"
               >
                 <span>{isExpanded ? '▲ Hide 3-Part Breakdown' : '▼ Expand (AI Findings, Impact & Fix)'}</span>
                 {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}

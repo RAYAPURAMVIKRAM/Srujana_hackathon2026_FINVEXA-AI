@@ -1,158 +1,251 @@
 # FINVEXA 🛡️
 ### Universal Financial Digital Twin & Multi-Risk Decision Engine
-> **"Smart Money Decisions Before You Spend"**
+> **"Smart Money Decisions in 8th-Grade Simple English Before You Spend a Single Rupee"**
 
-FINVEXA is a next-generation predictive financial digital twin and cashflow defense platform engineered for students, salaried workers, freelancers, and small business owners. Powered by 90-day Monte Carlo stress-testing, Google Gemini AI document intelligence, RBI Account Aggregator (Sahamati standard) read-only banking, and a 60 FPS interactive 3D WebGL core, FINVEXA turns complex balance sheets into 8th-grade simple, actionable financial decisions.
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Deployed-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://chanakya-psi.vercel.app)
+[![Supabase](https://img.shields.io/badge/Supabase-Database%20%26%20Storage-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Backend%20API-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Google Gemini](https://img.shields.io/badge/Google%20Gemini-2.5%20Flash-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
+[![RBI Account Aggregator](https://img.shields.io/badge/RBI%20AA-Sahamati%20Standard-2563EB?style=for-the-badge)](https://sahamati.org.in)
 
 ---
 
-## 🏗️ Architecture & System Workflow
+## 📌 Executive Summary & Problem Statement
+
+**The Problem**: 90% of young earners, freelancers, and small shop owners in India suffer from unexpected cash shortages not because they lack income, but because:
+1. **Uncertain Payment Timing**: Clients and customers promise to pay "next week", but take 22 to 25 days, while rent and worker salaries are due strictly on the 1st or 10th.
+2. **Hidden Leaks & Forgotten Bills**: Sneaky 1 AM late-night delivery markups, uncredited group hangout splits, and forgotten free-trial auto-debits quietly drain ₹3,000 to ₹10,000 every month.
+3. **Complex Financial Jargon**: Traditional banking apps and balance sheets speak in terms like *"Counterfactual Liquidity Deficits"* or *"Working Capital Ratios"*, confusing everyday people into making bad financial decisions or taking high-interest 36% APR loans.
+
+**The Solution — FINVEXA**:
+FINVEXA translates complex balance sheets into **8th-grade simple English**. Before buying a laptop, accepting a big client order, or taking on a project, FINVEXA simulates your real bank balance across the next 90 days. It reveals the exact day you hit a cash shortage and gives you 3 easy solutions to fix it before you spend.
+
+---
+
+## 🎨 Pure White & Crisp Slate High-Trust Fintech Design System
+
+FINVEXA is styled with an official, high-trust **Pure White & Crisp Slate Theme** inspired by world-class banking interfaces (Zerodha, Stripe, and Apple Financial):
+- **Backgrounds**: Crisp `bg-white` and `bg-slate-50` cards with fine grid line overlays.
+- **Typography**: Dark, readable headings (`text-slate-900`) and clear body text (`text-slate-600`).
+- **Card Borders**: Refined `border-slate-200` with soft `shadow-sm` depth.
+- **Status Badges**: Official bank status indicators:
+  - 🟢 **Safe**: Emerald Green (`#059669`)
+  - 🟡 **Warning**: Amber (`#D97706`)
+  - 🔴 **Alert**: Crimson Red (`#DC2626`)
+  - 🔵 **Primary**: Royal Blue (`#2563EB`)
+
+---
+
+## 🧠 3 Real-Life Financial Personalities (8th-Grade English)
+
+Every page, slider label, risk check, and rescue strategy dynamically re-calibrates for the chosen personality:
+
+### 1. 🎓 Student & Job Holder
+- **Real-Life Goal**: *"Buy a ₹55,000 Laptop or Bike without touching ₹18,000 Hostel Rent & College Fees."*
+- **Simple Terms**:
+  - `Money Safe in Bank`: ₹65,000
+  - `Untouchable Rent & Fees`: ₹18,000
+  - `Money Wasted on 1 AM Snacks & Subscriptions`: ₹3,400/month
+  - `Friends Who Still Owe You Money`: ₹900
+- **Daily Defense**: Catches 1 AM food delivery surge markups, recurring OTT app debits, and provides WhatsApp reminders for hangout splits.
+
+### 2. 💻 Freelancer & Creator
+- **Real-Life Goal**: *"Buy a ₹45,000 Camera or Editing Laptop while a client delays my ₹65,000 payment by 22 days."*
+- **Simple Sliders**:
+  1. `Camera/Gear Price`: ₹45,000
+  2. `How Many Days Client Pays Late`: 22 Days
+  3. `Advance Money Paid by Client`: 25%
+  4. `Extra Tax & App Fees`: 10%
+  5. `Pay in Monthly Parts`: 2 Batches
+- **Risk Reality**: *"Your client sent a WhatsApp screenshot, but the money has NOT entered your bank. Studio rent of ₹15,000 is due in 10 days before the client pays. You will be short by ₹14,500 on Day 18!"*
+
+### 3. 🏪 Small Business Owner (T-Shirt Shop)
+- **Real-Life Goal**: *"Accept a ₹1,00,000 T-Shirt Order where making the shirts costs ₹60,000, delivery costs ₹5,000 extra, and ₹20,000 Staff Salaries & Shop Rent must be paid first."*
+- **Simple Sliders**:
+  1. `Cost to Make the T-Shirts`: ₹60,000
+  2. `How Many Days Buyer Pays Late`: 25 Days
+  3. `Advance Taken from Buyer`: 15%
+  4. `Extra Delivery & Packing Cost`: ₹5,000 (8%)
+  5. `Split Order into Batches`: 1 or 2 Batches
+- **Risk Reality**: *"You have ₹50,000 in the bank, but making the shirts (₹60,000) + delivery (₹5,000) + worker salaries & rent (₹20,000) needs ₹85,000 — so you run out of money and hit a deficit of −₹35,000 on Day 18!"*
+
+---
+
+## ⚡ Core Features & Multi-Page Navigation
 
 ```mermaid
 flowchart TD
     A[Visitor Opens Web App] --> B[Pure White Animated Splash Screen /]
-    B -->|Scroll Up / Tap Anywhere| C{Returning User?}
-    C -->|Yes: Known Device/Session| D[🏠 Home Overview /dashboard]
-    C -->|No: First Time / Guest| E[Smart Auth /auth]
+    B -->|Tap / Scroll| C[Smart Auth & Returning User /auth]
+    C --> D[Step 1: Life Situation /onboarding/personality]
+    D --> E[Step 2: RBI AA Bank Linking /onboarding/bank-link]
+    E --> F[FINVEXA Dashboard /dashboard]
 
-    E -->|Phone OTP / Email / Guest| F[Step 1: Personality Setup /onboarding/personality]
-    F -->|Choose Student / Freelancer / MSME| G[Step 2: RBI AA Bank Linking /onboarding/bank-link]
-    G -->|Select Bank + Verify OTP| H[Sync Read-Only Financial Twin]
-    H --> D
-
-    subgraph "FINVEXA 7-Tab Multi-Page Architecture"
-        D --> M1[🏠 /dashboard - 4 KPI Cards & 3D Interactive Shield]
-        D --> M2[🔮 /simulator - 5 Sliders & 90-Day Green vs Red Curve]
-        D --> M3[🛡️ /risk-matrix - 6 Safety Checks & Shock Scenarios]
-        D --> M4[💸 /leaks - Hidden Money Finder & Split Tracker]
-        D --> M5[📄 /scanner - Gemini AI Bill & UPI Forensics]
-        D --> M6[✨ /rescue - 3 Easy Fixes & Auto Rebalancing]
-        D --> M7[👤 /profile - Personality Switcher & Bank Consent]
-    end
-
-    subgraph "Security & Cloud Engine"
-        RBIAA[RBI Account Aggregator - Sahamati] -.->|Read-Only Bank Feed| H
-        SUPA[Supabase Cloud Database & Storage] <-->|Real-time Profile & Assets| D
-        GEMINI[Google Gemini 2.5 Flash] <-->|AI Bill & Fraud Forensics| M5
+    subgraph "Core App Modules"
+        F --> M1[🏠 Home Dashboard /dashboard]
+        F --> M2[🔮 90-Day Money Simulator /simulator]
+        F --> M3[🎯 Goal Strategy & Comparison /goal-strategy]
+        F --> M4[🛡️ 6 Safety Checks /risk-matrix]
+        F --> M5[💸 Hidden Money Finder /leaks]
+        F --> M6[📸 Live Camera & Forensics /scanner]
+        F --> M7[✨ 3 Easy Ways to Fix This /rescue]
+        F --> M8[👤 Profile & Bank Security /profile]
     end
 ```
 
----
-
-## 📱 Complete App Flow & User Experience
-
-### 1. Pure White Animated Splash Screen (`/`)
-- Sleek full-screen luminous white landing with the custom animated `<FinvexaLogo />`.
-- Geometric diamond-shield with smooth Royal Blue to Emerald Green to Electric Indigo gradient.
-- Animated rising pulse line converting into an upward financial arrow + glowing AI star.
-- Intuitive prompt: *"⬆️ Scroll Up or Tap Anywhere to Continue"*.
-- Automatically checks `localStorage` session and onboarding completion; returning users jump straight to `/dashboard`.
-
-### 2. Smart Login & Returning User Detection (`/auth`)
-- **3 Fast Entry Modes**:
-  1. `📱 Phone Number` (with instant Demo OTP: `8492` helper).
-  2. `✉️ Email ID` (with Password / Magic OTP).
-  3. `👤 Continue as Guest` (1-click instant demo access).
-- **Returning User Memory**: Automatically recognizes previous phone numbers and emails on the device, greets returning users by name, and restores their saved Personality and Bank sync without repeating onboarding.
-- **Judge Bypass**: 1-click hackathon evaluation shortcut.
-
-### 3. First-Time Setup Wizard: Personality Choice (`/onboarding/personality`)
-Dedicated setup screen asking Full Name, Monthly Income estimate, and Financial Life Stage:
-1. `🎓 Student & Job Holder`: Salary/pocket money, safe laptop or bike purchases, catching late-night food & subscription leaks, protecting rent & college fees.
-2. `💻 Freelancer & Creator`: Handling irregular client payments, purchasing camera/studio gear safely, testing payment delays, and detecting fake UPI screenshots.
-3. `🏪 Small Business Owner`: Evaluating large customer orders (e.g. ₹1,00,000 T-shirt order), protecting worker salaries & shop rent, and avoiding cash shortages.
-
-### 4. Dedicated RBI Account Aggregator Bank Linking (`/onboarding/bank-link`)
-- Built to the **Reserve Bank of India (RBI) Account Aggregator / Sahamati** standard.
-- Interactive bank selection grid: `SBI`, `HDFC Bank`, `ICICI Bank`, `Axis Bank`, `Kotak Mahindra`, `Canara Bank`, or `Upload Statement Only`.
-- **Bank-Grade Guarantees**:
-  - 🔒 **100% Read-Only Protected**: FINVEXA has zero permission to initiate transactions or move money.
-  - 🛡️ **Encrypted Connection**: End-to-end 256-bit TLS bank pipe.
-  - ⏱️ **Auto-Expiry & Instant Revocation**: Consent automatically expires in 30 days or can be revoked with 1 click in Profile.
-- Simulated 4-digit bank verification OTP (`8492`) with animated connection progress.
-
----
-
-## 🌟 7 Multi-Page Feature Tabs
-
-| Route | Page Name | Core Capabilities |
+| Route | Page | What It Does in Simple English |
 |---|---|---|
-| `/dashboard` | **🏠 Home Overview** | 4 Big Plain-English KPI Cards (*Money Safe in Bank*, *Untouchable Bills Locked*, *Sneaky Money Leaks Found*, *Safe to Spend Today*), 3D Interactive Financial Shield, and live RBI AA status. |
-| `/simulator` | **🔮 Before-You-Spend Simulator** | 5 simple sliders on the left + the 2-line 90-Day graph on the right (*Green Line: What You Think Will Happen* vs. *Red Line: Real Life After Delays & Hidden Costs*). |
-| `/risk-matrix` | **🛡️ 6 Safety Checks** | Fake Screenshot & Tamper Check, Sneaky Hidden Fee discovery, Cash Shortage Date countdown, Untouchable Rent/Salary Lock, Loan Approval Score Slider, and 1-Click Emergency Economic Shocks. |
-| `/leaks` | **💸 Hidden Money Finder** | Forgotten friend UPI bill splits (with 1-click WhatsApp reminders & settle buttons), pending uncredited shopping refunds, 1 AM delivery surge fee markups, and free-trial auto-debit alarms. |
-| `/scanner` | **📄 AI Bill & Screenshot Scanner** | Upload any invoice, Purchase Order, or UPI transaction screenshot (or test with 3 sample receipts) for Gemini AI OCR clause extraction and fraud verification. |
-| `/rescue` | **✨ 3 Easy Fixes** | 3 tailored rescue options (e.g., 40% advance, splitting payment into 3 parts, or delaying by 12 days) with a *"Fix My Plan Automatically"* button that immediately turns the Red crash line Green. |
-| `/profile` | **👤 Profile & Bank Security** | Clean identity card, instant Personality switcher (switches numbers across all tabs), Linked Bank management / consent revocation, Light/Radiant-Dark theme toggle, and a **1-click Judge Demo Reset button**. |
+| `/dashboard` | **🏠 Home Dashboard** | 4 Big Plain-English KPI cards (*Money Safe in Bank*, *Untouchable Bills Locked*, *Sneaky Leaks Found*, *Safe to Spend Today*), 3D Interactive Financial Shield, and live 24/7 AI Banking Chatbot. |
+| `/simulator` | **🔮 90-Day Simulator** | 3 live explanation boxes updating in real-time, white Recharts canvas with Green Expected line, Red Real-Life line, `₹0` Danger line, Untouchable Rent line, and a **"✨ Auto-Fix This Shortage Now"** button. |
+| `/goal-strategy` | **🎯 Goal & Comparison** | AI Goal input box with quick chips, side-by-side comparison (*Without FINVEXA* vs. *With FINVEXA*), and genuine web-researched earning/saving platforms matched to your personality. |
+| `/risk-matrix` | **🛡️ 6 Safety Checks** | 6 expandable cards showing: (1) *What AI Found in Your Account*, (2) *Why This Hurts You in Simple English*, and (3) *Actionable Fix + Web Link*. |
+| `/leaks` | **💸 Hidden Money Finder** | "🎉 Public Hangout Group Bill Detected!" alert, Solo vs. Group split calculator, mobile contact picker (`navigator.contacts`), direct WhatsApp Web reminder links, and 1 AM food delivery leak reports. |
+| `/scanner` | **📸 Live Camera & Forensics** | Live camera viewfinder (`navigator.mediaDevices.getUserMedia`) with green scanner frame, canvas photo capture, live GPS location geotagging (`navigator.geolocation`), and 4-point legal authenticity verification. |
+| `/rescue` | **✨ 3 Easy Fixes** | 3 tailored rescue options (Advance Collection, Split Batches, Delay Purchase) with 1-click slider re-balancing and real verified tool links (*TReDS Invoicemart*, *Sahamati*, *ONDC*, *Razorpay*). |
+| `/profile` | **👤 Profile & Security** | Personality switcher, RBI Account Aggregator token management, 1-click bank consent revocation, and **Hackathon Judge Reset Demo Flow button**. |
 
 ---
 
-## 🎨 High-Contrast Luminous Fintech Design System
+## 🔮 Simulator Live Explanations & Auto-Fix Engine
 
-- **Clean Daylight / Pearl Glass Mode**: High-contrast, clean daylight mode with crisp cards, deep slate typography, and emerald/blue accents.
-- **Radiant Aurora Dark Mode**: 3-Orb ambient mesh background that dynamically matches the active financial persona:
-  - **Student**: Electric Violet & Neon Cyan
-  - **Freelancer**: Sunset Amber & Magma Gold
-  - **Small Business**: Emerald Neon & Royal Blue
-- **1-Click Theme Toggle**: Instantly switch between Daylight Pearl and Radiant Dark in the top navbar.
-- **60 FPS Interactive 3D WebGL Core**: Rotating gyroscopic rings that change rotation velocity and glow color dynamically based on live cash safety.
+Above the 90-day cash curve graph, the simulator displays **3 live plain-English boxes** that change instantly as sliders move:
+1. 🟢 **What You Think Will Happen**: *"You think you will finish the month with +₹35,000 profit."*
+2. 🔴 **What Actually Happens in Real Life**: *"Because of late payment + hidden costs + rent/salaries due first, your bank balance hits −₹35,000 (SHORTAGE) on Day 18!"*
+3. 🛡️ **How Much Advance You Need to Stay Safe**: *"Take ₹45,000 advance OR Split into 2 Batches to keep your bank balance above ₹0."*
+
+### One-Click Auto-Fix
+Right below the chart, users can tap **"✨ Auto-Fix This Shortage Now"**. With one click, the engine adjusts the advance payment slider and batches to instantly pull the Red line safely above ₹0 and the untouchable rent line!
+
+---
+
+## 🎯 Genuine Ways to Save & Earn Extra Money
+
+The Goal Strategy page (`/goal-strategy`) links users to verified, real-world platforms matched to their profile:
+- **For Students & Job Seekers**:
+  - [Internshala Paid Internships](https://internshala.com) — ₹5,000 to ₹18,000/mo remote student stipends.
+  - [Unstop Competitions & Hackathons](https://unstop.com) — Cash prize hackathons and hiring challenges.
+  - [ONDC Open Network Delivery](https://ondc.org) — Direct restaurant ordering saving 25% to 30% surge markups.
+- **For Freelancers & Creators**:
+  - [Contra Commission-Free Freelancing](https://contra.com) — Keep 100% of client invoices with zero platform cuts.
+  - [Upwork Global Projects](https://www.upwork.com) — Escrow-protected international client milestone contracts.
+  - [Razorpay Milestone Payment Links](https://razorpay.com/payment-links/) — Secure 50% upfront deposits before starting work.
+- **For Small Business Owners**:
+  - [Invoicemart RBI TReDS](https://www.invoicemart.com) — Instant corporate invoice discounting in 48 hours.
+  - [M1xchange TReDS Platform](https://www.m1xchange.com) — RBI-licensed auction platform for MSME trade bills.
+  - [GeM Government e-Marketplace](https://gem.gov.in) — Direct procurement orders from Indian public sector enterprises.
+
+---
+
+## 📸 Working Live Camera & Forensic Verification
+
+The Scanner (`/scanner`) features hardware-level device integration:
+1. **Live Camera Viewfinder**: Calls `navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })` to render a 60 FPS live video stream on screen with a scanning overlay.
+2. **Instant Frame Capture**: Captures the exact video frame to an HTML5 `<canvas>`, shuts down camera tracks cleanly, and displays the frozen photo preview.
+3. **Verified Live GPS Location**: Calls `navigator.geolocation.getCurrentPosition` to stamp the exact latitude, longitude, and device timestamp onto the verification record.
+4. **4-Point Forensic Check**:
+   - `12-Digit Bank UTR Number Check`: Verifies format matches NPCI UPI protocol.
+   - `Shop GSTIN Number Check`: Validates against the 15-digit state-coded GST structure.
+   - `Font Pixel Editing Check`: Identifies text mismatches from fake screenshot generator apps.
+   - `Hidden Delivery/Penalty Fee Check`: Uncovers hidden delivery surges or late-penalty clauses in fine print.
 
 ---
 
 ## 🔒 RBI Account Aggregator Legal Framework
 
-FINVEXA is engineered following the **Master Direction - Non-Banking Financial Company - Account Aggregator (Reserve Bank) Directions, 2016** (Updated 2023):
-- **Consent Artefact ID**: Generated cryptographically on verification (`AA-RBI-2026-XXXXX`).
-- **Data Minimization**: Only fetches balance and transaction history required for the 90-day cashflow digital twin.
-- **No Credentials Stored**: NetBanking passwords, UPI PINs, and OTPs are never stored or requested by FINVEXA.
-- **Revocability**: Users can terminate consent at any time from `/profile`.
+FINVEXA operates strictly under the **Reserve Bank of India (RBI) Non-Banking Financial Company - Account Aggregator Directions, 2016** (Sahamati standard):
+- **100% Read-Only Protected**: FINVEXA has zero capability to transfer funds or charge accounts.
+- **Zero Credential Storage**: NetBanking passwords, UPI PINs, and ATM PINs are never requested or stored.
+- **Cryptographic Consent Artefact**: Every link generates a unique token (e.g., `AA-RBI-2026-XXXXX`).
+- **30-Day Auto-Expiry**: Consents auto-destruct on Day 30 unless renewed.
+- **1-Click Instant Revoke**: Users can terminate bank access immediately from the Profile tab.
 
 ---
 
-## 🚀 Quickstart & Local Setup
+## 🛠️ Technology Stack & Architecture
 
-### Prerequisites
-- Node.js 18+ & npm
-- Python 3.10+
+| Layer | Technologies |
+|---|---|
+| **Frontend UI/UX** | React 18, TypeScript, Vite, Tailwind CSS (Pure White Fintech Tokens), Lucide Icons, Canvas API |
+| **Data Visualization** | Recharts (Responsive White Grid, Multi-Axis Reference Lines, Zero Danger Line) |
+| **Device APIs** | `navigator.mediaDevices.getUserMedia` (Camera), `navigator.geolocation` (GPS), `navigator.contacts` |
+| **Backend API** | Python 3.11, FastAPI, Uvicorn, Pydantic v2 |
+| **AI Intelligence** | Google Gemini 2.5 Flash (`google-genai` SDK), Regex Clause Parser |
+| **Cloud Database & Storage** | Supabase PostgreSQL, Supabase Storage (`finvexa-documents`, `finvexa-assets`) |
+| **Deployment** | Vercel (Frontend SPA), Supabase Cloud |
 
-### Frontend Setup
+---
+
+## 🚀 Quickstart & Local Setup Instructions
+
+### 1. Clone Repository
+```bash
+git clone https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_PocketGuardAI.git
+cd Srujana_hackathon2026_PocketGuardAI
+```
+
+### 2. Frontend Setup
 ```bash
 cd frontend
 npm install
 npm run dev
-# Running on http://localhost:5173
+# Frontend dev server runs on http://localhost:5173
 ```
 
-### Backend Setup
+To build production bundle:
+```bash
+npm run build
+# Compiles via tsc -b && vite build to dist/
+```
+
+### 3. Backend Setup
 ```bash
 cd backend
 python -m venv venv
-# Windows: venv\Scripts\activate | Unix: source venv/bin/activate
+
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
+
 pip install -r requirements.txt
 python -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-# Running on http://localhost:8000
+# Backend API runs on http://localhost:8000 (Swagger docs at http://localhost:8000/docs)
 ```
 
 ---
 
-## 👨‍⚖️ Hackathon Judge Demo Walkthrough (2-Minute Pitch)
+## 👨‍⚖️ Hackathon Judge Demo Walkthrough (3 Minutes)
 
-1. Open the web app — notice the **Pure White Animated Splash Screen** with the custom FINVEXA diamond-shield logo.
-2. Tap anywhere — click **Continue as Guest** (or enter a phone number with demo OTP `8492`).
-3. On `/onboarding/personality`, pick **🎓 Student & Job Holder** and click **Next**.
-4. On `/onboarding/bank-link`, choose **HDFC Bank** or **SBI**, click **Verify & Enter FINVEXA**.
-5. Explore the **🏠 Home Overview**:
-   - Inspect the **Safe to Spend Today** metric and touch/drag the **3D Interactive Financial Shield**.
-6. Switch to **🔮 Simulator**: Move the *Laptop/Bike Price* slider up to ₹85,000 — watch the Red line plunge into cash shortage.
-7. Click **✨ 3 Easy Fixes**: Hit **"Apply Plan A Automatically"** — watch the Red line immediately rise back into the Green safe zone!
-8. Click **💸 Hidden Money Finder**: Send a WhatsApp split reminder to a friend for ₹400 dinner split.
-9. Click your Avatar in the top right -> **Profile** -> switch to **🏪 Small Business Owner** to see the digital twin instantly reload for a shop owner fulfilling a ₹1,00,000 corporate order.
-10. Click **"Reset Demo (For Judges)"** anytime to re-run the splash screen and onboarding flow.
+1. **Splash Screen (`/`)**: Note the animated FINVEXA diamond-shield logo and tap *"⬆️ Scroll Up or Tap Anywhere to Continue"*.
+2. **Instant Auth (`/auth`)**: Click **"Guest"** -> **"Enter as Guest Explorer"** (or use phone number with demo OTP `8492`).
+3. **Onboarding (`/onboarding/personality`)**: Pick **"Student & Job Holder"** or **"Small Business Owner"** and view how the starting numbers calibrate.
+4. **Bank Safety (`/onboarding/bank-link`)**: Pick **HDFC Bank** or **SBI**, enter demo OTP `8492`, and observe the read-only Sahamati AA connection.
+5. **Home Dashboard (`/dashboard`)**:
+   - Inspect the 4 plain-English KPI cards.
+   - Interact with the **AI Banking Chatbot** using quick prompts like *"Why was ₹250 deducted?"*.
+6. **Simulator (`/simulator`)**:
+   - Move the purchase slider up and watch the Red line drop into negative cash shortage on Day 18.
+   - Note the **3 Plain-English Live Explanation Boxes**.
+   - Tap **"✨ Auto-Fix This Shortage Now"** and see the sliders rebalance to pull the Red line into safety!
+7. **Goal & Comparison (`/goal-strategy`)**:
+   - View the Side-by-Side comparison table (*Without FINVEXA* vs. *With FINVEXA*).
+   - Test verified external earning and saving links.
+8. **Hidden Money Finder (`/leaks`)**:
+   - Review the **"🎉 Public Hangout Group Bill Detected!"** card.
+   - Tap **"👥 It Was a Group Split!"**, enter friend name and phone number, and test the **WhatsApp Web** reminder link.
+9. **Scanner (`/scanner`)**:
+   - Click **"📸 Turn On Live Camera"** to see the live viewfinder.
+   - Click **"📍 Verify Live GPS Location"** to stamp your device coordinates.
+   - Click **"WhatsApp Fake UPI Slip"** to see the 4-point legal authenticity report detect font tampering and missing UTR.
+10. **Profile (`/profile`)**:
+    - Switch to **"Small Business Owner"** to test a T-Shirt shop scenario.
+    - Tap **"Reset Demo Flow"** anytime to reset local session data for the next judge!
 
 ---
 
 ## 👥 Hackathon Team & Acknowledgements
-- **Project**: FINVEXA
+- **Team**: PocketGuardAI / FINVEXA Team
 - **Hackathon**: Srujana Hackathon 2026
 - **Repository**: [PocketGuardAI / FINVEXA](https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_PocketGuardAI)
-- **Deployment**: Vercel (Frontend) + Supabase (Cloud Database & Storage) + FastAPI / Gemini AI (Backend)
+- **Primary Remote**: `origin` (`https://github.com/RAYAPURAMVIKRAM/Srujana_hackathon2026_PocketGuardAI.git`)
+- **Secondary Remote**: `chanakya` (`https://github.com/RAYAPURAMVIKRAM/chanakya.git`)
