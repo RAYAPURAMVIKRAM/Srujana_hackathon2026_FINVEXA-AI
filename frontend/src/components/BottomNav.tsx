@@ -3,8 +3,8 @@ import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard,
   Sliders,
-  ShieldAlert,
   Coins,
+  Target,
   ScanLine,
   Lightbulb,
   User,
@@ -14,7 +14,7 @@ import { useApp } from '../context/AppContext'
 const navItems = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Home' },
   { to: '/simulator', icon: Sliders, label: 'Sim' },
-  { to: '/risk-matrix', icon: ShieldAlert, label: '6 Risks' },
+  { to: '/goal-strategy', icon: Target, label: 'Goals' },
   { to: '/leaks', icon: Coins, label: 'Leaks' },
   { to: '/scanner', icon: ScanLine, label: 'Scan' },
   { to: '/rescue', icon: Lightbulb, label: 'Fixes' },

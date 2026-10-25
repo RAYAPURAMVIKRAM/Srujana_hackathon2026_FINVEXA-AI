@@ -9,11 +9,20 @@ import {
   Sparkles,
   MessageSquare,
   ShieldCheck,
+  ExternalLink,
+  Link2,
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import Tilt3DCard from '../components/Tilt3DCard'
 import { generateCashflow, computeRiskMetrics } from '../lib/cashflow'
+
+interface RescueExternalTool {
+  name: string
+  url: string
+  badge: string
+  desc: string
+}
 
 export default function Rescue() {
   const { personaData, simulator, setSimulator } = useApp()
@@ -57,6 +66,58 @@ export default function Rescue() {
     }, 900)
   }
 
+  // Real working external tools mapped to each plan
+  const getExternalToolsForPlan = (idx: number): RescueExternalTool[] => {
+    switch (idx) {
+      case 0:
+        return [
+          {
+            name: 'Razorpay Instant Payment Links',
+            url: 'https://razorpay.com/payment-links/',
+            badge: 'Instant Advance',
+            desc: 'Generate a secure 50% deposit link with UPI, Credit Cards, and NetBanking in 30 seconds.',
+          },
+          {
+            name: 'ONDC Open Network Delivery',
+            url: 'https://ondc.org',
+            badge: 'Zero Surge Fee',
+            desc: 'Source materials or food directly from sellers to eliminate 30% platform markup fees.',
+          },
+        ]
+      case 1:
+        return [
+          {
+            name: 'Sahamati RBI Account Aggregator',
+            url: 'https://sahamati.org.in',
+            badge: 'RBI Regulated',
+            desc: 'Share verified bank statements securely with landlords or lenders without sharing passwords.',
+          },
+          {
+            name: 'ClearTax Section 44ADA Filing',
+            url: 'https://cleartax.in',
+            badge: 'TDS Refund',
+            desc: 'Claim back TDS withheld by clients to inject an extra ₹15,000 to ₹40,000 back into your account.',
+          },
+        ]
+      case 2:
+      default:
+        return [
+          {
+            name: 'Invoicemart TReDS Platform',
+            url: 'https://www.invoicemart.com',
+            badge: '48h Cash Inflow',
+            desc: 'Get RBI-approved invoice discounting for pending corporate bills at low bank repo rates.',
+          },
+          {
+            name: 'Udyam MSME Government Registration',
+            url: 'https://udyamregistration.gov.in',
+            badge: 'Legal Protection',
+            desc: 'Mandates 45-day payment statutory deadlines under Section 15 of the MSMED Act.',
+          },
+        ]
+    }
+  }
+
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Header */}
@@ -77,7 +138,7 @@ export default function Rescue() {
             3 Easy Ways to Fix This Without Going Broke
           </h1>
           <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
-            Pick a realistic plan for <strong className="text-white">{personaData.label}</strong>. We computed the math to keep your bank balance above your rent floor, with ready-to-send messages for WhatsApp & Email:
+            Pick a realistic plan for <strong className="text-white">{personaData.label}</strong>. We computed the math to keep your bank balance above your rent floor, with verified web tools and ready-to-send messages:
           </p>
         </div>
 
@@ -94,7 +155,7 @@ export default function Rescue() {
 
       {/* 3 Unique Rescue Plans */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {personaData.rescuePlans.map((plan) => {
+        {personaData.rescuePlans.map((plan, idx) => {
           // Calculate simulated metrics for this plan
           const planCashflow = generateCashflow({
             balance: personaData.balance,
@@ -112,6 +173,7 @@ export default function Rescue() {
           const { shortage: planShortage } = computeRiskMetrics(planCashflow, personaData.lockedReserves)
           const moneySaved = Math.max(0, originalShortage - planShortage)
           const isApplied = appliedId === plan.id
+          const tools = getExternalToolsForPlan(idx)
 
           return (
             <Tilt3DCard
@@ -170,8 +232,40 @@ export default function Rescue() {
                   </div>
                 </div>
 
+                {/* Verified Web-Researched External Tools Links */}
+                <div className="space-y-2 pt-1">
+                  <div className="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <Link2 size={12} className="text-cyan-400" />
+                    <span>Verified Real-World Tools:</span>
+                  </div>
+                  <div className="space-y-2">
+                    {tools.map((tool, tIdx) => (
+                      <a
+                        key={tIdx}
+                        href={tool.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block p-2.5 rounded-xl bg-slate-950/70 hover:bg-slate-900 border border-slate-800 hover:border-slate-700 transition-all group"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors flex items-center gap-1">
+                            {tool.name}
+                            <ExternalLink size={11} className="text-slate-500 group-hover:text-cyan-400 transition-colors" />
+                          </span>
+                          <span className="px-2 py-0.5 rounded-full text-[9px] font-mono bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+                            {tool.badge}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-400 mt-1 leading-snug">
+                          {tool.desc}
+                        </p>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Ready-to-Send Negotiation Message Box */}
-                <div className="space-y-1.5">
+                <div className="space-y-1.5 pt-1">
                   <div className="flex items-center justify-between text-xs text-slate-400">
                     <span className="font-semibold flex items-center gap-1 text-slate-300">
                       <MessageSquare size={12} className="text-emerald-400" />
@@ -192,7 +286,7 @@ export default function Rescue() {
                       )}
                     </button>
                   </div>
-                  <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/90 text-[11px] text-slate-300 font-sans leading-relaxed max-h-36 overflow-y-auto custom-scrollbar select-all">
+                  <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800/90 text-[11px] text-slate-300 font-sans leading-relaxed max-h-32 overflow-y-auto custom-scrollbar select-all">
                     {plan.negotiationMessage}
                   </div>
                 </div>
@@ -233,7 +327,7 @@ export default function Rescue() {
           <div>
             <div className="text-sm font-bold text-white">Why These Plans Work 100% of the Time</div>
             <div className="text-xs text-slate-400 mt-0.5">
-              Instead of taking high-interest loans, simply splitting payments into batches or collecting advances keeps your cash balance permanently above rent and payroll floors.
+              Instead of taking high-interest personal loans or informal borrowing, simply splitting payments into batches or collecting advances keeps your cash balance permanently above rent and payroll floors.
             </div>
           </div>
         </div>

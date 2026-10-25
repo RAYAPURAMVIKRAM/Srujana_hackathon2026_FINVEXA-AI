@@ -10,15 +10,15 @@ import {
   CheckCircle2,
   Lock,
 } from 'lucide-react'
-import { useApp, PERSONAS } from '../context/AppContext'
-import type { PersonaType } from '../context/AppContext'
+import { useApp } from '../context/AppContext'
 import KpiCard from '../components/KpiCard'
 import Tilt3DCard from '../components/Tilt3DCard'
 import Interactive3DFinancialCore from '../components/Interactive3DFinancialCore'
+import AiBankingChatbot from '../components/AiBankingChatbot'
 import { generateCashflow, computeRiskMetrics } from '../lib/cashflow'
 
 export default function CommandCenter() {
-  const { persona, setPersona, personaData, simulator, bankConsent } = useApp()
+  const { personaData, simulator, bankConsent } = useApp()
   const navigate = useNavigate()
   const theme = personaData.theme
 
@@ -43,8 +43,6 @@ export default function CommandCenter() {
       : personaData.balance > personaData.lockedReserves
       ? 'warning'
       : 'critical'
-
-  const personaKeys: PersonaType[] = ['salaried', 'freelancer', 'business']
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -208,65 +206,9 @@ export default function CommandCenter() {
         </div>
       </div>
 
-      {/* 3. 100% Unique Personas Selector */}
+      {/* 3. AI Banking & Account Support Assistant */}
       <div>
-        <div className="mb-4">
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <span className="text-xl">👥</span> Choose Your Life Situation
-          </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Tap a profile below to load completely different numbers, story, hidden risks, and smart rescue plans:
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {personaKeys.map(key => {
-            const p = PERSONAS[key]
-            const active = persona === key
-            return (
-              <Tilt3DCard
-                key={key}
-                onClick={() => setPersona(key)}
-                className={`glass-card p-6 text-left cursor-pointer transition-all duration-300 border ${
-                  active
-                    ? 'border-white/40 shadow-2xl scale-[1.02]'
-                    : 'border-slate-800/80 hover:border-slate-600'
-                }`}
-                style={{
-                  background: active ? `${p.theme.primaryHex}15` : undefined,
-                  boxShadow: active ? `0 0 30px ${p.theme.primaryHex}35` : undefined,
-                }}
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <div className="text-4xl">{p.emoji}</div>
-                  {active ? (
-                    <span
-                      className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider text-white border shadow-sm"
-                      style={{ background: p.theme.buttonGradient, borderColor: 'rgba(255,255,255,0.4)' }}
-                    >
-                      Active Profile
-                    </span>
-                  ) : (
-                    <span className="text-xs text-slate-400 hover:text-white transition-colors">
-                      Switch →
-                    </span>
-                  )}
-                </div>
-
-                <div className="font-bold text-white text-base">{p.label}</div>
-                <div className="text-xs mt-1.5 text-slate-300 font-medium leading-relaxed">
-                  "{p.story}"
-                </div>
-
-                <div className="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-between text-[11px] text-slate-400">
-                  <span>Bank: ₹{(p.balance / 1000).toFixed(0)}K</span>
-                  <span>Untouchable: ₹{(p.lockedReserves / 1000).toFixed(0)}K</span>
-                  <span className="text-emerald-400 font-semibold">{p.purchaseLabel.split(' ')[0]}</span>
-                </div>
-              </Tilt3DCard>
-            )
-          })}
-        </div>
+        <AiBankingChatbot />
       </div>
 
       {/* 4. Instant Action Callout */}

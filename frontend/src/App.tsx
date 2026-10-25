@@ -17,6 +17,7 @@ import HiddenMoneyFinder from './pages/HiddenMoneyFinder'
 import Scanner from './pages/Scanner'
 import Rescue from './pages/Rescue'
 import Profile from './pages/Profile'
+import GoalStrategy from './pages/GoalStrategy'
 import { useApp } from './context/AppContext'
 
 export default function App() {
@@ -100,6 +101,7 @@ export default function App() {
             <Route path="/simulator" element={<Simulator />} />
             <Route path="/risk-matrix" element={<RiskMatrix />} />
             <Route path="/leaks" element={<HiddenMoneyFinder />} />
+            <Route path="/goal-strategy" element={<GoalStrategy />} />
             <Route path="/scanner" element={<Scanner />} />
             <Route path="/rescue" element={<Rescue />} />
             <Route path="/profile" element={<Profile />} />

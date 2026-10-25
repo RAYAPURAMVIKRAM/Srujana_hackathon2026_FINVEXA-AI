@@ -905,6 +905,91 @@ def optimize_rescue(req: RescueRequest):
 
 
 # ============================================================================
+# 4. POST /api/chat (AI Banking & Account Assistant)
+# ============================================================================
+class ChatRequest(BaseModel):
+    message: str = Field(..., description="User's banking or account question")
+    persona_type: Optional[str] = "salaried"
+    balance: Optional[float] = 50000.0
+    locked_reserves: Optional[float] = 15000.0
+    bank_name: Optional[str] = "Bank"
+
+
+@app.post("/api/chat")
+def chat_bank_assistant(req: ChatRequest):
+    """
+    AI Banking & Account Support Assistant.
+    Provides plain-English answers to bank charges, UPI disputes, RBI AA guidelines,
+    auto-debits, zero-cost EMI eligibility, and financial cashflow advice.
+    """
+    msg = req.message.strip()
+    msg_lower = msg.lower()
+
+    # 1. Try Gemini AI
+    prompt = (
+        "You are FINVEXA AI Banking & Account Assistant. Answer the user's question with crystal-clear, "
+        "8th-grade simple, actionable advice for Indian banking (RBI guidelines, UPI, charges, EMIs, disputes).\n"
+        f"User Persona: {req.persona_type}, Bank: {req.bank_name}, Safe Balance: ₹{req.balance}, Locked Rent/Bills: ₹{req.locked_reserves}.\n"
+        f"User Question: '{msg}'\n"
+        "Guidelines:\n"
+        "- No financial jargon. Explain step-by-step in 2-4 bullet points or short sentences.\n"
+        "- If it's an unauthorized charge, explain how to file a chargeback or call 1930 / bank helpline within 72 hours under RBI circular on Zero Liability.\n"
+        "- If it's about auto-debit, mention RBI e-mandate rules (cancelling via bank netbanking or UPI app).\n"
+        "- Be friendly, reassuring, and concise."
+    )
+    ai_resp = call_gemini_flash(prompt)
+    if ai_resp:
+        return {"status": "success", "reply": ai_resp, "source": "gemini"}
+
+    # 2. Deterministic smart fallback based on keywords
+    if any(k in msg_lower for k in ["deduct", "cut", "charge", "fee", "penalty", "250", "50", "sms", "minimum balance"]):
+        reply = (
+            "Here is why your bank may have deducted charges recently:\n\n"
+            "1. **Non-Maintenance of Minimum Balance (MAB)**: Most banks (like SBI/HDFC/ICICI) charge ₹150–₹350 + GST if your average monthly balance falls below requirement.\n"
+            "2. **Annual Debit Card / SMS Alert Fees**: Banks deduct ₹150–₹250/year for ATM card renewal and ₹15–₹25/quarter for SMS alerts.\n"
+            "3. **What You Can Do**: You can request your bank branch to convert your account to a **BSBDA (Basic Savings Bank Deposit / Zero Balance)** account where minimum balance penalties are strictly 100% prohibited by RBI rules!"
+        )
+    elif any(k in msg_lower for k in ["upi", "failed", "pending", "debited", "dispute", "utr", "wrong"]):
+        reply = (
+            "Here is what to do for UPI transaction issues:\n\n"
+            "1. **Money Debited But Not Received (T+1 Rule)**: Under RBI's Harmonisation of Turn Around Time (TAT) circular, banks MUST auto-reverse failed UPI debits within T+1 working days. If delayed past T+1, the bank must pay you ₹100/day compensation!\n"
+            "2. **How to Raise a Complaint**: Open your UPI app (GPay/PhonePe/Paytm), tap on the transaction, and click 'Raise Dispute' using the 12-digit UTR reference number.\n"
+            "3. **Wrong Account Transfer**: Immediately report it to your bank's nodal officer and raise a complaint on the official NPCI portal at npci.org.in within 48 hours."
+        )
+    elif any(k in msg_lower for k in ["auto debit", "mandate", "cancel", "subscription", "autopay"]):
+        reply = (
+            "Here is how to stop or reverse an unwanted auto-debit:\n\n"
+            "1. **Cancel via UPI App**: Open Google Pay or PhonePe -> Tap Profile -> **Autopay / Mandates** -> Select the active mandate -> Click **Pause** or **Delete Mandate**.\n"
+            "2. **Cancel via NetBanking**: Log into your bank's NetBanking portal, search for **e-Mandate Management / NACH**, and revoke consent directly.\n"
+            "3. **RBI Protection**: Under RBI's e-mandate framework, banks are mandated to send you an SMS/notification 24 hours prior to debit. If debited without pre-debit notice, you can dispute the charge with your bank."
+        )
+    elif any(k in msg_lower for k in ["emi", "loan", "laptop", "bike", "credit score", "eligible"]):
+        reply = (
+            f"Here is your Zero-Cost EMI & Loan eligibility breakdown:\n\n"
+            f"1. **Your Current Safe Buffer**: You have ₹{int(req.balance):,} safe balance and ₹{int(req.locked_reserves):,} locked for essentials.\n"
+            "2. **Zero-Cost EMI Truth**: A 'No Cost EMI' actually discounts the product price by the interest amount so your total payout equals the retail price. Always check for a hidden ₹199 + GST loan processing fee.\n"
+            "3. **Golden Rule**: Keep your monthly EMI below 25% of your disposable income so your rent and bills stay 100% safe."
+        )
+    elif any(k in msg_lower for k in ["rbi", "account aggregator", "sahamati", "safe", "privacy", "consent"]):
+        reply = (
+            "FINVEXA uses the official **RBI Account Aggregator (AA)** legal framework regulated under Master Direction NBFC-AA 2016:\n\n"
+            "1. **100% Read-Only**: FINVEXA CANNOT withdraw, transfer, or move even ₹1 from your account.\n"
+            "2. **No Credentials**: We never ask for or store your NetBanking password, debit card PIN, or UPI PIN.\n"
+            "3. **Instant Revocation**: You can terminate your consent anytime in 1 click from your Profile page."
+        )
+    else:
+        reply = (
+            f"Hello! I am your FINVEXA AI Banking Assistant. Based on your {req.persona_type} profile (Safe in Bank: ₹{int(req.balance):,}, Untouchable Locked: ₹{int(req.locked_reserves):,}):\n\n"
+            "• Ask me about unexpected bank charges, SMS fees, or minimum balance penalties.\n"
+            "• Get help with failed UPI payments, 12-digit UTR checks, or auto-debit cancellation.\n"
+            "• Test zero-cost EMI eligibility and calculate safe installment amounts before you spend.\n"
+            "• Learn how RBI Account Aggregator keeps your data 100% read-only and encrypted."
+        )
+
+    return {"status": "success", "reply": reply, "source": "fallback"}
+
+
+# ============================================================================
 # SYSTEM HEALTH & ROOT
 # ============================================================================
 @app.get("/")
@@ -918,6 +1003,7 @@ def root():
             "POST /api/analyze-cashflow",
             "POST /api/scan-document",
             "POST /api/optimize-rescue",
+            "POST /api/chat",
             "GET /api/health"
         ]
     }
@@ -930,3 +1016,4 @@ def health():
         "timestamp": datetime.datetime.now().isoformat(),
         "gemini_configured": bool(GEMINI_API_KEY)
     }
+

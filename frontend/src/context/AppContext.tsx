@@ -519,6 +519,14 @@ export interface BankConsentState {
   }
 }
 
+export interface UserGoal {
+  title: string
+  targetAmount: number
+  targetMonths: number
+  category: string
+  downpaymentPercent?: number
+}
+
 interface AppContextType {
   themeMode: ThemeMode
   toggleThemeMode: () => void
@@ -541,6 +549,8 @@ interface AppContextType {
   completeOnboarding: (name: string, monthlyIncome: number, selectedPersona: PersonaType) => void
   resetOnboardingDemo: () => void
   getSavedUserByIdentifier: (identifier: string) => SavedUserProfile | null
+  userGoal: UserGoal
+  updateUserGoal: (goal: Partial<UserGoal>) => void
 }
 
 const DEFAULT_SIMULATOR: SimulatorState = {
@@ -614,6 +624,35 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   })
 
   const [simulator, setSimulatorState] = useState<SimulatorState>(DEFAULT_SIMULATOR)
+
+  // Goal Strategy State
+  const [userGoal, setUserGoalState] = useState<UserGoal>(() => {
+    try {
+      const saved = localStorage.getItem('finvexa_user_goal')
+      if (saved) return JSON.parse(saved)
+    } catch {
+      // ignore
+    }
+    return {
+      title: 'Buy a ₹55,000 laptop in 2 months',
+      targetAmount: 55000,
+      targetMonths: 2,
+      category: 'tech',
+      downpaymentPercent: 30,
+    }
+  })
+
+  const updateUserGoal = useCallback((newGoal: Partial<UserGoal>) => {
+    setUserGoalState(prev => {
+      const updated = { ...prev, ...newGoal }
+      try {
+        localStorage.setItem('finvexa_user_goal', JSON.stringify(updated))
+      } catch {
+        // ignore
+      }
+      return updated
+    })
+  }, [])
 
   const setPersona = useCallback((p: PersonaType) => {
     setPersonaState(p)
@@ -949,6 +988,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         completeOnboarding,
         resetOnboardingDemo,
         getSavedUserByIdentifier,
+        userGoal,
+        updateUserGoal,
       }}
     >
       {children}

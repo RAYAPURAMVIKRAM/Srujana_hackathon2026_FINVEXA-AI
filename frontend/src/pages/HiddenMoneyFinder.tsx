@@ -2,11 +2,13 @@
 import { useState } from 'react'
 import {
   Coins,
-  Send,
   Clock,
   Sparkles,
-  BellRing,
-  Check,
+  Users,
+  ExternalLink,
+  Laptop,
+  Smartphone,
+  AlertCircle,
 } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import Tilt3DCard from '../components/Tilt3DCard'
@@ -42,35 +44,60 @@ interface AutoDebitAlarm {
   isCancelled: boolean
 }
 
+interface PublicVenueBill {
+  id: string
+  venueName: string
+  category: string
+  emoji: string
+  amount: number
+  date: string
+  detectedReason: string
+}
+
 export default function HiddenMoneyFinder() {
   const { personaData } = useApp()
   const theme = personaData.theme
 
-  // State for friend debts
+  // Public Venue Detection
+  const [detectedVenue, setDetectedVenue] = useState<PublicVenueBill | null>({
+    id: 'venue-1',
+    venueName: 'Mainland China Restaurant & Lounge',
+    category: 'Dining Out',
+    emoji: '🥢',
+    amount: 1800,
+    date: 'Saturday, 9:45 PM',
+    detectedReason: 'Bill is 4.2x above your solo dining average with restaurant MCC 5812',
+  })
+  const [isSplittingVenue, setIsSplittingVenue] = useState(false)
+  const [splitCount, setSplitCount] = useState(3)
+  const [friendName, setFriendName] = useState('Rahul')
+  const [friendPhone, setFriendPhone] = useState('9876543210')
+
+  // Friend Debts
   const [friendDebts, setFriendDebts] = useState<FriendDebt[]>([
     {
-      id: 'fd-1',
-      friendName: 'Rohit Sharma',
-      avatarEmoji: '🏏',
-      reason: 'Group Dinner at Biryani House',
+      id: 'debt-1',
+      friendName: 'Aman Sharma',
+      avatarEmoji: '🍕',
+      reason: 'Weekend Pizza & Biryani Split',
       amount: 400,
       daysAgo: 14,
       whatsappPhone: '919876543210',
       isSettled: false,
     },
     {
-      id: 'fd-2',
-      friendName: 'Priya Patel',
-      avatarEmoji: '🎨',
-      reason: 'Shared Cab to Airport',
-      amount: 350,
-      daysAgo: 9,
+      id: 'debt-2',
+      friendName: 'Priya Verma',
+      avatarEmoji: '🚕',
+      reason: 'Late Night Airport Uber Fare',
+      amount: 600,
+      daysAgo: 7,
       whatsappPhone: '919876543211',
       isSettled: false,
     },
     {
-      id: 'fd-3',
-      friendName: 'Ankit Verma',
+      id: 'debt-3',
+      friendName: 'Rohan Mehta',
       avatarEmoji: '💻',
       reason: 'Cinema Tickets & Popcorn',
       amount: 250,
@@ -80,7 +107,7 @@ export default function HiddenMoneyFinder() {
     },
   ])
 
-  // State for pending refunds
+  // Pending refunds
   const [refunds] = useState<PendingRefund[]>([
     {
       id: 'ref-1',
@@ -102,7 +129,7 @@ export default function HiddenMoneyFinder() {
     },
   ])
 
-  // State for auto-debit alarms
+  // Auto-debit alarms
   const [alarms, setAlarms] = useState<AutoDebitAlarm[]>([
     {
       id: 'adb-1',
@@ -133,8 +160,6 @@ export default function HiddenMoneyFinder() {
     },
   ])
 
-  const [copiedId, setCopiedId] = useState<string | null>(null)
-
   // Calculations
   const activeDebtsTotal = friendDebts
     .filter(d => !d.isSettled)
@@ -160,23 +185,42 @@ export default function HiddenMoneyFinder() {
     )
   }
 
-  const handleSendReminder = (debt: FriendDebt) => {
-    const text = `Hey ${debt.friendName}! Hope you're doing well. Just a gentle reminder about my ₹${debt.amount} share for ${debt.reason} from a few days ago. Whenever you get time, please UPI it to me. Thanks!`
-    const url = `https://wa.me/?text=${encodeURIComponent(text)}`
+  const handleSendReminderWeb = (nameStr: string, amt: number, reason: string, phoneStr?: string) => {
+    const cleanPhone = (phoneStr || '9876543210').replace(/\D/g, '').slice(-10)
+    const text = `Hey ${nameStr}! Hope you're doing well. Just a quick reminder about my ₹${amt} share for ${reason}. Whenever free, please UPI it to me. Thanks!`
+    const url = `https://web.whatsapp.com/send?phone=91${cleanPhone}&text=${encodeURIComponent(text)}`
     window.open(url, '_blank')
   }
 
-  const handleCopyReminder = (debt: FriendDebt) => {
-    const text = `Hey ${debt.friendName}! Gentle reminder for ₹${debt.amount} for ${debt.reason}. Please UPI when free!`
-    navigator.clipboard.writeText(text)
-    setCopiedId(debt.id)
-    setTimeout(() => setCopiedId(null), 2000)
+  const handleSendReminderMobile = (nameStr: string, amt: number, reason: string, phoneStr?: string) => {
+    const cleanPhone = (phoneStr || '9876543210').replace(/\D/g, '').slice(-10)
+    const text = `Hey ${nameStr}! Hope you're doing well. Quick reminder for ₹${amt} for ${reason}. Please UPI when free!`
+    const url = `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(text)}`
+    window.open(url, '_blank')
   }
 
   const handleCancelAlarm = (id: string) => {
     setAlarms(prev =>
       prev.map(a => (a.id === id ? { ...a, isCancelled: !a.isCancelled } : a))
     )
+  }
+
+  const handleAddSplitToDebts = () => {
+    if (!detectedVenue) return
+    const eachShare = Math.round(detectedVenue.amount / splitCount)
+    const newDebt: FriendDebt = {
+      id: `split-${Date.now()}`,
+      friendName: friendName.trim() || 'Friend',
+      avatarEmoji: detectedVenue.emoji,
+      reason: `${detectedVenue.venueName} (${splitCount}-way split)`,
+      amount: eachShare,
+      daysAgo: 1,
+      whatsappPhone: `91${friendPhone.replace(/\D/g, '').slice(-10)}`,
+      isSettled: false,
+    }
+    setFriendDebts(prev => [newDebt, ...prev])
+    setIsSplittingVenue(false)
+    setDetectedVenue(null)
   }
 
   return (
@@ -198,9 +242,167 @@ export default function HiddenMoneyFinder() {
           Hidden Money Finder
         </h1>
         <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
-          FINVEXA found forgotten friend splits, uncredited merchant refunds, and sneaky free-trial auto-debits that you can claim back right now without borrowing a Rupee.
+          FINVEXA scans your statement timestamps to catch high-value public hangout bills, uncredited merchant refunds, and sneaky auto-debits before they drain your balance.
         </p>
       </div>
+
+      {/* WHY FINVEXA BEATS PHONEPE BANNER */}
+      <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-950/60 to-indigo-950/40 border border-blue-500/40 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 text-xs shadow-md">
+        <div className="flex items-center gap-3">
+          <span className="text-2xl shrink-0">💡</span>
+          <div>
+            <div className="font-bold text-white text-sm">
+              Why FINVEXA Beats PhonePe & Google Pay Split Bill
+            </div>
+            <div className="text-slate-300 text-xs mt-0.5">
+              PhonePe only lets you split <em>after</em> you manually remember to ask at the billing counter. FINVEXA automatically scans your statement for high-ticket dining and entertainment debits so you never forget to collect your share!
+            </div>
+          </div>
+        </div>
+        <span className="px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 font-bold border border-blue-500/30 shrink-0">
+          Automatic Detection
+        </span>
+      </div>
+
+      {/* PUBLIC VENUE BILL DETECTED POPUP CARD */}
+      {detectedVenue && (
+        <Tilt3DCard className="glass-card p-5 sm:p-6 border-2 border-amber-500/50 bg-gradient-to-br from-amber-950/30 to-slate-900/90 rounded-3xl space-y-4 shadow-2xl relative overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-amber-500/20">
+            <div className="flex items-center gap-3">
+              <span className="text-3xl shrink-0">{detectedVenue.emoji}</span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
+                    🎉 Public Venue Hangout Bill Detected!
+                  </span>
+                  <span className="px-2 py-0.2 rounded-full text-[10px] font-mono bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    High Outing Bill
+                  </span>
+                </div>
+                <div className="text-lg font-black text-white mt-0.5">
+                  {detectedVenue.venueName} · <span className="text-amber-300 font-mono">₹{detectedVenue.amount.toLocaleString('en-IN')}</span>
+                </div>
+                <div className="text-xs text-slate-400 mt-0.5">
+                  {detectedVenue.date} · {detectedVenue.detectedReason}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setDetectedVenue(null)}
+                className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+              >
+                👤 Just Me (Solo)
+              </button>
+              <button
+                onClick={() => setIsSplittingVenue(true)}
+                className="px-4 py-1.5 rounded-xl text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md transition-all flex items-center gap-1.5"
+              >
+                <Users size={14} />
+                <span>👥 Group Split! Recover My Money</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Interactive Split Drawer */}
+          {isSplittingVenue && (
+            <div className="pt-2 space-y-4 animate-in fade-in duration-200">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 mb-1">
+                    Split Among How Many People?
+                  </label>
+                  <select
+                    value={splitCount}
+                    onChange={e => setSplitCount(Number(e.target.value))}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs font-bold text-white focus:outline-none"
+                  >
+                    <option value={2}>2 People (₹{Math.round(detectedVenue.amount / 2)} each)</option>
+                    <option value={3}>3 People (₹{Math.round(detectedVenue.amount / 3)} each)</option>
+                    <option value={4}>4 People (₹{Math.round(detectedVenue.amount / 4)} each)</option>
+                    <option value={5}>5 People (₹{Math.round(detectedVenue.amount / 5)} each)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 mb-1">
+                    Friend Name
+                  </label>
+                  <input
+                    type="text"
+                    value={friendName}
+                    onChange={e => setFriendName(e.target.value)}
+                    placeholder="e.g. Rahul"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs font-bold text-white focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-300 mb-1">
+                    Friend WhatsApp Phone (10 digits)
+                  </label>
+                  <input
+                    type="tel"
+                    value={friendPhone}
+                    onChange={e => setFriendPhone(e.target.value)}
+                    placeholder="9876543210"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs font-bold text-white focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Action Buttons: WhatsApp Web & Mobile */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800">
+                <div className="text-xs text-amber-300 font-bold">
+                  Each Friend's Share: ₹{Math.round(detectedVenue.amount / splitCount)}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={() =>
+                      handleSendReminderWeb(
+                        friendName,
+                        Math.round(detectedVenue.amount / splitCount),
+                        detectedVenue.venueName,
+                        friendPhone
+                      )
+                    }
+                    className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1.5 shadow-md transition-all"
+                    title="Opens WhatsApp Web in a new tab"
+                  >
+                    <Laptop size={13} />
+                    <span>Send via WhatsApp Web (Desktop)</span>
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      handleSendReminderMobile(
+                        friendName,
+                        Math.round(detectedVenue.amount / splitCount),
+                        detectedVenue.venueName,
+                        friendPhone
+                      )
+                    }
+                    className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-700 hover:bg-emerald-600 text-white flex items-center gap-1.5 shadow-md transition-all"
+                    title="Opens WhatsApp App"
+                  >
+                    <Smartphone size={13} />
+                    <span>WhatsApp App</span>
+                  </button>
+
+                  <button
+                    onClick={handleAddSplitToDebts}
+                    className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-all"
+                  >
+                    Save to Tracker
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </Tilt3DCard>
+      )}
 
       {/* Hero Recoverable Ticker Card */}
       <Tilt3DCard
@@ -220,7 +422,7 @@ export default function HiddenMoneyFinder() {
               +₹{grandRecoverableTotal.toLocaleString('en-IN')}
             </div>
             <p className="text-xs sm:text-sm text-slate-300 max-w-lg">
-              Recovering this money immediately offsets your upcoming bills and keeps your rent money 100% untouched.
+              Recovering this money immediately offsets your upcoming bills and keeps your rent floor 100% untouched.
             </p>
           </div>
 
@@ -299,19 +501,34 @@ export default function HiddenMoneyFinder() {
                   {!debt.isSettled && (
                     <>
                       <button
-                        onClick={() => handleSendReminder(debt)}
+                        onClick={() =>
+                          handleSendReminderWeb(
+                            debt.friendName,
+                            debt.amount,
+                            debt.reason,
+                            debt.whatsappPhone
+                          )
+                        }
                         className="px-2.5 py-1.5 rounded-xl text-[11px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center gap-1 shadow-sm transition-transform hover:scale-105"
-                        title="Send pre-written reminder via WhatsApp"
+                        title="Send via WhatsApp Web"
                       >
-                        <Send size={11} />
-                        <span>Remind on WhatsApp</span>
+                        <Laptop size={11} />
+                        <span>Web</span>
                       </button>
                       <button
-                        onClick={() => handleCopyReminder(debt)}
-                        className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs"
-                        title="Copy reminder message"
+                        onClick={() =>
+                          handleSendReminderMobile(
+                            debt.friendName,
+                            debt.amount,
+                            debt.reason,
+                            debt.whatsappPhone
+                          )
+                        }
+                        className="px-2.5 py-1.5 rounded-xl text-[11px] font-bold bg-emerald-700 hover:bg-emerald-600 text-white flex items-center gap-1 shadow-sm transition-transform hover:scale-105"
+                        title="Send via WhatsApp App"
                       >
-                        {copiedId === debt.id ? <Check size={13} className="text-emerald-400" /> : '📋'}
+                        <Smartphone size={11} />
+                        <span>App</span>
                       </button>
                     </>
                   )}
@@ -387,7 +604,7 @@ export default function HiddenMoneyFinder() {
           <div className="p-3 rounded-xl bg-blue-950/30 border border-blue-500/20 text-xs text-blue-200 flex items-center gap-2">
             <Clock size={15} className="text-blue-400 shrink-0" />
             <span>
-              RBI Guidelines mandate automatic compensation of ₹100/day if failed transactions are delayed beyond 5 business days.
+              RBI Guidelines mandate automatic compensation of ₹100/day if failed transactions are delayed beyond T+1 business days.
             </span>
           </div>
         </Tilt3DCard>
@@ -399,7 +616,7 @@ export default function HiddenMoneyFinder() {
               <span className="text-xl">🌙</span>
               <div>
                 <h3 className="text-base font-bold text-white">1 AM Food & Surge Markups</h3>
-                <p className="text-xs text-slate-400">Late night delivery surge and convenience fees</p>
+                <p className="text-xs text-slate-400">Statement debit spikes between 11 PM and 3 AM</p>
               </div>
             </div>
             <span className="text-xs font-bold text-rose-400 font-mono">
@@ -407,28 +624,50 @@ export default function HiddenMoneyFinder() {
             </span>
           </div>
 
-          <div className="space-y-2.5 text-xs">
-            <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 flex justify-between items-center">
+          <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-300 space-y-1">
+            <div className="font-bold text-amber-300 flex items-center gap-1.5">
+              <AlertCircle size={13} />
+              <span>How AI Detected This from Your Statement:</span>
+            </div>
+            <p className="text-[11px] text-slate-400">
+              Aggregator debits with timestamps from 11 PM to 3:30 AM contain hidden ₹45–₹95 late-night fees and 20% menu price inflations.
+            </p>
+          </div>
+
+          <div className="space-y-2 text-xs">
+            <div className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex justify-between items-center">
               <span className="text-slate-300">Late Night Surge Charges (12 AM - 3 AM):</span>
               <span className="text-rose-400 font-bold font-mono">₹1,400</span>
             </div>
-            <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 flex justify-between items-center">
+            <div className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex justify-between items-center">
               <span className="text-slate-300">Rain & High Demand Surcharges:</span>
               <span className="text-rose-400 font-bold font-mono">₹950</span>
             </div>
-            <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 flex justify-between items-center">
-              <span className="text-slate-300">Small Order & Packaging Markups:</span>
+            <div className="p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 flex justify-between items-center">
+              <span className="text-slate-300">Packaging & Platform Fees:</span>
               <span className="text-rose-400 font-bold font-mono">₹850</span>
             </div>
           </div>
 
-          <div className="p-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-200 space-y-1">
-            <div className="font-bold flex items-center gap-1.5">
-              <Sparkles size={13} className="text-emerald-400" />
-              <span>Easy Fix: Meal Prep or Keep Quick Snacks at Home</span>
+          {/* AI Web Researched Alternative */}
+          <div className="p-3.5 rounded-2xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-200 space-y-2">
+            <div className="font-bold flex items-center justify-between">
+              <span className="flex items-center gap-1.5">
+                <Sparkles size={13} className="text-emerald-400" />
+                <span>AI Web Alternative: Order via ONDC Direct</span>
+              </span>
+              <a
+                href="https://ondc.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] font-bold text-emerald-400 hover:underline flex items-center gap-1"
+              >
+                <span>ondc.org</span>
+                <ExternalLink size={10} />
+              </a>
             </div>
             <p className="text-[11px] text-emerald-300/80">
-              Keeping 4 packs of quick noodles or meal prep on Sunday saves <strong>₹2,400 every month</strong> instantly — almost 15% of your rent!
+              Order directly through ONDC-backed apps (Paytm, Magicpin) where local restaurants charge <strong>0% commission and zero surge fees</strong>, saving you ₹2,400 every month!
             </p>
           </div>
         </Tilt3DCard>
@@ -440,12 +679,22 @@ export default function HiddenMoneyFinder() {
               <span className="text-xl">⏰</span>
               <div>
                 <h3 className="text-base font-bold text-white">Free-Trial Auto-Debit Alarms</h3>
-                <p className="text-xs text-slate-400">Subscriptions about to charge your card/UPI</p>
+                <p className="text-xs text-slate-400">Recurring e-mandates flagged from ₹1/₹2 setup debits</p>
               </div>
             </div>
             <span className="text-xs font-bold text-rose-400 font-mono">
               ₹{activeAlarmsTotal} Due Soon
             </span>
+          </div>
+
+          <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-300 space-y-1">
+            <div className="font-bold text-amber-300 flex items-center gap-1.5">
+              <AlertCircle size={13} />
+              <span>How AI Detected This from Your Statement:</span>
+            </div>
+            <p className="text-[11px] text-slate-400">
+              Initial ₹1 or ₹2 mandate authorization entries were detected. These free trials auto-convert into full monthly subscriptions after 14–30 days.
+            </p>
           </div>
 
           <div className="space-y-3">
@@ -487,11 +736,26 @@ export default function HiddenMoneyFinder() {
             ))}
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-400 flex items-center gap-2">
-            <BellRing size={15} className="text-amber-400 shrink-0" />
-            <span>
-              Under RBI e-mandate rules, banks must send an SMS notification 24 hours before any recurring auto-debit charge.
-            </span>
+          {/* AI Web Researched Alternative */}
+          <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs text-slate-300 space-y-1">
+            <div className="font-bold text-blue-400 flex items-center justify-between">
+              <span className="flex items-center gap-1.5">
+                <Sparkles size={13} />
+                <span>AI Saving Hack: Student & Family Bundles</span>
+              </span>
+              <a
+                href="https://www.amazon.in/prime"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] font-bold text-blue-400 hover:underline flex items-center gap-1"
+              >
+                <span>Amazon Prime Student</span>
+                <ExternalLink size={10} />
+              </a>
+            </div>
+            <p className="text-[11px] text-slate-400">
+              Use your college email (.edu / college ID) to claim 50% cashback on Amazon Prime and Apple Music, saving ₹1,200/year.
+            </p>
           </div>
         </Tilt3DCard>
       </div>

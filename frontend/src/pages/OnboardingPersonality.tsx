@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import FinvexaLogo from '../components/FinvexaLogo'
-import { CheckCircle2, ArrowRight, Sparkles, User, IndianRupee } from 'lucide-react'
+import { CheckCircle2, ArrowRight, Sparkles, User, IndianRupee, Target } from 'lucide-react'
 import { useApp } from '../context/AppContext'
 import type { PersonaType } from '../context/AppContext'
 
@@ -15,6 +15,8 @@ interface PersonalityOption {
   highlight: string
   defaultIncome: number
   color: string
+  defaultGoal: string
+  goalChips: string[]
 }
 
 const PERSONALITIES: PersonalityOption[] = [
@@ -28,6 +30,12 @@ const PERSONALITIES: PersonalityOption[] = [
     highlight: '₹18,000 Rent & Fees Locked · ₹3,200 Delivery Leak Protection',
     defaultIncome: 45000,
     color: '#a855f7',
+    defaultGoal: 'Buy a ₹55,000 laptop in 2 months',
+    goalChips: [
+      'Buy a ₹55,000 laptop in 2 months',
+      'Save for a ₹75,000 electric bike in 4 months',
+      'Build a ₹25,000 emergency fund in 3 months',
+    ],
   },
   {
     type: 'freelancer',
@@ -39,6 +47,12 @@ const PERSONALITIES: PersonalityOption[] = [
     highlight: '22-Day Invoice Delay Simulator · WhatsApp UPI Screenshot Spy',
     defaultIncome: 65000,
     color: '#f59e0b',
+    defaultGoal: 'Buy ₹45,000 camera gear in 45 days',
+    goalChips: [
+      'Buy ₹45,000 camera gear in 45 days',
+      'Upgrade home studio for ₹60,000 in 3 months',
+      'Save 3 months living buffer of ₹40,000',
+    ],
   },
   {
     type: 'business',
@@ -50,30 +64,52 @@ const PERSONALITIES: PersonalityOption[] = [
     highlight: '₹35,000 Cash Shortage Alert · Worker Wage Lock · Multi-Batch Split',
     defaultIncome: 85000,
     color: '#10b981',
+    defaultGoal: 'Take a ₹1,00,000 T-shirt bulk order in 30 days',
+    goalChips: [
+      'Take a ₹1,00,000 T-shirt order in 30 days',
+      'Buy ₹2,50,000 screen printing machine in 6 months',
+      'Stock ₹80,000 raw cotton fabric before festival season',
+    ],
   },
 ]
 
 export default function OnboardingPersonality() {
   const navigate = useNavigate()
-  const { authUser } = useApp()
+  const { authUser, updateUserGoal } = useApp()
 
   const [name, setName] = useState(authUser?.name !== 'Guest Explorer' ? authUser?.name || '' : '')
   const [selectedPersona, setSelectedPersona] = useState<PersonaType>('salaried')
   const [income, setIncome] = useState<number>(45000)
+  const [goalInput, setGoalInput] = useState<string>('Buy a ₹55,000 laptop in 2 months')
+
+  const currentOption = PERSONALITIES.find(p => p.type === selectedPersona) || PERSONALITIES[0]
 
   const handleSelect = (p: PersonalityOption) => {
     setSelectedPersona(p.type)
     setIncome(p.defaultIncome)
+    setGoalInput(p.defaultGoal)
   }
 
   const handleNext = () => {
-    // Save temporary details in sessionStorage or state for step 2
+    // Parse goal amount
+    const numMatch = goalInput.replace(/,/g, '').match(/(\d+)/)
+    const parsedAmount = numMatch ? parseInt(numMatch[0], 10) : 55000
+
+    updateUserGoal({
+      title: goalInput.trim() || 'Custom Financial Goal',
+      targetAmount: parsedAmount >= 1000 ? parsedAmount : parsedAmount * 1000,
+      targetMonths: goalInput.includes('month') ? 2 : 3,
+      category: selectedPersona === 'business' ? 'inventory' : selectedPersona === 'freelancer' ? 'equipment' : 'tech',
+    })
+
+    // Save temporary details in sessionStorage
     sessionStorage.setItem(
       'finvexa_temp_onboarding',
       JSON.stringify({
         name: name.trim() || 'Explorer',
         income,
         persona: selectedPersona,
+        goal: goalInput.trim(),
       })
     )
     navigate('/onboarding/bank-link')
@@ -98,24 +134,24 @@ export default function OnboardingPersonality() {
         </div>
         <div className="flex items-center gap-2">
           <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-            Step 1 of 2: Your Life Situation
+            Step 1 of 2: Life Situation & Goals
           </span>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="w-full max-w-4xl mx-auto py-6 sm:py-8 space-y-6">
+      <div className="w-full max-w-4xl mx-auto py-6 space-y-6">
         <div className="text-center max-w-xl mx-auto space-y-2">
           <h1 className="text-2xl sm:text-3xl font-black text-slate-950 tracking-tight">
-            Tell Us About Your Financial Life
+            Tell Us About Your Financial Life & Goals
           </h1>
           <p className="text-xs sm:text-sm text-slate-500">
-            FINVEXA custom-calibrates every single simulation, warning, and rescue strategy to your exact situation.
+            Bank statements only show past history. Tell FINVEXA what you want to buy or accept next so we can simulate your future.
           </p>
         </div>
 
         {/* Input Details: Name & Monthly Inflow */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">
               Your Full Name
@@ -149,22 +185,68 @@ export default function OnboardingPersonality() {
           </div>
         </div>
 
+        {/* Next Big Goal / Purchase Input */}
+        <div className="max-w-3xl mx-auto bg-white p-5 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-blue-500/15 text-blue-600 flex items-center justify-center shrink-0">
+              <Target size={18} />
+            </div>
+            <div>
+              <label className="block text-xs sm:text-sm font-bold text-slate-900">
+                What do you want to buy, save for, or accept as an order next?
+              </label>
+              <p className="text-[11px] text-slate-500">
+                Type in your own words (e.g., 'Buy a ₹55,000 laptop in 2 months' or 'Take a ₹1,00,000 T-shirt order')
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-slate-300 px-4 py-3 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20">
+            <input
+              type="text"
+              value={goalInput}
+              onChange={e => setGoalInput(e.target.value)}
+              placeholder="e.g. Buy a ₹55,000 laptop in 2 months"
+              className="w-full text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none"
+            />
+          </div>
+
+          {/* Quick Goal Suggestion Chips */}
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Quick Suggestions:</span>
+            {currentOption.goalChips.map((chip, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setGoalInput(chip)}
+                className={`text-xs px-3 py-1.5 rounded-xl font-medium transition-all border ${
+                  goalInput === chip
+                    ? 'bg-blue-50 text-blue-700 border-blue-300 font-bold'
+                    : 'bg-slate-50 hover:bg-slate-100 text-slate-600 border-slate-200'
+                }`}
+              >
+                {chip}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* 3 Personality Cards */}
-        <div className="space-y-3">
+        <div className="space-y-3 max-w-3xl mx-auto">
           <div className="text-center">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
               Select Your Personality
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {PERSONALITIES.map(p => {
               const isSelected = selectedPersona === p.type
               return (
                 <div
                   key={p.type}
                   onClick={() => handleSelect(p)}
-                  className={`p-5 sm:p-6 rounded-3xl border-2 cursor-pointer transition-all duration-200 relative flex flex-col justify-between ${
+                  className={`p-5 rounded-3xl border-2 cursor-pointer transition-all duration-200 relative flex flex-col justify-between ${
                     isSelected
                       ? 'bg-white shadow-xl scale-[1.02]'
                       : 'bg-white/80 hover:bg-white border-slate-200 hover:border-slate-300 shadow-sm'
@@ -217,7 +299,7 @@ export default function OnboardingPersonality() {
       <div className="w-full max-w-4xl mx-auto pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="text-xs text-slate-500 flex items-center gap-1.5">
           <Sparkles size={14} className="text-emerald-500" />
-          <span>You can switch your personality anytime later from your Profile.</span>
+          <span>You can switch your personality & goals anytime later from your Profile.</span>
         </div>
 
         <button
