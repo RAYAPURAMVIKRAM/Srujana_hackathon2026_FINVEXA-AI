@@ -329,14 +329,14 @@ export default function HiddenMoneyFinder() {
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-base sm:text-lg font-black text-amber-200">
-                Public Hangout Group Bill Detected!
+                🎉 Public Hangout Group Bill Detected!
               </h2>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
                 {venueBills.length} High Bills Found
               </span>
             </div>
             <p className="text-xs sm:text-sm text-amber-200/80 mt-1 font-medium leading-relaxed">
-              Forgot to use PhonePe Split Bill at the counter? Our AI spotted unusually high bills at public hangout places (Restaurants, Movie Theaters, Malls, Parks) compared to your normal solo spending!
+              Forgot to split at the counter? Our AI detected unusually high restaurant, movie theater, and mall hangout transactions from your bank statements where you paid the whole bill:
             </p>
           </div>
         </div>
@@ -380,13 +380,13 @@ export default function HiddenMoneyFinder() {
                       onClick={() => handleDismissVenue(bill.id)}
                       className="flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors border border-white/5"
                     >
-                      👤 Just Me (Solo)
+                      👤 Solo Bill
                     </button>
                     <button
                       onClick={() => setActiveSplitId(bill.id)}
                       className="flex-1 py-1.5 px-2 rounded-lg text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-950 transition-colors shadow-lg shadow-amber-500/20"
                     >
-                      👥 Group Split!
+                      👥 Group Split - Recover Money
                     </button>
                   </div>
                 ) : (
@@ -475,7 +475,7 @@ export default function HiddenMoneyFinder() {
                         title="Opens WhatsApp Web in a new browser tab"
                       >
                         <Laptop size={13} />
-                        <span>💻 Send on WhatsApp Web</span>
+                        <span>💻 Send Reminder on WhatsApp Web</span>
                       </button>
 
                       <div className="flex items-center gap-1.5">

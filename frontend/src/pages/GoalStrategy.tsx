@@ -421,6 +421,142 @@ export default function GoalStrategy() {
           ))}
         </div>
       </div>
+
+      {/* 4. VERIFIED DIGITAL PUBLIC INFRASTRUCTURE & PAYMENT LINKS */}
+      <div className="bg-slate-900/70 backdrop-blur-xl p-6 rounded-3xl border border-white/10 shadow-xl space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <span className="text-xl">🏛️</span>
+            <div>
+              <h3 className="text-base font-bold text-white">
+                Official Government & Verified Financial Infrastructure
+              </h3>
+              <p className="text-xs text-slate-400">
+                Direct external resources to securely optimize cashflow, discount unpaid bills, and collect advance payments:
+              </p>
+            </div>
+          </div>
+          <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono shrink-0">
+            100% Real Working Links
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-1">
+          {/* Sahamati */}
+          <a
+            href="https://sahamati.org.in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-4 rounded-2xl bg-slate-950/70 hover:bg-slate-950/90 border border-white/10 hover:border-emerald-500/50 transition-all group flex flex-col justify-between space-y-3"
+          >
+            <div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors flex items-center gap-1">
+                  RBI Account Aggregator
+                  <ExternalLink size={12} className="opacity-70" />
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  Sahamati
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 mt-2 leading-relaxed">
+                Connect your bank statements through RBI-regulated Account Aggregators with 100% data privacy.
+              </p>
+            </div>
+            <span className="text-[11px] font-bold text-emerald-400 flex items-center gap-1 group-hover:underline">
+              Visit sahamati.org.in ↗
+            </span>
+          </a>
+
+          {/* TReDS MSME */}
+          <div className="p-4 rounded-2xl bg-slate-950/70 hover:bg-slate-950/90 border border-white/10 hover:border-blue-500/50 transition-all group flex flex-col justify-between space-y-3">
+            <div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors flex items-center gap-1">
+                  TReDS MSME Invoice
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                  48h Cash
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 mt-2 leading-relaxed">
+                Discount unpaid corporate bills for immediate bank liquidity at low repo rates.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 pt-1 border-t border-white/5">
+              <a
+                href="https://www.invoicemart.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] font-bold text-blue-400 hover:underline flex items-center gap-0.5"
+              >
+                Invoicemart ↗
+              </a>
+              <span className="text-slate-600">·</span>
+              <a
+                href="https://www.m1xchange.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] font-bold text-blue-400 hover:underline flex items-center gap-0.5"
+              >
+                M1xchange ↗
+              </a>
+            </div>
+          </div>
+
+          {/* ONDC */}
+          <a
+            href="https://ondc.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-4 rounded-2xl bg-slate-950/70 hover:bg-slate-950/90 border border-white/10 hover:border-amber-500/50 transition-all group flex flex-col justify-between space-y-3"
+          >
+            <div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-white group-hover:text-amber-400 transition-colors flex items-center gap-1">
+                  ONDC Open Network
+                  <ExternalLink size={12} className="opacity-70" />
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                  Zero Surge
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 mt-2 leading-relaxed">
+                Source products, logistics, and food directly without 30% aggregator commission markups.
+              </p>
+            </div>
+            <span className="text-[11px] font-bold text-amber-400 flex items-center gap-1 group-hover:underline">
+              Visit ondc.org ↗
+            </span>
+          </a>
+
+          {/* Razorpay Payment Links */}
+          <a
+            href="https://razorpay.com/payment-links/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-4 rounded-2xl bg-slate-950/70 hover:bg-slate-950/90 border border-white/10 hover:border-cyan-500/50 transition-all group flex flex-col justify-between space-y-3"
+          >
+            <div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-white group-hover:text-cyan-400 transition-colors flex items-center gap-1">
+                  Razorpay Payment Links
+                  <ExternalLink size={12} className="opacity-70" />
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                  Advance 50%
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-400 mt-2 leading-relaxed">
+                Collect upfront advance deposits via UPI, cards, and netbanking in seconds.
+              </p>
+            </div>
+            <span className="text-[11px] font-bold text-cyan-400 flex items-center gap-1 group-hover:underline">
+              Create Payment Link ↗
+            </span>
+          </a>
+        </div>
+      </div>
     </div>
   )
 }
