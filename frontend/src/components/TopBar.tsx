@@ -17,8 +17,10 @@ import RbiAccountAggregatorModal from './RbiAccountAggregatorModal'
 
 export default function TopBar() {
   const navigate = useNavigate()
+  const [showScaleMenu, setShowScaleMenu] = useState(false)
   const {
     persona,
+    setPersona,
     personaData,
     authUser,
     logout,
@@ -75,8 +77,94 @@ export default function TopBar() {
             </div>
           </div>
 
+          {/* Prominent Scale Switcher Pill in Top Bar */}
+          <div className="relative">
+            <button
+              onClick={() => setShowScaleMenu(!showScaleMenu)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all shadow-sm ${
+                persona === 'enterprise'
+                  ? 'bg-gradient-to-r from-blue-600 via-sky-600 to-indigo-700 text-white border border-blue-400 shadow-blue-500/20 animate-pulse'
+                  : persona === 'business'
+                  ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/40'
+                  : persona === 'freelancer'
+                  ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/40'
+                  : isLight
+                  ? 'bg-slate-100 text-slate-800 border border-slate-300 hover:border-blue-400'
+                  : 'bg-white/10 text-slate-200 border border-white/15 hover:border-blue-400'
+              }`}
+              title="Click to switch scale (₹10K to $10 Billion)"
+            >
+              <span>
+                {persona === 'enterprise'
+                  ? '🏛️ Enterprise ($2.4B / ₹20,000 Cr)'
+                  : persona === 'business'
+                  ? '🏪 SME (₹1L–₹5 Cr)'
+                  : persona === 'freelancer'
+                  ? '💻 Freelancer (₹45K–₹5L)'
+                  : '🎓 Student / Individual (₹55K)'}
+              </span>
+              {persona === 'enterprise' && (
+                <span className="text-[9px] bg-amber-400 text-slate-950 font-black px-1.5 py-0.2 rounded-full">
+                  👑 FLAGSHIP
+                </span>
+              )}
+              <ChevronDown size={13} />
+            </button>
+
+            {/* Scale Switcher Dropdown */}
+            {showScaleMenu && (
+              <div
+                className={`absolute left-0 mt-2 w-72 rounded-2xl p-2 shadow-2xl border z-50 animate-fade-in ${
+                  isLight
+                    ? 'bg-white border-slate-200 text-slate-900 shadow-slate-300/60'
+                    : 'bg-slate-900 border-white/15 text-white shadow-black/80'
+                }`}
+              >
+                <div className={`px-2 py-1 text-[10px] font-black uppercase tracking-wider ${isLight ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Select Universal Financial Scale
+                </div>
+                {[
+                  { id: 'salaried' as const, label: '🎓 Individual / Student', scale: '₹55K Scale' },
+                  { id: 'freelancer' as const, label: '💻 Freelancer / Studio', scale: '₹45K–₹5L Scale' },
+                  { id: 'business' as const, label: '🏪 SME / Factory', scale: '₹1L–₹5 Cr Scale' },
+                  {
+                    id: 'enterprise' as const,
+                    label: '🏛️ Enterprise Megaproject',
+                    scale: '$2.4B / ₹20,000 Cr Scale',
+                    badge: '👑 FLAGSHIP',
+                  },
+                ].map(opt => (
+                  <button
+                    key={opt.id}
+                    onClick={() => {
+                      setPersona(opt.id)
+                      setShowScaleMenu(false)
+                    }}
+                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-between transition-all ${
+                      persona === opt.id
+                        ? 'bg-blue-600 text-white shadow-sm'
+                        : isLight
+                        ? 'hover:bg-slate-100 text-slate-700'
+                        : 'hover:bg-white/10 text-slate-300'
+                    }`}
+                  >
+                    <span>{opt.label}</span>
+                    <span className="flex items-center gap-1.5">
+                      {opt.badge && (
+                        <span className="text-[9px] bg-amber-400 text-slate-950 px-1 py-0.2 rounded font-black">
+                          {opt.badge}
+                        </span>
+                      )}
+                      <span className="font-mono text-[11px] opacity-80">{opt.scale}</span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           {/* Quick Bank & Security Live Badges */}
-          <div className="hidden lg:flex items-center gap-2">
+          <div className="hidden xl:flex items-center gap-2">
             <button
               onClick={() => setIsRbiModalOpen(true)}
               className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-semibold transition-all shadow-xs ${
@@ -105,7 +193,7 @@ export default function TopBar() {
               }`}
             >
               <Coins size={12} className="text-amber-500" />
-              <span>{t('topbar.hiddenMoney')}: ₹{personaData.hiddenLeaks}/mo</span>
+              <span>{t('topbar.hiddenMoney')}</span>
             </button>
           </div>
 

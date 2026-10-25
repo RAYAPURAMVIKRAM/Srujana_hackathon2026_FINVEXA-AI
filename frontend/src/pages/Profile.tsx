@@ -36,7 +36,7 @@ export default function Profile() {
   const [showResetConfirm, setShowResetConfirm] = useState(false)
   const [showRevokeConfirm, setShowRevokeConfirm] = useState(false)
 
-  const personaList: PersonaType[] = ['salaried', 'freelancer', 'business']
+  const personaList: PersonaType[] = ['salaried', 'freelancer', 'business', 'enterprise']
   const isLight = themeMode === 'light'
   const theme = personaData.theme
 
@@ -189,7 +189,7 @@ export default function Profile() {
           <span>Switch Your Personality Anytime</span>
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {personaList.map(type => {
             const p = PERSONAS[type]
             const isSelected = persona === type

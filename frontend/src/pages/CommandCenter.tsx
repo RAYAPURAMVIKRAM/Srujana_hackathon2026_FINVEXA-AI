@@ -24,7 +24,7 @@ import GoalQuickEditBar from '../components/GoalQuickEditBar'
 import { generateCashflow, computeRiskMetrics } from '../lib/cashflow'
 
 export default function CommandCenter() {
-  const { personaData, simulator, bankConsent, userGoal, themeMode, t } = useApp()
+  const { persona, personaData, simulator, bankConsent, userGoal, themeMode, t, formatMoney } = useApp()
   const navigate = useNavigate()
   const theme = personaData.theme
   const isLight = themeMode === 'light'
@@ -42,7 +42,7 @@ export default function CommandCenter() {
     personaType: personaData.type,
   })
 
-  const { shortage } = computeRiskMetrics(cashflow, personaData.lockedReserves)
+  const { shortage, dscr, isCovenantBreached } = computeRiskMetrics(cashflow, personaData.lockedReserves)
 
   const liquidityStatus =
     personaData.balance > personaData.lockedReserves * 1.5
@@ -59,9 +59,9 @@ export default function CommandCenter() {
       title: t('check1.title'),
       question: t('check1.question'),
       desc: t('check1.desc'),
-      statusBadge: shortage === 0 ? 'SAFE' : `DEFICIT: ₹${shortage.toLocaleString('en-IN')}`,
+      statusBadge: shortage === 0 ? 'SAFE' : `DEFICIT: ${formatMoney(-shortage)}`,
       statusType: shortage === 0 ? 'safe' : 'critical',
-      liveMetric: `Simulating ₹${simulator.decisionCost.toLocaleString('en-IN')} spend`,
+      liveMetric: `Simulating ${formatMoney(simulator.decisionCost)} spend`,
     },
     {
       num: 2,
@@ -71,7 +71,7 @@ export default function CommandCenter() {
       desc: t('check2.desc'),
       statusBadge: '100% PROTECTED',
       statusType: 'safe',
-      liveMetric: `₹${personaData.lockedReserves.toLocaleString('en-IN')} locked for EMIs & rent`,
+      liveMetric: `${formatMoney(personaData.lockedReserves)} locked for commitments`,
     },
     {
       num: 3,
@@ -89,9 +89,9 @@ export default function CommandCenter() {
       title: t('check4.title'),
       question: t('check4.question'),
       desc: t('check4.desc'),
-      statusBadge: `₹${personaData.hiddenLeaks}/MO SCANNED`,
+      statusBadge: `${formatMoney(personaData.hiddenLeaks)}/MO SCANNED`,
       statusType: 'warning',
-      liveMetric: 'Delivery surge & auto-debits audited',
+      liveMetric: 'Macro/FX leak & contract audit active',
     },
     {
       num: 5,
@@ -249,57 +249,77 @@ export default function CommandCenter() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          {/* Card 1: Money Safe in Bank */}
+          {/* Card 1: Money Safe in Bank / Treasury Liquidity */}
           <KpiCard
-            label={t('kpi.balance')}
-            value={`₹${personaData.balance.toLocaleString('en-IN')}`}
-            sub={`Untouchable Floor: ₹${personaData.lockedReserves.toLocaleString('en-IN')}`}
+            label={persona === 'enterprise' ? 'Global Treasury Liquidity' : t('kpi.balance')}
+            value={formatMoney(personaData.balance)}
+            sub={
+              persona === 'enterprise'
+                ? `JPMorgan, Citi, SBI Pools · Floor: ${formatMoney(personaData.lockedReserves)}`
+                : `Untouchable Floor: ${formatMoney(personaData.lockedReserves)}`
+            }
             status={liquidityStatus}
             icon={<CreditCard size={18} />}
             trend={
               liquidityStatus === 'safe'
-                ? '↑ Safe balance in your bank'
-                : '⚠ Very close to your untouchable money'
+                ? '↑ Safe balance in multi-bank treasury'
+                : '⚠ Deficit breach risks 1.35x DSCR covenant'
             }
           />
 
-          {/* Card 2: Commitment Protection */}
+          {/* Card 2: Commitment Protection / Debt Covenant Floor */}
           <KpiCard
-            label={t('kpi.locked')}
-            value={`₹${personaData.lockedReserves.toLocaleString('en-IN')}`}
-            sub="Home Loan EMI, rent, staff salaries & emergency floor"
+            label={persona === 'enterprise' ? 'Debt Covenant & Payroll Floor' : t('kpi.locked')}
+            value={formatMoney(personaData.lockedReserves)}
+            sub={
+              persona === 'enterprise'
+                ? 'Senior Bond Coupons, 1.35x DSCR & 40,000 Payroll'
+                : 'Home Loan EMI, rent, staff salaries & emergency floor'
+            }
             status="safe"
             icon={<Lock size={18} />}
-            trend="100% Protected from impulse spending"
+            trend={
+              persona === 'enterprise'
+                ? 'Mandatory legal covenant ring-fenced'
+                : '100% Protected from impulse spending'
+            }
           />
 
-          {/* Card 3: Planned Spending Outflow (Dynamically Synced with decisionCost) */}
+          {/* Card 3: Planned Spending Outflow / EPC CapEx Execution */}
           <KpiCard
-            label={t('kpi.planned')}
-            value={`₹${simulator.decisionCost.toLocaleString('en-IN')}`}
+            label={persona === 'enterprise' ? 'EPC CapEx Execution Budget' : t('kpi.planned')}
+            value={formatMoney(simulator.decisionCost)}
             sub={userGoal.title || personaData.purchaseLabel}
             status="neutral"
             icon={<Target size={18} />}
             trend="Syncs all 90-day simulator curves live"
           />
 
-          {/* Card 4: Safe to Spend Today / Projected Shortage */}
+          {/* Card 4: Safe to Spend Today / Projected Shortage / DSCR */}
           <KpiCard
-            label={t('kpi.safeSpend')}
+            label={persona === 'enterprise' ? 'Working Capital Deficit / DSCR' : t('kpi.safeSpend')}
             value={
               shortage > 0
-                ? `-₹${shortage.toLocaleString('en-IN')}`
-                : `₹${Math.max(0, personaData.balance - personaData.lockedReserves - simulator.decisionCost).toLocaleString('en-IN')}`
+                ? formatMoney(-shortage)
+                : formatMoney(Math.max(0, personaData.balance - personaData.lockedReserves - simulator.decisionCost))
             }
             sub={
-              shortage > 0
-                ? `Shortage of ₹${shortage.toLocaleString('en-IN')} if purchase made`
+              persona === 'enterprise'
+                ? shortage > 0
+                  ? `🚨 Breaches 1.35x DSCR Covenant (${dscr}x) on Day 42`
+                  : `✅ AAA Covenant Safe (${dscr}x DSCR)`
+                : shortage > 0
+                ? `Shortage of ${formatMoney(shortage)} if purchase made`
                 : 'Safe surplus remaining after all bills & goal'
             }
             status={shortage > 0 ? 'critical' : 'safe'}
             icon={<CheckCircle2 size={18} />}
             trend={
-              shortage === 0
+              persona === 'enterprise'
+                ? isCovenantBreached
+                  ? '🚨 Covenant breach triggers loan acceleration & credit downgrade'
+                  : '✓ Treasury liquidity fully compliant with bond covenants'
+                : shortage === 0
                 ? '✓ Spend freely without breaking emergency fund'
                 : '⚠ Buying now will push you into cash shortage'
             }

@@ -133,6 +133,40 @@ const SAMPLE_RESULTS: Record<string, ScanResult> = {
       ],
     },
   },
+  enterprise: {
+    type: '🏛️ 400-Page Megaproject EPC Contract & SWIFT LC ($2.4B)',
+    extractedTerms: [
+      { key: 'Contract Value', value: '$2.40 Billion (₹20,000 Cr)', risk: 'low' },
+      { key: 'Counterparty Sovereign Entity', value: 'Ministry of Transport & Rail Corp', risk: 'low' },
+      { key: 'Milestone Tranche 1', value: '$600 Million (₹5,040 Cr) at 48-Day SLA', risk: 'medium' },
+      { key: 'Senior Debt Covenant', value: 'Minimum 1.35x DSCR Lock (Senior Bonds)', risk: 'low' },
+      { key: 'SWIFT Instrument', value: 'SWIFT MT700 Irrevocable Documentary Credit', risk: 'low' },
+      { key: 'ERP Subsidiary Match', value: 'SAP S/4HANA & Oracle NetSuite Synced', risk: 'low' },
+    ],
+    hiddenFees: [
+      { description: 'Unhedged EUR/USD/INR FX Volatility (4.2% currency swing risk)', amount: 48000000, severity: 'high' },
+      { description: 'Tier-2 EPC Supplier Steel & Semiconductor Inflation Escalation', amount: 52000000, severity: 'high' },
+      { description: 'Buried Liquidated Damages (LD) Penalty Clause: 0.5% per week past SLA', amount: 30000000, severity: 'medium' },
+    ],
+    fraudFlags: [
+      { flag: 'Unhedged Macro FX & Commodity Exposure', detail: '$130M in contract leaks buried across 400 pages of tender specifications. Breaches profit margin if USD/INR swings 4%!', risk: 'high' },
+      { flag: 'SWIFT MT700 LC Beneficiary Verification', detail: 'Verified authentic irrevocable LC issued by JPMorgan Chase & Citi Corporate. Zero shell-company duplicate billing.', risk: 'low' },
+    ],
+    utrStatus: 'verified',
+    overallRisk: 'warning',
+    summary: 'Institutional Forensics Complete: Scanned 400-page EPC contract & SWIFT MT700 LC. Discovered $130M (₹1,092 Cr) in hidden FX volatility, steel escalation, and 0.5%/wk Liquidated Damages. 1.35x DSCR protected!',
+    legalVerdict: {
+      isGenuine: true,
+      verdictTitle: '✅ Verified Institutional Contract & SWIFT LC',
+      confidenceScore: 99,
+      checks: [
+        { name: 'SWIFT MT700 & 12-Digit Bank UTR Match', status: 'pass', detail: 'Cryptographic SWIFT MT700 LC authenticated against JPMorgan and Citi correspondent ledgers' },
+        { name: 'ERP 3-Way Match & Beneficiary Anti-Spoofing', status: 'pass', detail: 'SAP S/4HANA purchase order, receiving report, and vendor IBAN verified with zero shell-company duplicate billing' },
+        { name: 'Debt Covenant & 1.35x DSCR Lock Verification', status: 'warn', detail: '$420M ring-fenced for Senior Bond coupons; unmitigated 48d delay drops DSCR to 0.82x on Day 42' },
+        { name: 'Macro FX, Steel Escalation & LD Penalty Discovery', status: 'fail', detail: '$130M ($48M FX + $52M Steel + $30M LDs) unhedged exposure discovered buried in 400-page tender' },
+      ],
+    },
+  },
 }
 
 const RISK_CFG = {
@@ -505,6 +539,13 @@ export default function Scanner() {
           >
             <Image size={13} />
             <span>WhatsApp Fake UPI Slip</span>
+          </button>
+          <button
+            onClick={() => handleSample('enterprise')}
+            className="px-3 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-600 hover:to-indigo-600 text-white border border-blue-400/50 shadow-md flex items-center gap-1.5 transition-all"
+          >
+            <ShieldCheck size={13} className="text-amber-300" />
+            <span>🏛️ 400-Pg EPC Contract &amp; SWIFT LC ($2.4B)</span>
           </button>
         </div>
       </div>

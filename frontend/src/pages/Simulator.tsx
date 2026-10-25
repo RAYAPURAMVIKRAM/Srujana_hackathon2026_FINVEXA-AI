@@ -89,23 +89,35 @@ const CustomTooltip = ({ active, payload, label }: any) => {
       <div className={`text-xs mb-2 font-bold font-mono ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
         Day {label} Balance Check
       </div>
-      {payload.map((p: any) => (
-        <div key={p.dataKey} className="flex justify-between items-center gap-4 py-0.5">
-          <span className="text-xs font-semibold" style={{ color: p.color }}>
-            {p.name}
-          </span>
-          <span className={`mono text-xs font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
-            ₹{Math.abs(p.value).toLocaleString('en-IN')}
-            {p.value < 0 && <span className="text-rose-500 font-black"> (Shortage)</span>}
-          </span>
-        </div>
-      ))}
+      {payload.map((p: any) => {
+        const val = p.value
+        let valFormatted = ''
+        if (Math.abs(val) >= 1_000_000) {
+          const usd = Math.abs(val) >= 1e9 ? `$${(val / 1e9).toFixed(2)}B` : `$${Math.round(val / 1e6)}M`
+          const inrCr = Math.round((Math.abs(val) * 84) / 10_000_000)
+          valFormatted = val < 0 ? `-${usd} (-₹${inrCr} Cr)` : `${usd} (₹${inrCr} Cr)`
+        } else {
+          valFormatted = `₹${Math.abs(val).toLocaleString('en-IN')}`
+        }
+
+        return (
+          <div key={p.dataKey} className="flex justify-between items-center gap-4 py-0.5">
+            <span className="text-xs font-semibold" style={{ color: p.color }}>
+              {p.name}
+            </span>
+            <span className={`mono text-xs font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
+              {valFormatted}
+              {val < 0 && <span className="text-rose-500 font-black"> (Deficit)</span>}
+            </span>
+          </div>
+        )
+      })}
     </div>
   )
 }
 
 export default function Simulator() {
-  const { personaData, simulator, setSimulator, themeMode } = useApp()
+  const { persona, personaData, simulator, setSimulator, themeMode, formatMoney } = useApp()
   const isLight = themeMode === 'light'
   const [saving, setSaving] = useState(false)
   const [saveStatus, setSaveStatus] = useState<{ type: 'cloud' | 'local'; message: string } | null>(null)
@@ -123,17 +135,17 @@ export default function Simulator() {
     hiddenCostBuffer: simulator.hiddenCostBuffer,
     splitBatches: simulator.splitBatches,
     hiddenLeaks: personaData.hiddenLeaks,
-    personaType: personaData.type,
+    personaType: persona,
   })
 
-  const { stressMin, shortage, valleyDays } = computeRiskMetrics(data, personaData.lockedReserves)
+  const { stressMin, shortage, valleyDays, dscr, isCovenantBreached } = computeRiskMetrics(data, personaData.lockedReserves)
 
   // Find exact day when balance drops to its lowest
   const lowestPoint = data.reduce(
     (minD, d) => (d.stressed < minD.stressed ? d : minD),
     data[0] || { day: 18, stressed: 0 }
   )
-  const worstDay = lowestPoint?.day || 18
+  const worstDay = lowestPoint?.day || (persona === 'enterprise' ? 42 : 18)
 
   // Calculate advance needed to stay safe
   const recommendedAdvance = Math.max(
@@ -223,14 +235,18 @@ export default function Simulator() {
 
           <div
             className={`px-3 py-1.5 rounded-xl font-bold text-xs mono shrink-0 border ${
-              shortage === 0
-                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-                : shortage < 20000
-                ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                : 'bg-rose-500/20 text-rose-300 border-rose-500/30'
+              isCovenantBreached || shortage > 0
+                ? 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
             }`}
           >
-            {shortage === 0 ? '✅ 100% SAFE' : `🚨 SHORTAGE: −₹${shortage.toLocaleString('en-IN')}`}
+            {persona === 'enterprise'
+              ? isCovenantBreached
+                ? `🚨 BREACH: −${formatMoney(shortage)} (${dscr}x DSCR)`
+                : `✅ AAA SAFE (${dscr}x DSCR)`
+              : shortage === 0
+              ? '✅ 100% SAFE'
+              : `🚨 SHORTAGE: −₹${shortage.toLocaleString('en-IN')}`}
           </div>
         </div>
       </div>
@@ -262,8 +278,16 @@ export default function Simulator() {
             <span>🟢 What You Think Will Happen</span>
           </div>
           <p className="text-xs text-emerald-100 font-medium leading-relaxed">
-            You think you will finish the month with{' '}
-            <strong className="text-emerald-300 font-black">+₹{estimatedProfit.toLocaleString('en-IN')} profit</strong> because you ignore payment delays and hidden fees.
+            {persona === 'enterprise' ? (
+              <>
+                Naive EPC model projects <strong className="text-emerald-300 font-black">+$530 Million (+₹4,452 Cr) operating surplus</strong> assuming prompt sovereign milestone payments.
+              </>
+            ) : (
+              <>
+                You think you will finish the month with{' '}
+                <strong className="text-emerald-300 font-black">+₹{estimatedProfit.toLocaleString('en-IN')} profit</strong> because you ignore payment delays and hidden fees.
+              </>
+            )}
           </p>
         </div>
 
@@ -287,7 +311,21 @@ export default function Simulator() {
               shortage > 0 ? 'text-rose-100' : 'text-blue-100'
             }`}
           >
-            {shortage > 0 ? (
+            {persona === 'enterprise' ? (
+              shortage > 0 ? (
+                <>
+                  Because of 48-day sovereign audit lag + $130M macro/FX volatility, treasury plunges into a{' '}
+                  <strong className="text-rose-300 font-black">
+                    −$340M (−₹2,856 Cr) DEFICIT
+                  </strong>{' '}
+                  on <strong className="text-rose-200 font-bold">Day 42</strong>, breaching the bank <strong className="text-rose-300 font-bold">1.35x DSCR Covenant</strong>!
+                </>
+              ) : (
+                <>
+                  Treasury restored! DSCR remains comfortably at {dscr}x, exceeding the 1.35x covenant across all 90 days.
+                </>
+              )
+            ) : shortage > 0 ? (
               <>
                 Because of late payment + hidden costs + rent/salaries due first, your bank balance hits{' '}
                 <strong className="text-rose-300 font-black">
@@ -309,7 +347,17 @@ export default function Simulator() {
             <span>🛡️ How Much Advance You Need to Stay Safe</span>
           </div>
           <p className="text-xs text-amber-100 font-medium leading-relaxed">
-            {shortage > 0 ? (
+            {persona === 'enterprise' ? (
+              shortage > 0 ? (
+                <>
+                  Activate <strong className="text-amber-300 font-black">22% Mobilization Advance ($528M)</strong> or <strong className="text-amber-300 font-black">Supply-Chain Reverse Factoring</strong> to eliminate deficit and restore 1.52x DSCR.
+                </>
+              ) : (
+                <>
+                  Institutional structures active: Mobilization advance and syndicated trade credit protect senior bonds.
+                </>
+              )
+            ) : shortage > 0 ? (
               <>
                 Take <strong className="text-amber-300 font-black">₹{recommendedAdvance.toLocaleString('en-IN')} advance</strong> OR{' '}
                 <strong className="text-amber-300 font-black">Split into 2 Batches</strong> to keep your bank balance above ₹0.
@@ -340,11 +388,11 @@ export default function Simulator() {
             <SliderRow
               label={labels.decisionCost}
               value={simulator.decisionCost}
-              min={Math.min(5000, simulator.decisionCost > 10000 ? 5000 : 1000)}
-              max={Math.max(250000, Math.round(simulator.decisionCost * 1.5))}
-              step={1000}
+              min={persona === 'enterprise' ? 500_000_000 : Math.min(5000, simulator.decisionCost > 10000 ? 5000 : 1000)}
+              max={persona === 'enterprise' ? 3_000_000_000 : Math.max(250000, Math.round(simulator.decisionCost * 1.5))}
+              step={persona === 'enterprise' ? 50_000_000 : 1000}
               onChange={v => setSimulator({ decisionCost: v })}
-              format={v => `₹${v.toLocaleString('en-IN')}`}
+              format={v => formatMoney(v)}
             />
 
             {/* Slider 2: Payment Delay */}
@@ -352,7 +400,7 @@ export default function Simulator() {
               label={labels.paymentDelay}
               value={simulator.paymentDelayDays}
               min={0}
-              max={60}
+              max={persona === 'enterprise' ? 120 : 60}
               unit=" Days"
               onChange={v => setSimulator({ paymentDelayDays: v })}
             />
@@ -382,43 +430,53 @@ export default function Simulator() {
               label={labels.splitBatches}
               value={simulator.splitBatches}
               min={1}
-              max={4}
-              unit=" Parts"
+              max={persona === 'enterprise' ? 6 : 4}
+              unit={persona === 'enterprise' ? ' Tranches' : ' Parts'}
               onChange={v => setSimulator({ splitBatches: v })}
             />
 
             {/* Plain-English Stats Summary */}
             <div className="pt-3 border-t border-white/10 space-y-2 text-xs">
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Lowest Bank Balance You Will Touch:</span>
+                <span className="text-slate-400">Lowest Cash Balance:</span>
                 <span
                   className={`mono font-bold ${
                     stressMin < 0 ? 'text-rose-400' : 'text-emerald-400'
                   }`}
                 >
-                  ₹{stressMin.toLocaleString('en-IN')}
+                  {formatMoney(stressMin)}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Days Spent in Danger Zone:</span>
+                <span className="text-slate-400">Days in Deficit Zone:</span>
                 <span className="mono font-bold text-amber-400">{valleyDays} Days</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">How Much You Will Be Short:</span>
+                <span className="text-slate-400">Total Shortage / Deficit:</span>
                 <span
                   className={`mono font-bold ${
                     shortage > 0 ? 'text-rose-400' : 'text-emerald-400'
                   }`}
                 >
-                  {shortage > 0 ? `−₹${shortage.toLocaleString('en-IN')}` : '₹0 (Safe)'}
+                  {shortage > 0 ? `−${formatMoney(shortage)}` : 'Safe ($0)'}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-slate-400">Untouchable Money (Rent & Fees):</span>
+                <span className="text-slate-400">
+                  {persona === 'enterprise' ? 'Locked Debt Service & Payroll:' : 'Untouchable Floor (Rent & Fees):'}
+                </span>
                 <span className="mono font-bold text-purple-300">
-                  ₹{personaData.lockedReserves.toLocaleString('en-IN')}
+                  {formatMoney(personaData.lockedReserves)}
                 </span>
               </div>
+              {persona === 'enterprise' && (
+                <div className="flex justify-between items-center pt-1 border-t border-white/5">
+                  <span className="text-slate-400">Senior Debt Covenant (1.35x DSCR):</span>
+                  <span className={`mono font-black ${isCovenantBreached ? 'text-rose-400' : 'text-emerald-400'}`}>
+                    {dscr}x {isCovenantBreached ? '(BREACH)' : '(AAA SAFE)'}
+                  </span>
+                </div>
+              )}
             </div>
 
             {shortage > 0 && (
@@ -427,7 +485,11 @@ export default function Simulator() {
                 className="w-full py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center gap-2 text-white shadow-md transition-all hover:bg-rose-700 bg-rose-600"
               >
                 <ShieldAlert size={15} />
-                <span>Fix ₹{shortage.toLocaleString('en-IN')} Shortage with 3 Easy Plans</span>
+                <span>
+                  {persona === 'enterprise'
+                    ? `Fix ${formatMoney(shortage)} Deficit with 3 Institutional Structures`
+                    : `Fix ₹${shortage.toLocaleString('en-IN')} Shortage with 3 Easy Plans`}
+                </span>
                 <ArrowRight size={14} />
               </button>
             )}
@@ -478,8 +540,12 @@ export default function Simulator() {
                     tick={{ fill: isLight ? '#475569' : '#94a3b8', fontSize: 10 }}
                     tickLine={false}
                     axisLine={false}
-                    tickFormatter={v => `₹${(v / 1000).toFixed(0)}K`}
-                    width={55}
+                    tickFormatter={v => {
+                      if (Math.abs(v) >= 1_000_000_000) return `${(v / 1e9).toFixed(1)}B`
+                      if (Math.abs(v) >= 1_000_000) return `${Math.round(v / 1e6)}M`
+                      return `₹${(v / 1000).toFixed(0)}K`
+                    }}
+                    width={persona === 'enterprise' ? 65 : 55}
                   />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend
@@ -487,35 +553,42 @@ export default function Simulator() {
                     formatter={value => (
                       <span className={`text-xs font-semibold ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
                         {value === 'naive'
-                          ? '🟢 What You Expect (Without Delays)'
+                          ? persona === 'enterprise'
+                            ? '🟢 Naive Bid Curve (Timely Milestones)'
+                            : '🟢 What You Expect (Without Delays)'
                           : value === 'stressed'
-                          ? '🔴 Real Bank Balance (After Delays & Hidden Costs)'
+                          ? persona === 'enterprise'
+                            ? '🔴 Stress-Tested Treasury Reality (48d SLA Lag + FX Swing)'
+                            : '🔴 Real Bank Balance (After Delays & Hidden Costs)'
                           : value}
                       </span>
                     )}
                   />
-                  {/* ₹0 Danger Line */}
+                  {/* ₹0 / $0 Danger Line */}
                   <ReferenceLine
                     y={0}
                     stroke="#f43f5e"
                     strokeWidth={2}
                     strokeDasharray="5 5"
                     label={{
-                      value: '🚨 ₹0 Danger Line (Out of Cash)',
+                      value: persona === 'enterprise' ? '🚨 $0 / ₹0 Treasury Liquidity Floor' : '🚨 ₹0 Danger Line (Out of Cash)',
                       position: 'insideBottomLeft',
                       fill: '#fb7185',
                       fontSize: 10,
                       fontWeight: 'bold',
                     }}
                   />
-                  {/* Untouchable Rent & Salary Line */}
+                  {/* Untouchable Rent & Salary Line / Debt Covenant Floor */}
                   <ReferenceLine
                     y={personaData.lockedReserves}
                     stroke="#fbbf24"
                     strokeWidth={2}
                     strokeDasharray="4 4"
                     label={{
-                      value: `🔒 Untouchable Rent & Salary Money (₹${(personaData.lockedReserves / 1000).toFixed(0)}K)`,
+                      value:
+                        persona === 'enterprise'
+                          ? `🔒 1.35x DSCR Floor (${formatMoney(personaData.lockedReserves)})`
+                          : `🔒 Untouchable Rent & Salary Money (₹${(personaData.lockedReserves / 1000).toFixed(0)}K)`,
                       position: 'top',
                       fill: '#fde68a',
                       fontSize: 10,

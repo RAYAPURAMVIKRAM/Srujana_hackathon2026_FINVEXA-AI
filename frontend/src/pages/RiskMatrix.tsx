@@ -35,7 +35,7 @@ interface RiskFixDetails {
 }
 
 export default function RiskMatrix() {
-  const { personaData, simulator, setSimulator, themeMode } = useApp()
+  const { persona, personaData, simulator, setSimulator, themeMode, formatMoney } = useApp()
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const isLight = themeMode === 'light'
 
@@ -49,10 +49,10 @@ export default function RiskMatrix() {
     hiddenCostBuffer: simulator.hiddenCostBuffer,
     splitBatches: simulator.splitBatches,
     hiddenLeaks: personaData.hiddenLeaks,
-    personaType: personaData.type,
+    personaType: persona,
   })
 
-  const { shortage } = computeRiskMetrics(cashflow, personaData.lockedReserves)
+  const { shortage, dscr, isCovenantBreached } = computeRiskMetrics(cashflow, personaData.lockedReserves)
 
   const toggleExpand = (id: string) => {
     setExpandedId(prev => (prev === id ? null : id))
@@ -61,6 +61,66 @@ export default function RiskMatrix() {
   // Deep dive risk details per risk id
   const getRiskDetails = (id: string): RiskFixDetails => {
     switch (id) {
+      case 'treasury-waterfall':
+        return {
+          aiFound: 'ERP Treasury sync across SAP S/4HANA & Oracle NetSuite reveals a -$340M (-₹2,856 Cr) liquidity deficit window spanning Days 38 to 46 before the $600M milestone arrives.',
+          whyItHurts: 'Breaches the mandatory 1.35x Debt Service Coverage Ratio (DSCR) senior bond covenant, exposing the firm to immediate loan acceleration and credit rating downgrade.',
+          fixAction: 'Deploy Strategy A (22% Mobilization Advance + 6-Tranche Escrow) or Strategy B (Supply-Chain Reverse Factoring) to eliminate the cash trough.',
+          fixLink: '/rescue',
+          fixLinkText: 'Open Institutional Rescue Strategies (/rescue)',
+          isExternal: false,
+        }
+
+      case 'debt-covenant-lock':
+        return {
+          aiFound: '$420M (₹3,528 Cr) senior bond coupons, 1.35x DSCR covenant floor, and 40,000-employee global payroll ring-fenced.',
+          whyItHurts: 'Touching this reserve triggers immediate cross-default clauses with syndicated lending consortia.',
+          fixAction: 'Lock liquidity covenants into irrevocable escrow accounts before signing high-CapEx procurement orders.',
+          fixLink: '/simulator',
+          fixLinkText: 'Inspect Treasury Reserves in Simulator',
+          isExternal: false,
+        }
+
+      case 'sovereign-sla-lag':
+        return {
+          aiFound: '48-day counterparty milestone release delay detected across sovereign engineering audit boards and customs clearance.',
+          whyItHurts: 'Delays $600M incoming milestone cash while Tier-1 turbine and semiconductor suppliers demand immediate payment.',
+          fixAction: 'Require irrevocable standby Letters of Credit (LC) and index payment milestones to independent engineer inspection sign-offs.',
+          fixLink: '/scanner',
+          fixLinkText: 'Run SWIFT MT700 Forensics (/scanner)',
+          isExternal: false,
+        }
+
+      case 'macro-fx-escalation':
+        return {
+          aiFound: '$130M (₹1,092 Cr) in unhedged currency exposure (EUR/USD/INR 4.2% swings), commodity steel escalation, and 0.5%/wk Liquidated Damages (LD) clauses in 400-page RFP contract.',
+          whyItHurts: 'Eats into contract profit margins and turns a projected +$530M surplus into an operating shortfall.',
+          fixAction: 'Execute 80% FX forward hedges under ISDA master agreements and index vendor contracts to LME steel benchmarks.',
+          fixLink: '/rescue',
+          fixLinkText: 'Apply 80% FX Hedge Structure (/rescue)',
+          isExternal: false,
+        }
+
+      case 'enterprise-wire-swift':
+        return {
+          aiFound: 'Scanned 400-page EPC contract, SWIFT MT700 Letters of Credit, and supplier invoices for shell-company and IBAN spoofing risks.',
+          whyItHurts: 'Multi-million dollar unauthorized wires or forged Bank Guarantees can cause unrecoverable balance sheet damage.',
+          fixAction: 'Mandate cryptographic ERP 3-way matching and dual treasury officer approval for all wires exceeding $1,000,000.',
+          fixLink: '/scanner',
+          fixLinkText: 'Inspect EPC Contract Scanner (/scanner)',
+          isExternal: false,
+        }
+
+      case 'monte-carlo-stress':
+        return {
+          aiFound: '10,000 quantitative Monte Carlo macroeconomic simulations show 99.2% Value-at-Risk under concurrent FX and supply chain shocks.',
+          whyItHurts: 'Multiple systemic disruptions arriving simultaneously breach debt covenants if liquidity buffers are uncalibrated.',
+          fixAction: 'Click the one-click shock buttons above to stress-test your treasury against +5% FX shocks, +60d milestone delays, and +12% commodity spikes.',
+          fixLink: '/simulator',
+          fixLinkText: 'Run Stress Test in Simulator (/simulator)',
+          isExternal: false,
+        }
+
       case 'midnight-food':
       case 'fraud-tamper':
       case 'cash-inflow-delay':
@@ -123,7 +183,7 @@ export default function RiskMatrix() {
 
       default:
         return {
-          aiFound: `Calculated from your active purchase plan of ₹${simulator.decisionCost.toLocaleString('en-IN')} with a ${simulator.paymentDelayDays}-day settlement lag.`,
+          aiFound: `Calculated from your active purchase plan of ${formatMoney(simulator.decisionCost)} with a ${simulator.paymentDelayDays}-day settlement lag.`,
           whyItHurts: 'Payment lags without milestone advance coverage force you to absorb supplier and living costs out of your own thin emergency pocket.',
           fixAction: 'Use RBI-regulated TReDS or milestone invoice links to convert 45% of order value into upfront working cash today.',
           fixLink: 'https://www.invoicemart.com',
@@ -163,11 +223,13 @@ export default function RiskMatrix() {
           <div className="flex items-center gap-2">
             <ShieldAlert size={20} className="text-amber-400" />
             <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-              6 Real-Life Money Safety Checks
+              {persona === 'enterprise'
+                ? '6 Institutional Megaproject Risk Defenses'
+                : '6 Real-Life Money Safety Checks'}
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl">
-            {personaData.emoji} <strong className="text-white">{personaData.label}</strong>: We scanned your transactions and simulated your upcoming purchase to flag hidden traps before they strike:
+            {personaData.emoji} <strong className="text-white">{personaData.label}</strong>: We scanned your transactions and simulated your upcoming contract execution to flag hidden systemic traps before they strike:
           </p>
         </div>
 
@@ -177,7 +239,7 @@ export default function RiskMatrix() {
             className="btn-primary text-xs py-2 px-3.5 flex items-center gap-2 shrink-0 font-bold shadow-lg"
           >
             <Sparkles size={14} />
-            <span>See 3 Easy Fixes</span>
+            <span>{persona === 'enterprise' ? 'See 3 Institutional Fixes' : 'See 3 Easy Fixes'}</span>
           </Link>
           <div
             className={`px-3 py-1.5 rounded-xl font-bold text-xs mono shrink-0 border ${
@@ -186,47 +248,108 @@ export default function RiskMatrix() {
                 : 'bg-rose-500/20 text-rose-300 border-rose-500/30'
             }`}
           >
-            {shortage === 0 ? '✓ 0 Traps Triggered' : `⚠ Potential Deficit: ₹${shortage.toLocaleString('en-IN')}`}
+            {persona === 'enterprise'
+              ? isCovenantBreached
+                ? `🚨 BREACH: −${formatMoney(shortage)} (${dscr}x DSCR)`
+                : `✅ AAA COVENANT SAFE (${dscr}x DSCR)`
+              : shortage === 0
+              ? '✓ 0 Traps Triggered'
+              : `⚠ Potential Deficit: ₹${shortage.toLocaleString('en-IN')}`}
           </div>
         </div>
       </div>
 
-      {/* Quick Life Shock Test Buttons */}
+      {/* Monte Carlo Macro Stress-Tester / Quick Life Shock Test Buttons */}
       <Tilt3DCard className="bg-slate-900/70 backdrop-blur-xl p-4 sm:p-5 rounded-2xl border border-white/10 shadow-lg">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="text-xs text-slate-300 font-medium">
-            <span className="font-bold text-white">⚡ Test Real-Life Surprises:</span> See what happens if things go wrong right now:
+            <span className="font-bold text-white">
+              {persona === 'enterprise'
+                ? '📊 Monte Carlo Macro Stress-Tester:'
+                : '⚡ Test Real-Life Surprises:'}
+            </span>{' '}
+            {persona === 'enterprise'
+              ? 'Inject instant economic shocks to test covenant robustness:'
+              : 'See what happens if things go wrong right now:'}
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <button
-              onClick={() =>
-                setSimulator({ paymentDelayDays: Math.min(60, simulator.paymentDelayDays + 10) })
-              }
-              className="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 flex items-center gap-1.5 transition-colors shadow-sm"
-            >
-              <Clock size={13} className="text-amber-400" />
-              <span>+10 Days Late Pay</span>
-            </button>
-            <button
-              onClick={() =>
-                setSimulator({ hiddenCostBuffer: Math.min(25, simulator.hiddenCostBuffer + 6) })
-              }
-              className="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 flex items-center gap-1.5 transition-colors shadow-sm"
-            >
-              <AlertTriangle size={13} className="text-rose-400" />
-              <span>+₹5,000 Surprise Fee</span>
-            </button>
-            <button
-              onClick={() =>
-                setSimulator({
-                  paymentDelayDays: personaData.type === 'salaried' ? 8 : personaData.type === 'freelancer' ? 22 : 25,
-                  hiddenCostBuffer: 8,
-                })
-              }
-              className="px-3 py-1.5 rounded-xl text-xs font-bold bg-white/5 hover:bg-white/10 text-slate-300 border border-white/15 transition-colors shadow-sm"
-            >
-              Reset to Normal
-            </button>
+            {persona === 'enterprise' ? (
+              <>
+                <button
+                  onClick={() =>
+                    setSimulator({ hiddenCostBuffer: simulator.hiddenCostBuffer + 5 })
+                  }
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 flex items-center gap-1.5 transition-colors shadow-sm"
+                  title="Simulate 5% USD/EUR/INR Currency Devaluation Shock"
+                >
+                  <Zap size={13} className="text-amber-400" />
+                  <span>⚡ FX Currency Shock +5%</span>
+                </button>
+                <button
+                  onClick={() =>
+                    setSimulator({ paymentDelayDays: Math.min(120, simulator.paymentDelayDays + 60) })
+                  }
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 flex items-center gap-1.5 transition-colors shadow-sm"
+                  title="Simulate 60 Days Sovereign Milestone Sign-Off Delay"
+                >
+                  <Clock size={13} className="text-rose-400" />
+                  <span>⏳ Sovereign Delay +60 Days</span>
+                </button>
+                <button
+                  onClick={() =>
+                    setSimulator({ hiddenCostBuffer: simulator.hiddenCostBuffer + 12 })
+                  }
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/30 flex items-center gap-1.5 transition-colors shadow-sm"
+                  title="Simulate 12% Global Steel & Chip Commodity Price Surge"
+                >
+                  <TrendingDown size={13} className="text-indigo-400" />
+                  <span>📈 Commodity Spike +12%</span>
+                </button>
+                <button
+                  onClick={() =>
+                    setSimulator({
+                      paymentDelayDays: 48,
+                      hiddenCostBuffer: 9,
+                    })
+                  }
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-white/5 hover:bg-white/10 text-slate-300 border border-white/15 transition-colors shadow-sm"
+                >
+                  Reset Macro Shock
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() =>
+                    setSimulator({ paymentDelayDays: Math.min(60, simulator.paymentDelayDays + 10) })
+                  }
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 flex items-center gap-1.5 transition-colors shadow-sm"
+                >
+                  <Clock size={13} className="text-amber-400" />
+                  <span>+10 Days Late Pay</span>
+                </button>
+                <button
+                  onClick={() =>
+                    setSimulator({ hiddenCostBuffer: Math.min(25, simulator.hiddenCostBuffer + 6) })
+                  }
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 flex items-center gap-1.5 transition-colors shadow-sm"
+                >
+                  <AlertTriangle size={13} className="text-rose-400" />
+                  <span>+₹5,000 Surprise Fee</span>
+                </button>
+                <button
+                  onClick={() =>
+                    setSimulator({
+                      paymentDelayDays: personaData.type === 'salaried' ? 8 : personaData.type === 'freelancer' ? 22 : 25,
+                      hiddenCostBuffer: 8,
+                    })
+                  }
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold bg-white/5 hover:bg-white/10 text-slate-300 border border-white/15 transition-colors shadow-sm"
+                >
+                  Reset to Normal
+                </button>
+              </>
+            )}
           </div>
         </div>
       </Tilt3DCard>

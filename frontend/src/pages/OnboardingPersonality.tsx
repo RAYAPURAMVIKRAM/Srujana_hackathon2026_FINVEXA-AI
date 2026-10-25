@@ -79,6 +79,25 @@ const PERSONALITIES: PersonalityOption[] = [
       { title: 'Stock ₹80,000 raw cotton fabric before festival season', cost: 80000, days: 45 },
     ],
   },
+  {
+    type: 'enterprise',
+    emoji: '🏛️',
+    title: 'Enterprise Megaproject',
+    subtitle: 'EPC / Infra / Fortune-500 Treasury ($2.4B Scale)',
+    description:
+      'I manage multi-billion dollar EPC infrastructure and semiconductor contracts ($1B–$10B / ₹20,000 Cr). I simulate 48-day sovereign milestone delays, ring-fence $420M for senior bond covenants & 40,000 payroll, and uncover $130M in unhedged FX, steel escalation, and liquidated damages.',
+    highlight: '$2.4B Contract · 1.35x DSCR Covenant Lock · $340M Crisis Rescue',
+    defaultIncome: 850000000,
+    color: '#3b82f6',
+    defaultGoal: 'Global High-Speed Rail & Semiconductor Fab EPC Contract ($2.40B / ₹20,000 Cr)',
+    defaultAmount: 1450000000,
+    defaultDays: 48,
+    goalChips: [
+      { title: 'Global Rail & Fab ($2.4B)', cost: 1450000000, days: 48 },
+      { title: 'Hydrogen & Solar Grid ($1.8B)', cost: 1100000000, days: 45 },
+      { title: 'Subsea Fiber & AI Grid ($3.2B)', cost: 1950000000, days: 60 },
+    ],
+  },
 ]
 
 export default function OnboardingPersonality() {
@@ -283,15 +302,15 @@ export default function OnboardingPersonality() {
           </div>
         </div>
 
-        {/* 3 Personality Cards */}
-        <div className="space-y-3 max-w-3xl mx-auto">
+        {/* 4 Personality Cards */}
+        <div className="space-y-3 max-w-5xl mx-auto">
           <div className="text-center">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Select Your Personality
+              Select Your Financial Personality & Scale
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {PERSONALITIES.map(p => {
               const isSelected = selectedPersona === p.type
               return (

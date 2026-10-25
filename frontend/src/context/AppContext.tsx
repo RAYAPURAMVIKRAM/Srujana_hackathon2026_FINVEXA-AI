@@ -2,8 +2,48 @@
 import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react'
 import { type Language, translate } from '../i18n/translations'
 
-export type PersonaType = 'salaried' | 'freelancer' | 'business'
+export type PersonaType = 'salaried' | 'freelancer' | 'business' | 'enterprise'
 export type ThemeMode = 'light' | 'dark'
+export type EnterpriseCurrencyUnit = 'dual' | 'usd' | 'inr'
+
+export function formatMoney(
+  amount: number,
+  personaType: PersonaType = 'salaried',
+  unitMode: EnterpriseCurrencyUnit = 'dual'
+): string {
+  if (personaType !== 'enterprise' && Math.abs(amount) < 1_000_000) {
+    return `₹${amount.toLocaleString('en-IN')}`
+  }
+
+  const isNegative = amount < 0
+  const absAmt = Math.abs(amount)
+  const sign = isNegative ? '-' : ''
+
+  let usdStr = ''
+  if (absAmt >= 1_000_000_000) {
+    usdStr = `$${(absAmt / 1_000_000_000).toFixed(2)}B`
+  } else if (absAmt >= 1_000_000) {
+    usdStr = `$${Math.round(absAmt / 1_000_000)}M`
+  } else if (absAmt >= 1_000) {
+    usdStr = `$${Math.round(absAmt / 1_000)}K`
+  } else {
+    usdStr = `$${absAmt}`
+  }
+
+  // 1 USD = ₹84
+  const inrCrores = Math.round((absAmt * 84) / 10_000_000)
+  const inrStr = inrCrores >= 1000
+    ? `₹${inrCrores.toLocaleString('en-IN')} Cr`
+    : `₹${inrCrores} Cr`
+
+  if (unitMode === 'usd') {
+    return `${sign}${usdStr}`
+  }
+  if (unitMode === 'inr') {
+    return `${sign}${inrStr}`
+  }
+  return `${sign}${usdStr} (${sign}${inrStr})`
+}
 
 export interface AuthUser {
   id: string
@@ -507,6 +547,141 @@ export const PERSONAS: Record<PersonaType, PersonaData> = {
       },
     ],
   },
+
+  enterprise: {
+    type: 'enterprise',
+    label: 'Enterprise Megaproject Treasury ($2.4B / ₹20,000 Cr Scale)',
+    emoji: '🏛️',
+    story: 'Global High-Speed Rail & Semiconductor Fab EPC Contract — Contract Value: $2.40 Billion (₹20,000 Cr)',
+    balance: 850000000,
+    monthlyIncome: 180000000,
+    lockedReserves: 420000000,
+    hiddenLeaks: 130000000,
+    creditScore: 840,
+    incomeLabel: 'Sovereign Milestone Inflows ($600M / ₹5,040 Cr)',
+    purchaseLabel: 'Global High-Speed Rail & Semiconductor Fab EPC Contract ($2.40B / ₹20,000 Cr)',
+    defaultDecisionCost: 1450000000,
+    sliderLabels: {
+      decisionCost: 'CapEx & Supplier Execution Cost ($1.45B / ₹12,180 Cr)',
+      paymentDelay: 'Sovereign Milestone SLA Audit Delay (48 Days)',
+      upfrontPercent: 'Client Mobilization Advance Received (15%)',
+      hiddenCost: 'Unhedged FX, Steel Escalation & LD Penalties (9% / $130M)',
+      splitBatches: 'Progressive EPC Milestone Tranches (1 to 6)',
+    },
+    theme: {
+      name: 'Platinum Sovereign & Imperial Blue',
+      meshClass: 'from-[#020b1e] via-[#091a3c] to-[#041228]',
+      orb1: 'rgba(59, 130, 246, 0.40)',
+      orb2: 'rgba(99, 102, 241, 0.30)',
+      orb3: 'rgba(14, 165, 233, 0.35)',
+      accentBorder: 'border-blue-400/50 hover:border-cyan-300',
+      accentText: 'text-blue-400',
+      accentBg: 'bg-blue-500/10',
+      badgeClass: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
+      buttonGradient: 'linear-gradient(135deg, #1d4ed8 0%, #0284c7 50%, #0f172a 100%)',
+      primaryHex: '#3b82f6',
+    },
+    riskCards: [
+      {
+        id: 'treasury-waterfall',
+        title: 'Multi-Currency Treasury Cash-Flow Waterfall',
+        plainTitle: 'SAP S/4HANA & Oracle NetSuite Treasury Deficit',
+        metricLabel: '-$340M (-₹2,856 Cr) Working-Capital Deficit',
+        warningText: 'Multi-bank cash pool across JPMorgan, Citi & SBI Corporate plunges into a -$340M deficit on Day 42 before the $600M sovereign tranche arrives.',
+        advice: 'Shows daily liquidity across ERP subsidiaries and highlights the exact -$340M (-₹2,856 Cr) deficit window.',
+        severity: 'critical',
+      },
+      {
+        id: 'debt-covenant-lock',
+        title: 'Debt Covenant & DSCR Protection Lock',
+        plainTitle: 'Senior Debt Service & 40,000-Staff Payroll Floor',
+        metricLabel: '$420M (₹3,528 Cr) 100% Locked Floor',
+        warningText: '$420M is legally ring-fenced for Senior Bond Coupon payments, 40,000 global employee payroll, and maintaining the mandatory 1.35x DSCR bank covenant.',
+        advice: 'Breaching this floor triggers immediate loan acceleration, credit rating downgrade to junk status, and cross-default clauses.',
+        severity: 'critical',
+      },
+      {
+        id: 'sovereign-sla-lag',
+        title: 'Counterparty Credit & Sovereign SLA Lag Analysis',
+        plainTitle: '48-Day Sovereign Milestone Audit & Customs Lag',
+        metricLabel: '48 Days Audit Sign-Off Lag',
+        warningText: 'Historical EPC data reveals a 48-day lag on sovereign tranche sign-offs due to multi-ministry engineering audits and import customs clearance.',
+        advice: 'Reviews buyer credit default swap (CDS) spread and negotiates irrevocable standby Letters of Credit (LC).',
+        severity: 'critical',
+      },
+      {
+        id: 'macro-fx-escalation',
+        title: 'Macro FX, Commodity & Liquidated Damages (LD) Discovery',
+        plainTitle: 'Unhedged FX Swings, Steel Inflation & 0.5%/wk LDs',
+        metricLabel: '$130M (₹1,092 Cr) Contract Leaks',
+        warningText: 'Flags $48M unhedged FX currency exposure, $52M Tier-2 supplier price escalation, and $30M Liquidated Damages penalty clauses in 400-page RFP.',
+        advice: 'Lock 80% FX forward currency hedges and index commodity purchases to London Metal Exchange (LME) contracts.',
+        severity: 'warning',
+      },
+      {
+        id: 'enterprise-wire-swift',
+        title: 'Enterprise Wire, SWIFT LC & ERP 3-Way Match Forensics',
+        plainTitle: 'SWIFT MT700 LC & Multi-Million Invoice Match',
+        metricLabel: 'SWIFT MT700 & ERP Match',
+        warningText: 'Scans 400-page EPC contracts, SWIFT MT700 Letters of Credit, and supplier invoices to catch shell-company billing and IBAN spoofing.',
+        advice: 'Requires cryptographic multi-sig authorization and automated ERP 3-way match before releasing multi-million dollar wires.',
+        severity: 'safe',
+      },
+      {
+        id: 'monte-carlo-stress',
+        title: 'Monte Carlo Macro Stress-Tester',
+        plainTitle: '10,000 Scenario Quantitative Stress Test',
+        metricLabel: '99.2% Value at Risk (VaR)',
+        warningText: 'Simulates 10,000 macro economic shocks: +5% currency devaluation, +60 day sovereign delay, and +12% commodity price surge.',
+        advice: 'One-click shock buttons simulate [FX Shock +5%], [Sovereign Delay +60 Days], and [Steel/Chip Spike +12%].',
+        severity: 'critical',
+      },
+    ],
+    rescuePlans: [
+      {
+        id: 'planA',
+        tag: 'Strategy A',
+        tagColor: '#2563eb',
+        title: '22% Mobilization Advance + 6-Tranche Progressive EPC Milestone Escrow',
+        description:
+          'Unlocks $528M (₹4,435 Cr) upfront against a Bank Guarantee and splits execution into 6 self-funding milestone tranches instead of a massive upfront CapEx burn.',
+        upfrontPercent: 22,
+        splitBatches: 6,
+        hiddenCostBuffer: 3,
+        paymentDelayDays: 10,
+        negotiationMessage:
+          'Pursuant to EPC Clause 14.2, Contractor requests execution of the 22% Mobilization Advance ($528,000,000) against an irrevocable Bank Guarantee, with remaining CapEx allocated across 6 progressive milestone escrow accounts.',
+      },
+      {
+        id: 'planB',
+        tag: 'Strategy B',
+        tagColor: '#059669',
+        title: 'Supply-Chain Reverse Factoring & Syndicated Letter of Credit (LC) Discounting',
+        description:
+          'Extends $450M of Tier-1 vendor payables by 60 days using bank-backed Letters of Credit (at SOFR + 110 bps) and discounts approved milestone invoices via institutional trade finance.',
+        upfrontPercent: 18,
+        splitBatches: 4,
+        hiddenCostBuffer: 4,
+        paymentDelayDays: 14,
+        negotiationMessage:
+          'Contractor proposes structured reverse factoring facility for Tier-1 engineering vendors under existing corporate credit lines, extending payables by 60 days while providing suppliers immediate non-recourse liquidity.',
+      },
+      {
+        id: 'planC',
+        tag: 'Strategy C',
+        tagColor: '#d97706',
+        title: '80% FX Forward Currency Hedge + Revolving Credit Facility (RCF) Liquidity Bridge',
+        description:
+          'Locks USD/INR and EUR/USD forward rates to eliminate $48M FX loss and activates a $250M syndicated RCF bridge for 28 days, keeping Senior Debt DSCR safely at 1.48x.',
+        upfrontPercent: 20,
+        splitBatches: 3,
+        hiddenCostBuffer: 2,
+        paymentDelayDays: 12,
+        negotiationMessage:
+          'Treasury mandate approved: Execution of ISDA master forward contracts hedging 80% of cross-border procurement currency exposure, supplemented by a 28-day syndicated Revolving Credit Facility drawdown.',
+      },
+    ],
+  },
 }
 
 export interface BankConsentState {
@@ -545,27 +720,39 @@ export function parseGoalTextAndAmount(
 
   // 1. Amount parsing if not directly provided
   if (!cost) {
-    // Check for "X.Y lakh" or "X lakh" or "X lac"
-    const lakhMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:lakh|lac|l)\b/i)
-    if (lakhMatch) {
-      cost = Math.round(parseFloat(lakhMatch[1]) * 100000)
+    // Check for "X billion" or "X b"
+    const billionMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:billion|b)\b/i)
+    if (billionMatch) {
+      cost = Math.round(parseFloat(billionMatch[1]) * 1_000_000_000)
     } else {
-      // Check for "Xk" e.g. "80k", "55k"
-      const kMatch = text.match(/(\d+(?:\.\d+)?)\s*k\b/i)
-      if (kMatch) {
-        cost = Math.round(parseFloat(kMatch[1]) * 1000)
+      // Check for "X crore" or "X cr" (converted to USD baseline for enterprise math)
+      const crMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:crore|cr)\b/i)
+      if (crMatch) {
+        cost = Math.round((parseFloat(crMatch[1]) * 10_000_000) / 84)
       } else {
-        // Check for numbers with commas or Rupee symbols e.g. "₹80,000", "80,000", "80000"
-        const rupeeMatch = text.match(/(?:₹|rs\.?|inr)?\s*(\d{1,3}(?:,\d{3})+|\d{4,})/i)
-        if (rupeeMatch) {
-          cost = parseInt(rupeeMatch[1].replace(/,/g, ''), 10)
+        // Check for "X.Y lakh" or "X lakh" or "X lac"
+        const lakhMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:lakh|lac|l)\b/i)
+        if (lakhMatch) {
+          cost = Math.round(parseFloat(lakhMatch[1]) * 100000)
         } else {
-          // General number match
-          const anyNum = text.replace(/,/g, '').match(/\b(\d+)\b/)
-          if (anyNum) {
-            const val = parseInt(anyNum[1], 10)
-            if (val >= 1000) cost = val
-            else if (val > 0 && val < 500) cost = val * 1000
+          // Check for "Xk" e.g. "80k", "55k"
+          const kMatch = text.match(/(\d+(?:\.\d+)?)\s*k\b/i)
+          if (kMatch) {
+            cost = Math.round(parseFloat(kMatch[1]) * 1000)
+          } else {
+            // Check for numbers with commas or Rupee symbols e.g. "₹80,000", "80,000", "80000"
+            const rupeeMatch = text.match(/(?:₹|rs\.?|inr|\$)?\s*(\d{1,3}(?:,\d{3})+|\d{4,})/i)
+            if (rupeeMatch) {
+              cost = parseInt(rupeeMatch[1].replace(/,/g, ''), 10)
+            } else {
+              // General number match
+              const anyNum = text.replace(/,/g, '').match(/\b(\d+)\b/)
+              if (anyNum) {
+                const val = parseInt(anyNum[1], 10)
+                if (val >= 1000) cost = val
+                else if (val > 0 && val < 500) cost = val * 1000
+              }
+            }
           }
         }
       }
@@ -574,7 +761,14 @@ export function parseGoalTextAndAmount(
 
   // Fallback defaults per persona if still 0
   if (!cost || cost <= 0) {
-    cost = personaType === 'business' ? 100000 : personaType === 'freelancer' ? 45000 : 50000
+    cost =
+      personaType === 'enterprise'
+        ? 1450000000
+        : personaType === 'business'
+        ? 100000
+        : personaType === 'freelancer'
+        ? 45000
+        : 50000
   }
 
   // 2. Timeline parsing if not directly provided
@@ -596,13 +790,22 @@ export function parseGoalTextAndAmount(
   }
 
   if (!days || days <= 0) {
-    days = personaType === 'business' ? 25 : personaType === 'freelancer' ? 22 : 8
+    days =
+      personaType === 'enterprise'
+        ? 48
+        : personaType === 'business'
+        ? 25
+        : personaType === 'freelancer'
+        ? 22
+        : 8
   }
 
   // 3. Category inference
   const lower = text.toLowerCase()
   let category = 'general'
-  if (lower.includes('laptop') || lower.includes('phone') || lower.includes('camera') || lower.includes('pc') || lower.includes('macbook')) {
+  if (lower.includes('rail') || lower.includes('epc') || lower.includes('megaproject') || lower.includes('contract') || lower.includes('infrastructure')) {
+    category = 'enterprise'
+  } else if (lower.includes('laptop') || lower.includes('phone') || lower.includes('camera') || lower.includes('pc') || lower.includes('macbook')) {
     category = 'tech'
   } else if (lower.includes('bike') || lower.includes('scooter') || lower.includes('car')) {
     category = 'vehicle'
@@ -612,7 +815,15 @@ export function parseGoalTextAndAmount(
     category = 'survival'
   }
 
-  const cleanTitle = text || (personaType === 'business' ? '₹1,00,000 Corporate Order' : personaType === 'freelancer' ? '₹45,000 Camera Gear' : `₹${cost.toLocaleString('en-IN')} Laptop / Bike`)
+  const cleanTitle =
+    text ||
+    (personaType === 'enterprise'
+      ? 'Global High-Speed Rail & Semiconductor Fab EPC Contract ($2.40B / ₹20,000 Cr)'
+      : personaType === 'business'
+      ? '₹1,00,000 Corporate Order'
+      : personaType === 'freelancer'
+      ? '₹45,000 Camera Gear'
+      : `₹${cost.toLocaleString('en-IN')} Laptop / Bike`)
 
   return { title: cleanTitle, cost, days, category }
 }
@@ -656,6 +867,10 @@ interface AppContextType {
   decisionTitle: string
   delayDays: number
   paymentDelayDays: number
+  enterpriseCurrencyUnit: EnterpriseCurrencyUnit
+  setEnterpriseCurrencyUnit: (unit: EnterpriseCurrencyUnit) => void
+  toggleEnterpriseCurrencyUnit: () => void
+  formatMoney: (amount: number, customPersona?: PersonaType) => string
 }
 
 const DEFAULT_SIMULATOR: SimulatorState = {
@@ -877,6 +1092,38 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [persona, simulator.upfrontPercent]
   )
 
+  // Enterprise Currency Display Unit (Dual: $ & ₹, USD only, INR Crores only)
+  const [enterpriseCurrencyUnit, setEnterpriseCurrencyUnitState] = useState<EnterpriseCurrencyUnit>(() => {
+    try {
+      const saved = localStorage.getItem('finvexa_enterprise_unit') as EnterpriseCurrencyUnit
+      if (saved === 'dual' || saved === 'usd' || saved === 'inr') return saved
+    } catch {
+      // ignore
+    }
+    return 'dual'
+  })
+
+  const setEnterpriseCurrencyUnit = useCallback((unit: EnterpriseCurrencyUnit) => {
+    setEnterpriseCurrencyUnitState(unit)
+    try {
+      localStorage.setItem('finvexa_enterprise_unit', unit)
+    } catch {
+      // ignore
+    }
+  }, [])
+
+  const toggleEnterpriseCurrencyUnit = useCallback(() => {
+    setEnterpriseCurrencyUnitState(prev => {
+      const next: EnterpriseCurrencyUnit = prev === 'dual' ? 'usd' : prev === 'usd' ? 'inr' : 'dual'
+      try {
+        localStorage.setItem('finvexa_enterprise_unit', next)
+      } catch {
+        // ignore
+      }
+      return next
+    })
+  }, [])
+
   const setPersona = useCallback(
     (p: PersonaType, preserveActiveCost = false) => {
       setPersonaState(p)
@@ -884,23 +1131,41 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         preserveActiveCost && simulator.decisionCost
           ? simulator.decisionCost
           : p === 'salaried'
-          ? (simulator.decisionCost || 50000)
+          ? (simulator.decisionCost && simulator.decisionCost < 1_000_000 ? simulator.decisionCost : 50000)
           : p === 'freelancer'
-          ? (simulator.decisionCost || 45000)
-          : (simulator.decisionCost || 60000)
-      const nextDays = p === 'salaried' ? 8 : p === 'freelancer' ? 22 : 25
+          ? (simulator.decisionCost && simulator.decisionCost < 1_000_000 ? simulator.decisionCost : 45000)
+          : p === 'business'
+          ? (simulator.decisionCost && simulator.decisionCost < 100_000_000 ? simulator.decisionCost : 60000)
+          : 1450000000 // Enterprise CapEx $1.45B
+      const nextDays = p === 'salaried' ? 8 : p === 'freelancer' ? 22 : p === 'business' ? 25 : 48
       const nextSim: SimulatorState = {
         decisionCost: nextCost,
         paymentDelayDays: nextDays,
-        upfrontPercent: p === 'business' ? 15 : p === 'freelancer' ? 25 : 30,
-        hiddenCostBuffer: p === 'freelancer' ? 10 : 8,
-        splitBatches: p === 'business' ? 1 : 2,
+        upfrontPercent: p === 'enterprise' ? 15 : p === 'business' ? 15 : p === 'freelancer' ? 25 : 30,
+        hiddenCostBuffer: p === 'enterprise' ? 9 : p === 'freelancer' ? 10 : 8,
+        splitBatches: p === 'enterprise' ? 1 : p === 'business' ? 1 : 2,
       }
       setSimulatorState(nextSim)
       try {
         localStorage.setItem('finvexa_simulator_state', JSON.stringify(nextSim))
       } catch {
         // ignore
+      }
+
+      if (p === 'enterprise') {
+        const entGoal: UserGoal = {
+          title: 'Global High-Speed Rail & Semiconductor Fab EPC Contract ($2.40B / ₹20,000 Cr)',
+          targetAmount: 1450000000,
+          targetMonths: 12,
+          category: 'enterprise',
+          downpaymentPercent: 15,
+        }
+        setUserGoalState(entGoal)
+        try {
+          localStorage.setItem('finvexa_user_goal', JSON.stringify(entGoal))
+        } catch {
+          // ignore
+        }
       }
 
       try {
@@ -959,8 +1224,27 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const dynamicPersonaData = useMemo<PersonaData>(() => {
     const base = PERSONAS[persona]
     const currentCost = simulator.decisionCost || base.defaultDecisionCost
-    const currentDays = simulator.paymentDelayDays || (persona === 'salaried' ? 8 : persona === 'freelancer' ? 22 : 25)
+    const currentDays = simulator.paymentDelayDays || (persona === 'salaried' ? 8 : persona === 'freelancer' ? 22 : persona === 'business' ? 25 : 48)
     const goalName = userGoal.title || base.purchaseLabel
+
+    if (persona === 'enterprise') {
+      return {
+        ...base,
+        story: userGoal.title || base.story,
+        purchaseLabel: userGoal.title || base.purchaseLabel,
+        defaultDecisionCost: currentCost,
+        sliderLabels: {
+          ...base.sliderLabels,
+          decisionCost: `CapEx Execution Cost (${formatMoney(currentCost, 'enterprise', enterpriseCurrencyUnit)})`,
+          paymentDelay: `Sovereign Milestone SLA Delay (${currentDays} Days)`,
+        },
+        riskCards: base.riskCards.map((rc, idx) => ({
+          ...rc,
+          checkNumber: idx + 1,
+        })),
+        rescuePlans: base.rescuePlans,
+      }
+    }
 
     // Team Pitch Table 6 Core Checks mapping (Simple 8th-Grade Words)
     const pitchTableChecks = [
@@ -1104,7 +1388,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       riskCards: customRiskCards,
       rescuePlans: customRescuePlans,
     }
-  }, [persona, simulator.decisionCost, simulator.paymentDelayDays, userGoal.title])
+  }, [persona, simulator.decisionCost, simulator.paymentDelayDays, userGoal.title, enterpriseCurrencyUnit])
+
+  const appFormatMoney = useCallback(
+    (amount: number, customPersona?: PersonaType) => {
+      return formatMoney(amount, customPersona || persona, enterpriseCurrencyUnit)
+    },
+    [persona, enterpriseCurrencyUnit]
+  )
 
 
   const [bankConsent, setBankConsent] = useState<BankConsentState>(() => {
@@ -1439,6 +1730,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         decisionTitle: userGoal.title || dynamicPersonaData.purchaseLabel,
         delayDays: simulator.paymentDelayDays,
         paymentDelayDays: simulator.paymentDelayDays,
+        enterpriseCurrencyUnit,
+        setEnterpriseCurrencyUnit,
+        toggleEnterpriseCurrencyUnit,
+        formatMoney: appFormatMoney,
       }}
     >
       {children}

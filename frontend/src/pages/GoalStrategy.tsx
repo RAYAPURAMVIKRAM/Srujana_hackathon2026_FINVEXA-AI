@@ -26,12 +26,14 @@ interface ResourceLink {
 
 export default function GoalStrategy() {
   const navigate = useNavigate()
-  const { persona, personaData, userGoal, simulator, applyUserGoalToEntireApp, themeMode } = useApp()
+  const { persona, personaData, userGoal, simulator, applyUserGoalToEntireApp, themeMode, formatMoney } = useApp()
   const isLight = themeMode === 'light'
 
   const [goalText, setGoalText] = useState(
     userGoal?.title ||
-      (persona === 'salaried'
+      (persona === 'enterprise'
+        ? 'Global High-Speed Rail & Semiconductor Fab EPC Contract ($2.4B)'
+        : persona === 'salaried'
         ? `Buy a ₹${simulator.decisionCost.toLocaleString('en-IN')} laptop in 2 months`
         : persona === 'freelancer'
         ? `Buy a ₹${simulator.decisionCost.toLocaleString('en-IN')} camera gear in 45 days`
@@ -77,6 +79,11 @@ export default function GoalStrategy() {
       { title: 'Accept ₹1,00,000 T-shirt order in 30 days', amt: 60000, m: 1 },
       { title: 'Buy ₹2,50,000 screen printing machine in 6 months', amt: 250000, m: 6 },
       { title: 'Stock ₹80,000 raw fabric before festive season', amt: 80000, m: 2 },
+    ],
+    enterprise: [
+      { title: 'Global Rail & Semiconductor Fab ($2.4B)', amt: 1450000000, m: 1.6 },
+      { title: 'Green Hydrogen Plant & Solar Grid ($1.8B)', amt: 1100000000, m: 1.5 },
+      { title: 'Subsea Data Fiber & AI Data Center ($3.2B)', amt: 1950000000, m: 2.0 },
     ],
   }
 
@@ -149,6 +156,29 @@ export default function GoalStrategy() {
         url: 'https://gem.gov.in',
         badge: 'Zero Middlemen',
         description: 'Direct procurement portal to supply products and textiles directly to Indian government departments.',
+      },
+    ],
+    enterprise: [
+      {
+        title: 'SWIFT Trade Finance & Guarantees (MT760 / MT700)',
+        category: 'Institutional Credit',
+        url: 'https://www.swift.com/standards/data-standards/mt700',
+        badge: 'SWIFT MT700/760',
+        description: 'Standard global banking messaging network for irrevocable Letters of Credit and Bank Guarantees.',
+      },
+      {
+        title: 'FIDIC International EPC Turnkey Contract Suite',
+        category: 'EPC Contracts',
+        url: 'https://fidic.org',
+        badge: 'FIDIC EPC',
+        description: 'International federation of consulting engineers standard conditions for EPC turnkey contracts.',
+      },
+      {
+        title: 'ISDA Master Agreement FX Hedging Framework',
+        category: 'Macro Hedging',
+        url: 'https://www.isda.org',
+        badge: 'ISDA Master',
+        description: 'Global standard documentation for over-the-counter currency forwards and interest-rate swaps.',
       },
     ],
   }
@@ -286,13 +316,17 @@ export default function GoalStrategy() {
             <div className="space-y-3 text-xs sm:text-sm text-slate-300">
               <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-rose-500/20 space-y-1 shadow-md">
                 <div className="text-[11px] font-bold text-rose-400 uppercase">
-                  Cash Shortage Alert
+                  {persona === 'enterprise' ? 'Treasury Deficit & Covenant Breach' : 'Cash Shortage Alert'}
                 </div>
                 <div className="text-xl font-black text-rose-400">
-                  Runs into a Cash Shortage on Day 18
+                  {persona === 'enterprise'
+                    ? 'Runs into a $340M (₹2,856 Cr) Deficit on Day 42'
+                    : 'Runs into a Cash Shortage on Day 18'}
                 </div>
                 <p className="text-xs text-slate-400">
-                  Because you pay upfront before getting paid, your account balance plunges into the red.
+                  {persona === 'enterprise'
+                    ? 'Due to unmitigated upfront CapEx burn ($1.45B) and a 48-day sovereign milestone lag, working capital crashes below zero, breaching the bank 1.35x DSCR debt covenant.'
+                    : 'Because you pay upfront before getting paid, your account balance plunges into the red.'}
                 </p>
               </div>
 
@@ -300,19 +334,38 @@ export default function GoalStrategy() {
                 <div className="flex items-start gap-2.5">
                   <span className="text-rose-400 font-bold">✗</span>
                   <span>
-                    <strong className="text-white">Puts Rent & Salaries in Danger:</strong> Your untouchable survival money (₹{personaData.lockedReserves.toLocaleString('en-IN')}) gets spent on the purchase.
+                    <strong className="text-white">
+                      {persona === 'enterprise'
+                        ? 'Breaches Senior Debt Covenant Floor:'
+                        : 'Puts Rent & Salaries in Danger:'}
+                    </strong>{' '}
+                    Your untouchable survival money ({formatMoney(personaData.lockedReserves)}) gets spent on the purchase.
                   </span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <span className="text-rose-400 font-bold">✗</span>
                   <span>
-                    <strong className="text-white">Wastes ₹4,500+ on Hidden Fees:</strong> High-interest credit card revolving charges (36% APR), surge delivery markups, and forgotten trial auto-debits.
+                    <strong className="text-white">
+                      {persona === 'enterprise'
+                        ? 'Loses $130M+ to Unhedged Macro Leaks:'
+                        : 'Wastes ₹4,500+ on Hidden Fees:'}
+                    </strong>{' '}
+                    {persona === 'enterprise'
+                      ? '4.2% FX currency volatility, steel commodity price escalation, and 0.5%/week Liquidated Damages (LD) penalty clauses.'
+                      : 'High-interest credit card revolving charges (36% APR), surge delivery markups, and forgotten trial auto-debits.'}
                   </span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <span className="text-rose-400 font-bold">✗</span>
                   <span>
-                    <strong className="text-white">Takes 4 Months Longer to Recover:</strong> Paying penalties and emergency borrowing traps you in an ongoing cash squeeze.
+                    <strong className="text-white">
+                      {persona === 'enterprise'
+                        ? 'Risks Syndicated Debt Acceleration & Downgrade:'
+                        : 'Takes 4 Months Longer to Recover:'}
+                    </strong>{' '}
+                    {persona === 'enterprise'
+                      ? 'Breaching the 1.35x DSCR covenant risks cross-defaults across JPMorgan, Citi, and global bondholders.'
+                      : 'Paying penalties and emergency borrowing traps you in an ongoing cash squeeze.'}
                   </span>
                 </div>
               </div>
@@ -324,23 +377,31 @@ export default function GoalStrategy() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
                 <CheckCircle2 size={18} />
-                <span>✅ Following FINVEXA AI Strategy</span>
+                <span>
+                  {persona === 'enterprise'
+                    ? '✅ Following FINVEXA Institutional Treasury Strategy'
+                    : '✅ Following FINVEXA AI Strategy'}
+                </span>
               </div>
               <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 uppercase">
-                100% Protected
+                {persona === 'enterprise' ? 'AAA Covenant Safe' : '100% Protected'}
               </span>
             </div>
 
             <div className="space-y-3 text-xs sm:text-sm text-slate-300">
               <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-emerald-500/20 space-y-1 shadow-md">
                 <div className="text-[11px] font-bold text-emerald-400 uppercase">
-                  Zero Shortage Guarantee
+                  {persona === 'enterprise' ? 'Zero Deficit & Covenant Protection' : 'Zero Shortage Guarantee'}
                 </div>
                 <div className="text-xl font-black text-emerald-400">
-                  ₹0 Cash Shortage Throughout Entire 90 Days
+                  {persona === 'enterprise'
+                    ? '$0 Cash Deficit & 1.52x DSCR Protected'
+                    : '₹0 Cash Shortage Throughout Entire 90 Days'}
                 </div>
                 <p className="text-xs text-slate-400">
-                  Using milestone downpayments and smart delivery splits keeps your bank green every single day.
+                  {persona === 'enterprise'
+                    ? 'Structuring 22% mobilization advance ($528M) + 6-tranche escrow eliminates the liquidity trough and keeps senior DSCR above 1.50x.'
+                    : 'Using milestone downpayments and smart delivery splits keeps your bank green every single day.'}
                 </p>
               </div>
 
@@ -348,19 +409,38 @@ export default function GoalStrategy() {
                 <div className="flex items-start gap-2.5">
                   <span className="text-emerald-400 font-bold">✓</span>
                   <span>
-                    <strong className="text-white">Rent & Salaries 100% Locked & Safe:</strong> Your ₹{personaData.lockedReserves.toLocaleString('en-IN')} essential floor is never touched by the purchase.
+                    <strong className="text-white">
+                      {persona === 'enterprise'
+                        ? 'Debt Covenants & 40,000 Payroll 100% Locked:'
+                        : 'Rent & Salaries 100% Locked & Safe:'}
+                    </strong>{' '}
+                    Your {formatMoney(personaData.lockedReserves)} essential floor is never touched by the purchase.
                   </span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <span className="text-emerald-400 font-bold">✓</span>
                   <span>
-                    <strong className="text-white">Saves ₹4,500+ by Cutting Leaks:</strong> Cancels forgotten auto-debits, recovers friend splits via WhatsApp, and avoids expensive loan interest.
+                    <strong className="text-white">
+                      {persona === 'enterprise'
+                        ? 'Saves $130M+ Through Forward Hedging & Trade Credit:'
+                        : 'Saves ₹4,500+ by Cutting Leaks:'}
+                    </strong>{' '}
+                    {persona === 'enterprise'
+                      ? 'Locks 80% FX forward hedges under ISDA rules and extends vendor payables by 60 days via reverse factoring.'
+                      : 'Cancels forgotten auto-debits, recovers friend splits via WhatsApp, and avoids expensive loan interest.'}
                   </span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <span className="text-emerald-400 font-bold">✓</span>
                   <span>
-                    <strong className="text-white">Reaches Goal on Time + ₹10,000 Buffer:</strong> Finish your purchase exactly on target with an extra ₹10,000 emergency buffer left in the bank!
+                    <strong className="text-white">
+                      {persona === 'enterprise'
+                        ? 'Delivers EPC Project on Schedule with +$530M Net Cash:'
+                        : 'Reaches Goal on Time + ₹10,000 Buffer:'}
+                    </strong>{' '}
+                    {persona === 'enterprise'
+                      ? 'Safely finishes the $2.4B contract execution with AAA rating intact and a healthy treasury surplus!'
+                      : 'Finish your purchase exactly on target with an extra ₹10,000 emergency buffer left in the bank!'}
                   </span>
                 </div>
               </div>

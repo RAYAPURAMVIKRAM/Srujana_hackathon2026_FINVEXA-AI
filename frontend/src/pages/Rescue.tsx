@@ -26,7 +26,7 @@ interface RescueExternalTool {
 }
 
 export default function Rescue() {
-  const { personaData, simulator, setSimulator } = useApp()
+  const { persona, personaData, simulator, setSimulator, formatMoney } = useApp()
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [appliedId, setAppliedId] = useState<string | null>(null)
   const navigate = useNavigate()
@@ -43,10 +43,10 @@ export default function Rescue() {
     hiddenCostBuffer: simulator.hiddenCostBuffer,
     splitBatches: simulator.splitBatches,
     hiddenLeaks: personaData.hiddenLeaks,
-    personaType: personaData.type,
+    personaType: persona,
   })
 
-  const { shortage: originalShortage } = computeRiskMetrics(baseCashflow, personaData.lockedReserves)
+  const { shortage: originalShortage, dscr: originalDscr, isCovenantBreached: originalBreached } = computeRiskMetrics(baseCashflow, personaData.lockedReserves)
 
   const handleCopyMessage = (id: string, text: string) => {
     navigator.clipboard.writeText(text)
@@ -69,6 +69,57 @@ export default function Rescue() {
 
   // Real working external tools mapped to each plan
   const getExternalToolsForPlan = (idx: number): RescueExternalTool[] => {
+    if (persona === 'enterprise') {
+      switch (idx) {
+        case 0:
+          return [
+            {
+              name: 'SWIFT MT760 Bank Guarantee Platform',
+              url: 'https://www.swift.com/standards/data-standards/mt760',
+              badge: 'Bank Guarantee',
+              desc: 'Unlocks $528M mobilization advance against an irrevocable bank guarantee under EPC Clause 14.2.',
+            },
+            {
+              name: 'FIDIC International EPC Turnkey Suite',
+              url: 'https://fidic.org',
+              badge: 'FIDIC Yellow/Silver',
+              desc: 'Standard international contract framework structuring execution into 6 progressive milestone escrows.',
+            },
+          ]
+        case 1:
+          return [
+            {
+              name: 'Invoicemart Syndicated Trade Finance',
+              url: 'https://www.invoicemart.com',
+              badge: 'SOFR + 110 bps',
+              desc: 'Extends $450M of Tier-1 vendor payables by 60 days via reverse factoring and bank-backed Letters of Credit.',
+            },
+            {
+              name: 'SWIFT MT700 Letter of Credit (LC)',
+              url: 'https://www.swift.com/standards/data-standards/mt700',
+              badge: 'Trade Credit',
+              desc: 'Discounts sovereign-approved milestone invoices non-recourse through global commercial bank consortia.',
+            },
+          ]
+        case 2:
+        default:
+          return [
+            {
+              name: 'ISDA Master Agreement FX Hedging',
+              url: 'https://www.isda.org',
+              badge: 'ISDA Master',
+              desc: 'Locks 80% USD/INR and EUR/USD forward currency hedges to eliminate $48M macro exchange rate volatility.',
+            },
+            {
+              name: 'Syndicated Revolving Credit Facility (RCF)',
+              url: 'https://sahamati.org.in',
+              badge: 'Liquidity Bridge',
+              desc: 'Draws down a 28-day $250M syndicated liquidity bridge, keeping senior debt DSCR safely at 1.48x–1.52x.',
+            },
+          ]
+      }
+    }
+
     switch (idx) {
       case 0:
         return [
@@ -136,24 +187,43 @@ export default function Rescue() {
             }}
           >
             <Sparkles size={13} />
-            <span>Zero-Jargon Solution Engine</span>
+            <span>
+              {persona === 'enterprise'
+                ? 'Institutional Treasury Restructuring Engine'
+                : 'Zero-Jargon Solution Engine'}
+            </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-            3 Easy Ways to Fix This Without Going Broke
+            {persona === 'enterprise'
+              ? '3 Institutional Treasury Rescue Strategies ($2.4B / ₹20,000 Cr Scale)'
+              : '3 Easy Ways to Fix This Without Going Broke'}
           </h1>
           <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
-            Pick a realistic plan for <strong className="text-white font-bold">{personaData.label}</strong>. We computed the math to keep your bank balance above your rent floor, with verified web tools and ready-to-send messages:
+            {persona === 'enterprise'
+              ? 'CFO-grade deal restructuring structures that eliminate the -$340M (-₹2,856 Cr) cash trough, restore DSCR above 1.50x, and keep Senior Bond covenants 100% compliant:'
+              : `Pick a realistic plan for ${personaData.label}. We computed the math to keep your bank balance above your rent floor, with verified web tools and ready-to-send messages:`}
           </p>
         </div>
 
-        {/* Shortage Counter */}
+        {/* Shortage / Covenant Counter */}
         <div className="bg-slate-950/80 p-4 rounded-2xl border border-white/10 shadow-lg shrink-0 text-right">
           <div className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">
-            Current Money Shortage
+            {persona === 'enterprise' ? 'Treasury Deficit / Covenant' : 'Current Money Shortage'}
           </div>
           <div className="text-2xl font-black text-rose-400 mono mt-0.5">
-            {originalShortage > 0 ? `−₹${originalShortage.toLocaleString('en-IN')}` : '₹0 (Safe)'}
+            {persona === 'enterprise'
+              ? originalShortage > 0
+                ? `−${formatMoney(originalShortage)}`
+                : 'Safe ($0)'
+              : originalShortage > 0
+              ? `−₹${originalShortage.toLocaleString('en-IN')}`
+              : '₹0 (Safe)'}
           </div>
+          {persona === 'enterprise' && (
+            <div className="text-[10px] font-mono font-bold mt-1 text-rose-300">
+              {originalBreached ? `🚨 BREACH: ${originalDscr}x DSCR (< 1.35x)` : `✅ SAFE: ${originalDscr}x DSCR`}
+            </div>
+          )}
         </div>
       </div>
 
@@ -171,10 +241,10 @@ export default function Rescue() {
             hiddenCostBuffer: plan.hiddenCostBuffer,
             splitBatches: plan.splitBatches,
             hiddenLeaks: personaData.hiddenLeaks,
-            personaType: personaData.type,
+            personaType: persona,
           })
 
-          const { shortage: planShortage } = computeRiskMetrics(planCashflow, personaData.lockedReserves)
+          const { shortage: planShortage, dscr: planDscr } = computeRiskMetrics(planCashflow, personaData.lockedReserves)
           const moneySaved = Math.max(0, originalShortage - planShortage)
           const isApplied = appliedId === plan.id
           const tools = getExternalToolsForPlan(idx)
@@ -202,7 +272,7 @@ export default function Rescue() {
                       Money Saved
                     </span>
                     <span className="text-xs font-black text-emerald-400 mono">
-                      +₹{moneySaved.toLocaleString('en-IN')}
+                      +{formatMoney(moneySaved)}
                     </span>
                   </div>
                 </div>
@@ -212,7 +282,11 @@ export default function Rescue() {
                   <h3 className="text-lg font-bold text-white leading-snug">{plan.title}</h3>
                   <div className="text-xs font-bold mt-1" style={{ color: plan.tagColor }}>
                     {planShortage === 0
-                      ? '✓ 100% Cash Shortage Eliminated'
+                      ? persona === 'enterprise'
+                        ? `✓ 100% Deficit Wiped Out · ${planDscr}x DSCR (AAA Safe)`
+                        : '✓ 100% Cash Shortage Eliminated'
+                      : persona === 'enterprise'
+                      ? `Deficit reduced to ${formatMoney(planShortage)} (${planDscr}x DSCR)`
                       : `Deficit cut down to only ₹${planShortage.toLocaleString('en-IN')}`}
                   </div>
                 </div>
@@ -223,24 +297,42 @@ export default function Rescue() {
                 {/* Key Plan Settings Preview */}
                 <div className="p-3 rounded-xl bg-slate-950/80 border border-white/10 text-xs space-y-1.5 font-mono text-slate-300">
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Downpayment / Advance:</span>
+                    <span className="text-slate-400">
+                      {persona === 'enterprise' ? 'Mobilization Advance:' : 'Downpayment / Advance:'}
+                    </span>
                     <span className="font-bold text-white">{plan.upfrontPercent}%</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Payment Parts:</span>
-                    <span className="font-bold text-white">{plan.splitBatches} Batches</span>
+                    <span className="text-slate-400">
+                      {persona === 'enterprise' ? 'Milestone Escrow Tranches:' : 'Payment Parts:'}
+                    </span>
+                    <span className="font-bold text-white">
+                      {plan.splitBatches} {persona === 'enterprise' ? 'Tranches' : 'Batches'}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-400">Allowed Delay:</span>
+                    <span className="text-slate-400">SLA Audit Settlement Lag:</span>
                     <span className="font-bold text-white">{plan.paymentDelayDays} Days</span>
                   </div>
+                  {persona === 'enterprise' && (
+                    <div className="flex justify-between pt-1 border-t border-white/5">
+                      <span className="text-slate-400">Resulting Senior DSCR:</span>
+                      <span className="font-bold text-emerald-400">
+                        {planDscr}x (Covenant Compliant)
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Verified Web-Researched External Tools Links */}
                 <div className="space-y-2 pt-1">
                   <div className="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
                     <Link2 size={12} className="text-blue-400" />
-                    <span>Verified Real-World Tools:</span>
+                    <span>
+                      {persona === 'enterprise'
+                        ? 'Institutional Framework & Trade Finance Tools:'
+                        : 'Verified Real-World Tools:'}
+                    </span>
                   </div>
                   <div className="space-y-2">
                     {tools.map((tool, tIdx) => (
@@ -273,7 +365,9 @@ export default function Rescue() {
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1">
                       <MessageSquare size={12} />
-                      Ready-to-Send Negotiation Message
+                      {persona === 'enterprise'
+                        ? 'Institutional Legal Mandate & EPC Notice'
+                        : 'Ready-to-Send Negotiation Message'}
                     </span>
                     <button
                       onClick={() => handleCopyMessage(plan.id, plan.negotiationMessage)}
@@ -310,12 +404,16 @@ export default function Rescue() {
                   {isApplied ? (
                     <>
                       <CheckCircle2 size={15} />
-                      <span>Plan Applied! Launching Simulator...</span>
+                      <span>Institutional Structure Applied! Launching Simulator...</span>
                     </>
                   ) : (
                     <>
                       <Zap size={14} />
-                      <span>✨ Apply This Fix to My Plan</span>
+                      <span>
+                        {persona === 'enterprise'
+                          ? '✨ Simulate & Apply Institutional Structure'
+                          : '✨ Apply This Fix to My Plan'}
+                      </span>
                     </>
                   )}
                 </button>
