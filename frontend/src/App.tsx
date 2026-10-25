@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import TopBar from './components/TopBar'
 import Sidebar from './components/Sidebar'
+import BottomNav from './components/BottomNav'
 import Footer from './components/Footer'
 import CloudAssetManager from './components/CloudAssetManager'
 import CommandCenter from './pages/CommandCenter'
@@ -44,15 +45,10 @@ export default function App() {
 
       <TopBar />
       <Sidebar />
+      <BottomNav />
 
-      {/* Main content area — offset for fixed topbar + sidebar */}
-      <main
-        className="relative z-10 min-h-screen transition-all duration-300 flex flex-col justify-between"
-        style={{
-          paddingTop: '56px',
-          paddingLeft: 'clamp(64px, 14rem, 224px)',
-        }}
-      >
+      {/* Main content area — responsive offset: 0px left on mobile, 240px on desktop; bottom padding for mobile bar */}
+      <main className="relative z-10 min-h-screen transition-all duration-300 flex flex-col justify-between pt-14 md:pl-60 pb-24 md:pb-8">
         <div className="p-4 sm:p-5 lg:p-6 max-w-[1440px] w-full mx-auto">
           <Routes>
             <Route path="/" element={<CommandCenter />} />

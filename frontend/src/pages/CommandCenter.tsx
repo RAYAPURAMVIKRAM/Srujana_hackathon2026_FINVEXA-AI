@@ -19,7 +19,7 @@ import Interactive3DFinancialCore from '../components/Interactive3DFinancialCore
 import { generateCashflow, computeRiskMetrics } from '../lib/cashflow'
 
 export default function CommandCenter() {
-  const { persona, setPersona, personaData, simulator } = useApp()
+  const { persona, setPersona, personaData, simulator, bankConsent } = useApp()
   const navigate = useNavigate()
   const theme = personaData.theme
 
@@ -130,6 +130,21 @@ export default function CommandCenter() {
           </div>
         </div>
       </Tilt3DCard>
+
+      {/* RBI Account Aggregator Live Feed Banner */}
+      {bankConsent.isLinked && (
+        <div className="p-3.5 sm:p-4 rounded-2xl bg-emerald-950/40 border border-emerald-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-emerald-200 shadow-md">
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
+            <span>
+              <strong className="text-white">RBI Account Aggregator Live Feed Active:</strong> {bankConsent.bankName} ({bankConsent.accountMasked})
+            </span>
+          </div>
+          <span className="text-[10px] font-mono px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 shrink-0 self-start sm:self-auto">
+            100% Read-Only Protected · Sahamati Standard
+          </span>
+        </div>
+      )}
 
       {/* 2. Plain-English KPI Cards (8th-Grade Language) */}
       <div>

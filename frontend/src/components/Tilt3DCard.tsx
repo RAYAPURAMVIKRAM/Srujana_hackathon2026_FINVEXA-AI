@@ -66,12 +66,46 @@ export default function Tilt3DCard({
     setGlarePos(prev => ({ ...prev, opacity: 0 }))
   }, [])
 
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent<HTMLDivElement>) => {
+      if (e.touches.length !== 1 || !cardRef.current) return
+      const rect = cardRef.current.getBoundingClientRect()
+      const touch = e.touches[0]
+      const x = touch.clientX - rect.left
+      const y = touch.clientY - rect.top
+      const centerX = rect.width / 2
+      const centerY = rect.height / 2
+      const rotateX = -((y - centerY) / centerY) * (maxTilt * 0.7)
+      const rotateY = ((x - centerX) / centerX) * (maxTilt * 0.7)
+
+      setTransformStyle(
+        `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(
+          2
+        )}deg) scale3d(${scale}, ${scale}, ${scale})`
+      )
+      setGlarePos({
+        x: (x / rect.width) * 100,
+        y: (y / rect.height) * 100,
+        opacity: glareOpacity * 0.8,
+      })
+    },
+    [maxTilt, scale, glareOpacity]
+  )
+
+  const handleTouchEnd = useCallback(() => {
+    setTransformStyle('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)')
+    setGlarePos(prev => ({ ...prev, opacity: 0 }))
+  }, [])
+
   return (
     <div
       ref={cardRef}
       onClick={onClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchEnd}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
       onDrop={onDrop}

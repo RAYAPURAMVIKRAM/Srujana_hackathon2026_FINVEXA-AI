@@ -49,9 +49,9 @@ function SliderRow({
           {display}
         </span>
       </div>
-      <div className="relative pt-1 pb-1">
+      <div className="relative pt-2 pb-2">
         <div
-          className="absolute top-1/2 -translate-y-1/2 h-1.5 rounded-full bg-emerald-500/30 pointer-events-none"
+          className="absolute top-1/2 -translate-y-1/2 h-2 rounded-full bg-emerald-500/30 pointer-events-none"
           style={{ width: `${pct}%` }}
         />
         <input
@@ -61,7 +61,7 @@ function SliderRow({
           step={step}
           value={value}
           onChange={e => onChange(Number(e.target.value))}
-          className="slider-custom relative z-10 w-full cursor-pointer"
+          className="slider-custom relative z-10 w-full cursor-pointer h-6 touch-pan-y"
         />
       </div>
       <div className="flex justify-between text-[10px] text-slate-500 font-mono">
@@ -338,7 +338,7 @@ export default function Simulator() {
             </div>
 
             {/* Recharts 90-Day Cash Flow Canvas */}
-            <div className="w-full h-80 sm:h-96">
+            <div className="w-full h-[280px] md:h-[380px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 5 }}>
                   <defs>

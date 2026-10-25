@@ -279,7 +279,8 @@ export default function Interactive3DFinancialCore({
       onTouchEnd={handleTouchEnd}
     >
       <div
-        className="relative cursor-grab active:cursor-grabbing transition-transform duration-200"
+        className="relative cursor-grab active:cursor-grabbing transition-transform duration-200 touch-none"
+        style={{ touchAction: 'none' }}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onTouchStart={handleTouchStart}
@@ -287,8 +288,8 @@ export default function Interactive3DFinancialCore({
       >
         <canvas
           ref={canvasRef}
-          style={{ width: `${size}px`, height: `${size}px` }}
-          className="rounded-full drop-shadow-2xl"
+          style={{ width: `${size}px`, height: `${size}px`, touchAction: 'none' }}
+          className="rounded-full drop-shadow-2xl touch-none"
         />
 
         {/* Drag Hint Overlay */}
@@ -299,7 +300,7 @@ export default function Interactive3DFinancialCore({
               : 'bg-black/40 text-slate-400 opacity-60 hover:opacity-100'
           }`}
         >
-          {isInteracting ? '🔄 Rotating 3D Core' : '👆 Click & Drag to Spin'}
+          {isInteracting ? '🔄 Rotating 3D Core' : '👆 Drag or Touch to Spin'}
         </div>
       </div>
 

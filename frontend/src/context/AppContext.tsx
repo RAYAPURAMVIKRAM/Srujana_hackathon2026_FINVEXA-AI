@@ -481,6 +481,21 @@ export const PERSONAS: Record<PersonaType, PersonaData> = {
   },
 }
 
+export interface BankConsentState {
+  isLinked: boolean
+  bankName: string | null
+  bankId: string | null
+  accountMasked: string | null
+  consentId: string | null
+  linkedAt: string | null
+  expiresInDays: number
+  permissions: {
+    readOnlyHistory: boolean
+    autoExpire30Days: boolean
+    instantRevoke: boolean
+  }
+}
+
 interface AppContextType {
   persona: PersonaType
   setPersona: (p: PersonaType) => void
@@ -491,6 +506,10 @@ interface AppContextType {
   setAuthUser: (u: AuthUser) => void
   demoLogin: () => void
   logout: () => void
+  bankConsent: BankConsentState
+  setBankConsent: React.Dispatch<React.SetStateAction<BankConsentState>>
+  linkBankSuccess: (bankName: string, bankId: string, accountMasked?: string) => void
+  revokeBankConsent: () => void
 }
 
 const DEFAULT_SIMULATOR: SimulatorState = {
@@ -553,6 +572,75 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setAuthUser(null)
   }, [])
 
+  const [bankConsent, setBankConsent] = useState<BankConsentState>(() => {
+    try {
+      const saved = localStorage.getItem('finvexa_bank_consent')
+      if (saved) return JSON.parse(saved)
+    } catch {
+      // ignore
+    }
+    return {
+      isLinked: false,
+      bankName: null,
+      bankId: null,
+      accountMasked: null,
+      consentId: null,
+      linkedAt: null,
+      expiresInDays: 30,
+      permissions: {
+        readOnlyHistory: true,
+        autoExpire30Days: true,
+        instantRevoke: true,
+      },
+    }
+  })
+
+  const linkBankSuccess = useCallback((bankName: string, bankId: string, accountMasked = '•••• 4912') => {
+    const consent: BankConsentState = {
+      isLinked: true,
+      bankName,
+      bankId,
+      accountMasked,
+      consentId: `AA-RBI-2026-${Math.floor(10000 + Math.random() * 90000)}`,
+      linkedAt: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+      expiresInDays: 30,
+      permissions: {
+        readOnlyHistory: true,
+        autoExpire30Days: true,
+        instantRevoke: true,
+      },
+    }
+    setBankConsent(consent)
+    try {
+      localStorage.setItem('finvexa_bank_consent', JSON.stringify(consent))
+    } catch {
+      // ignore
+    }
+  }, [])
+
+  const revokeBankConsent = useCallback(() => {
+    const resetConsent: BankConsentState = {
+      isLinked: false,
+      bankName: null,
+      bankId: null,
+      accountMasked: null,
+      consentId: null,
+      linkedAt: null,
+      expiresInDays: 30,
+      permissions: {
+        readOnlyHistory: true,
+        autoExpire30Days: true,
+        instantRevoke: true,
+      },
+    }
+    setBankConsent(resetConsent)
+    try {
+      localStorage.removeItem('finvexa_bank_consent')
+    } catch {
+      // ignore
+    }
+  }, [])
+
   return (
     <AppContext.Provider
       value={{
@@ -565,6 +653,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setAuthUser,
         demoLogin,
         logout,
+        bankConsent,
+        setBankConsent,
+        linkBankSuccess,
+        revokeBankConsent,
       }}
     >
       {children}

@@ -17,7 +17,7 @@ export default function Sidebar() {
 
   return (
     <aside
-      className="fixed left-0 top-14 h-[calc(100vh-56px)] w-16 md:w-60 flex flex-col z-40 transition-all duration-300"
+      className="hidden md:flex fixed left-0 top-14 h-[calc(100vh-56px)] w-60 flex-col z-40 transition-all duration-300"
       style={{
         background: 'rgba(2, 6, 23, 0.94)',
         borderRight: '1px solid rgba(255, 255, 255, 0.08)',
