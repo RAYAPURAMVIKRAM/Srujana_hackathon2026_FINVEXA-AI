@@ -6,7 +6,6 @@ import UniversalScaleSwitcher from './UniversalScaleSwitcher'
 
 export default function GoalQuickEditBar() {
   const { userGoal, simulator, persona, personaData, applyUserGoalToEntireApp, themeMode, formatMoney } = useApp()
-  const theme = personaData.theme
   const isLight = themeMode === 'light'
 
   const [isOpen, setIsOpen] = useState(false)
@@ -92,32 +91,22 @@ export default function GoalQuickEditBar() {
       <div
         className={`w-full rounded-2xl p-3 sm:p-4 transition-all duration-200 ${
           isLight
-            ? 'bg-white border-2 border-slate-200 shadow-md text-slate-900'
+            ? 'bg-white border-2 border-yellow-300 shadow-xs text-slate-900'
             : 'bg-slate-900/80 backdrop-blur-xl border border-white/10 shadow-lg text-white'
         }`}
       >
         {/* Collapsed summary view */}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <div
-              className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-md"
-              style={{ background: theme.buttonGradient }}
-            >
-              <Target size={20} className="text-white" />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-xs bg-yellow-400 text-slate-950 border border-yellow-500 font-black">
+              <Target size={20} />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className={`text-[10px] uppercase font-bold tracking-wider ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                <span className={`text-[10px] uppercase font-bold tracking-wider ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
                   Active Goal & Simulation
                 </span>
-                <span
-                  className="text-[10px] font-bold px-2 py-0.5 rounded-full border"
-                  style={{
-                    background: `${theme.primaryHex}15`,
-                    color: isLight ? '#1e40af' : theme.primaryHex,
-                    borderColor: `${theme.primaryHex}35`,
-                  }}
-                >
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border bg-yellow-100 text-yellow-950 border-yellow-400">
                   Syncs All Graphs
                 </span>
               </div>
@@ -127,14 +116,14 @@ export default function GoalQuickEditBar() {
                 </span>
                 <span className={`mono text-xs font-bold px-2 py-0.5 rounded-md ${
                   isLight
-                    ? 'text-emerald-800 bg-emerald-100 border border-emerald-300'
+                    ? 'text-emerald-900 bg-emerald-100 border border-emerald-300'
                     : 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'
                 }`}>
                   {formatMoney(simulator.decisionCost)}
                 </span>
                 <span className={`mono text-xs font-bold px-2 py-0.5 rounded-md ${
                   isLight
-                    ? 'text-amber-800 bg-amber-100 border border-amber-300'
+                    ? 'text-yellow-950 bg-yellow-100 border border-yellow-400'
                     : 'text-amber-300 bg-amber-500/10 border border-amber-500/20'
                 }`}>
                   {simulator.paymentDelayDays} Days Delay
@@ -146,9 +135,9 @@ export default function GoalQuickEditBar() {
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shrink-0 ${
+            className={`px-3.5 py-2 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all shrink-0 ${
               isLight
-                ? 'text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-300'
+                ? 'text-slate-950 bg-yellow-400 hover:bg-yellow-500 border border-yellow-500 shadow-xs'
                 : 'text-slate-200 bg-white/5 hover:bg-white/10 border border-white/15'
             }`}
           >

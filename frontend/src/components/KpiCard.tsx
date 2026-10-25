@@ -77,11 +77,11 @@ export default function KpiCard({
       iconBg: 'bg-rose-100 text-rose-700 border-rose-300',
     },
     neutral: {
-      border: 'border-slate-300 hover:border-slate-400',
-      text: 'text-blue-700',
-      bg: 'bg-blue-100',
+      border: 'border-yellow-300 hover:border-yellow-400',
+      text: 'text-slate-900',
+      bg: 'bg-yellow-100',
       badge: '',
-      iconBg: 'bg-blue-100 text-blue-700 border-blue-300',
+      iconBg: 'bg-yellow-100 text-slate-950 border-yellow-300',
     },
   }
 

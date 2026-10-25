@@ -21,14 +21,14 @@ const LANGUAGES: LangItem[] = [
 export default function GlobalTopControls() {
   const { themeMode, toggleThemeMode, lang: contextLang, setLang } = useApp()
 
-  // Track active theme locally and in sync with documentElement
+  // Track active theme locally and in sync with documentElement (default to clean light mode)
   const [isLight, setIsLight] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem('finvexa_theme') || localStorage.getItem('finvexa_theme_mode')
       if (saved) return saved === 'light'
-      return document.documentElement.classList.contains('light-mode') || document.documentElement.classList.contains('light')
+      return true
     } catch {
-      return false
+      return true
     }
   })
 
@@ -120,22 +120,22 @@ export default function GlobalTopControls() {
   return (
     <aside
       aria-label="Global View and Accessibility Controls"
-      className="fixed top-2.5 sm:top-3 right-3 sm:right-4 z-[9999] flex items-center gap-1.5 sm:gap-2 p-1 sm:p-1.5 rounded-2xl backdrop-blur-xl transition-all duration-300 shadow-xl border select-none bg-slate-900/90 text-white border-white/20 dark:bg-slate-900/90 dark:text-white dark:border-white/20"
+      className="fixed top-2 sm:top-2.5 right-2 sm:right-3 z-[9999] flex items-center gap-1 sm:gap-1.5 p-1 rounded-2xl backdrop-blur-xl transition-all duration-300 shadow-md border select-none"
       style={{
-        backgroundColor: isLight ? 'rgba(255, 255, 255, 0.96)' : 'rgba(15, 23, 42, 0.92)',
-        borderColor: isLight ? '#cbd5e1' : 'rgba(255, 255, 255, 0.18)',
+        backgroundColor: isLight ? '#FFFFFF' : 'rgba(15, 23, 42, 0.95)',
+        borderColor: isLight ? '#FDE047' : 'rgba(255, 255, 255, 0.18)',
         boxShadow: isLight
-          ? '0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.08)'
-          : '0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 20px rgba(59, 130, 246, 0.2)',
+          ? '0 4px 14px rgba(234, 179, 8, 0.12), 0 2px 6px rgba(15, 23, 42, 0.04)'
+          : '0 10px 30px -5px rgba(0, 0, 0, 0.6)',
       }}
     >
       {/* 1. Theme Toggle: ☀️ Light / 🌙 Dark */}
       <button
         type="button"
         onClick={handleToggleTheme}
-        className={`flex items-center gap-1 sm:gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 active:scale-95 shadow-xs ${
+        className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-bold transition-all duration-200 active:scale-95 shadow-xs ${
           isLight
-            ? 'bg-amber-100 text-amber-950 hover:bg-amber-200 border border-amber-300'
+            ? 'bg-yellow-400 hover:bg-yellow-500 text-slate-950 border border-yellow-500 font-extrabold'
             : 'bg-indigo-500/25 text-indigo-200 hover:bg-indigo-500/40 border border-indigo-500/40'
         }`}
         title={isLight ? 'Switch to Dark Mode (🌙 Dark)' : 'Switch to Light Mode (☀️ Light)'}
@@ -143,28 +143,28 @@ export default function GlobalTopControls() {
       >
         {isLight ? (
           <>
-            <Moon size={14} className="text-indigo-700" />
-            <span className="font-extrabold text-[11px] sm:text-xs">🌙 Dark</span>
+            <Sun size={13} className="text-slate-950" />
+            <span className="font-black text-[11px]">☀️ Yellow/White</span>
           </>
         ) : (
           <>
-            <Sun size={14} className="text-amber-400" />
-            <span className="font-extrabold text-[11px] sm:text-xs">☀️ Light</span>
+            <Moon size={13} className="text-amber-400" />
+            <span className="font-black text-[11px]">🌙 Dark</span>
           </>
         )}
       </button>
 
       {/* Divider */}
       <div
-        className="w-[1px] h-5 transition-colors"
-        style={{ backgroundColor: isLight ? '#cbd5e1' : 'rgba(255, 255, 255, 0.2)' }}
+        className="w-[1px] h-4 transition-colors"
+        style={{ backgroundColor: isLight ? '#FDE047' : 'rgba(255, 255, 255, 0.2)' }}
       />
 
       {/* 2. Language Switcher Pills: 🇬🇧 EN | 🇮🇳 తెలుగు | 🇮🇳 ಕನ್ನಡ | 🇮🇳 हिन्दी */}
-      <div className="flex items-center gap-1" role="radiogroup" aria-label="Select interface language">
+      <div className="flex items-center gap-0.5" role="radiogroup" aria-label="Select interface language">
         <span
           className="text-[10px] hidden lg:inline-flex items-center gap-0.5 px-1 font-semibold"
-          style={{ color: isLight ? '#64748b' : '#94a3b8' }}
+          style={{ color: isLight ? '#64748B' : '#94A3B8' }}
         >
           <Globe size={11} />
         </span>
@@ -179,16 +179,16 @@ export default function GlobalTopControls() {
               aria-checked={isActive}
               onClick={() => handleLanguageChange(item.code)}
               title={item.title}
-              className={`px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-xl text-xs font-extrabold transition-all duration-150 flex items-center gap-1 active:scale-95 ${
+              className={`px-2 py-1 rounded-xl text-xs font-black transition-all duration-150 flex items-center gap-1 active:scale-95 ${
                 isActive
-                  ? 'bg-blue-600 text-white shadow-md ring-2 ring-blue-400/50 scale-[1.02]'
+                  ? 'bg-yellow-400 text-slate-950 shadow-xs border border-yellow-500'
                   : isLight
-                  ? 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900 border border-slate-200'
+                  ? 'bg-amber-50/60 text-slate-700 hover:bg-yellow-100 hover:text-slate-950 border border-amber-200/60'
                   : 'bg-white/5 text-slate-300 hover:bg-white/15 hover:text-white border border-white/10'
               }`}
             >
-              <span className="text-[12px] leading-none">{item.flag}</span>
-              <span className="tracking-tight text-[11px] sm:text-xs">{item.label}</span>
+              <span className="text-[11px] leading-none">{item.flag}</span>
+              <span className="tracking-tight text-[10px] sm:text-[11px]">{item.label}</span>
             </button>
           )
         })}

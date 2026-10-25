@@ -46,13 +46,13 @@ export default function Sidebar() {
             key={to}
             to={to}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs md:text-sm font-semibold transition-all duration-150 group ${
+              `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all duration-150 group ${
                 isActive
                   ? isLight
-                    ? 'text-blue-700 bg-blue-50 border border-blue-200 shadow-sm font-bold'
-                    : 'text-white bg-blue-600/20 border border-blue-500/40 shadow-sm'
+                    ? 'text-slate-950 bg-yellow-100/90 border border-yellow-400 shadow-xs'
+                    : 'text-white bg-yellow-400/20 border border-yellow-400/40 shadow-sm'
                   : isLight
-                  ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-transparent'
+                  ? 'text-slate-600 hover:text-slate-950 hover:bg-yellow-50/70 border border-transparent'
                   : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
               }`
             }
@@ -63,15 +63,17 @@ export default function Sidebar() {
                   size={18}
                   className={`shrink-0 transition-colors ${
                     isActive
-                      ? 'text-blue-500'
+                      ? isLight
+                        ? 'text-yellow-600'
+                        : 'text-yellow-400'
                       : isLight
-                      ? 'text-slate-500 group-hover:text-slate-800'
+                      ? 'text-slate-500 group-hover:text-slate-900'
                       : 'text-slate-400 group-hover:text-slate-200'
                   }`}
                 />
                 <span className="truncate">{label}</span>
                 {isActive && (
-                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-500" />
+                  <div className="ml-auto w-2 h-2 rounded-full bg-yellow-500 shadow-xs" />
                 )}
               </>
             )}

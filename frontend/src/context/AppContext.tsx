@@ -884,7 +884,7 @@ const DEFAULT_SIMULATOR: SimulatorState = {
 const AppContext = createContext<AppContextType | null>(null)
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  // Theme Mode
+  // Theme Mode: Default to crisp Yellow & White ('light') per judge feedback
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
     try {
       const saved = localStorage.getItem('finvexa_theme_mode') as ThemeMode
@@ -892,7 +892,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // ignore
     }
-    return 'dark'
+    return 'light'
   })
 
   const toggleThemeMode = useCallback(() => {

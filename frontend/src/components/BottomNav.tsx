@@ -27,9 +27,9 @@ export default function BottomNav() {
 
   return (
     <nav
-      className={`md:hidden fixed bottom-0 left-0 right-0 z-50 px-1 py-1 flex justify-around items-center shadow-2xl backdrop-blur-xl transition-colors duration-300 ${
+      className={`md:hidden fixed bottom-0 left-0 right-0 z-50 px-1 py-1 flex justify-around items-center shadow-xl backdrop-blur-xl transition-colors duration-300 ${
         isLight
-          ? 'bg-white/95 border-t border-slate-200 text-slate-900'
+          ? 'bg-white/98 border-t-2 border-yellow-300 text-slate-900'
           : 'bg-slate-950/90 border-t border-white/10 text-white'
       }`}
     >
@@ -41,10 +41,10 @@ export default function BottomNav() {
             `flex flex-col items-center justify-center flex-1 min-h-[46px] py-1 px-0.5 rounded-xl transition-all duration-150 relative ${
               isActive
                 ? isLight
-                  ? 'text-blue-700 font-bold'
+                  ? 'text-slate-950 font-black'
                   : 'text-white font-bold'
                 : isLight
-                ? 'text-slate-500 hover:text-slate-800'
+                ? 'text-slate-600 hover:text-slate-950'
                 : 'text-slate-400 hover:text-slate-200'
             }`
           }
@@ -53,15 +53,15 @@ export default function BottomNav() {
             <>
               {/* Active Indicator Top Pill */}
               {isActive && (
-                <div className="absolute -top-1 w-6 h-0.5 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6]" />
+                <div className="absolute -top-1 w-6 h-0.5 rounded-full bg-yellow-500 shadow-[0_0_8px_#facc15]" />
               )}
 
               <div
                 className={`p-1 rounded-xl transition-all ${
                   isActive
                     ? isLight
-                      ? 'bg-blue-100 text-blue-600'
-                      : 'bg-blue-500/20 text-blue-400'
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : 'bg-yellow-500/20 text-yellow-400'
                     : 'bg-transparent text-slate-400'
                 }`}
               >
@@ -69,7 +69,9 @@ export default function BottomNav() {
                   size={18}
                   className={`transition-colors ${
                     isActive
-                      ? 'text-blue-500'
+                      ? isLight
+                        ? 'text-yellow-700'
+                        : 'text-yellow-400'
                       : isLight
                       ? 'text-slate-500'
                       : 'text-slate-400'
@@ -81,7 +83,7 @@ export default function BottomNav() {
                 className={`text-[9.5px] tracking-tight mt-0.5 leading-none truncate max-w-[48px] ${
                   isActive
                     ? isLight
-                      ? 'text-blue-800 font-bold'
+                      ? 'text-slate-950 font-extrabold'
                       : 'text-white font-bold'
                     : isLight
                     ? 'text-slate-500'

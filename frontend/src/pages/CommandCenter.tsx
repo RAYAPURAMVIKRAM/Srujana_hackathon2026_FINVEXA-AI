@@ -4,8 +4,6 @@ import {
   CreditCard,
   Shield,
   ArrowRight,
-  Sparkles,
-  Flame,
   CheckCircle2,
   Lock,
   Activity,
@@ -18,15 +16,14 @@ import {
 import { useApp } from '../context/AppContext'
 import KpiCard from '../components/KpiCard'
 import Tilt3DCard from '../components/Tilt3DCard'
-import Interactive3DFinancialCore from '../components/Interactive3DFinancialCore'
 import AiBankingChatbot from '../components/AiBankingChatbot'
 import GoalQuickEditBar from '../components/GoalQuickEditBar'
+import ZeroManualInputFlow from '../components/ZeroManualInputFlow'
 import { generateCashflow, computeRiskMetrics } from '../lib/cashflow'
 
 export default function CommandCenter() {
   const { persona, personaData, simulator, bankConsent, userGoal, themeMode, t, formatMoney } = useApp()
   const navigate = useNavigate()
-  const theme = personaData.theme
   const isLight = themeMode === 'light'
 
   const cashflow = generateCashflow({
@@ -120,112 +117,26 @@ export default function CommandCenter() {
       {/* 0. Live Goal Quick Edit Bar (Syncs Entire App) */}
       <GoalQuickEditBar />
 
-      {/* 1. Interactive 3D Hero Banner */}
-      <Tilt3DCard
-        className={`p-6 md:p-8 rounded-3xl border shadow-2xl relative overflow-hidden transition-all duration-300 ${
-          isLight
-            ? 'bg-white border-2 border-slate-200 text-slate-900 shadow-md'
-            : 'bg-slate-900/70 backdrop-blur-xl border-white/10 text-white'
-        }`}
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center relative z-10">
-          {/* Hero Left Content */}
-          <div className="lg:col-span-8 space-y-4">
-            <div
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold border shadow-sm"
-              style={{
-                borderColor: `${theme.primaryHex}40`,
-                background: `${theme.primaryHex}15`,
-                color: isLight ? '#1e40af' : theme.primaryHex,
-              }}
-            >
-              <Sparkles size={13} className="animate-spin text-blue-500" />
-              <span>{t('hero.badge')}</span>
-            </div>
-
-            <div>
-              <h1 className={`text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                FINVEXA
-              </h1>
-              <p
-                className="text-sm sm:text-base font-bold mt-1 tracking-wide"
-                style={{ color: isLight ? '#1e40af' : theme.primaryHex }}
-              >
-                {t('hero.subtitle')}
-              </p>
-            </div>
-
-            <p className={`text-sm sm:text-base max-w-xl leading-relaxed ${isLight ? 'text-slate-700 font-medium' : 'text-slate-300'}`}>
-              {t('hero.desc')}
-            </p>
-
-            {/* Active Persona Story Box */}
-            <div className={`p-4 rounded-2xl border flex items-start gap-3 shadow-md ${
-              isLight
-                ? 'bg-slate-50 border-slate-200 text-slate-800'
-                : 'bg-slate-950/60 border-white/10 text-white'
-            }`}>
-              <span className="text-2xl mt-0.5">{personaData.emoji}</span>
-              <div>
-                <div className={`text-xs font-bold uppercase tracking-wider ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                  Current Real-Life Scenario ({personaData.label})
-                </div>
-                <div className={`text-sm font-semibold mt-0.5 ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                  "{personaData.story}"
-                </div>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3 pt-1">
-              <button
-                onClick={() => navigate('/simulator')}
-                className="text-xs py-2.5 px-5 flex items-center gap-2 font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-lg rounded-xl transition-all"
-              >
-                <span>{t('hero.launchSim')}</span>
-                <ArrowRight size={14} />
-              </button>
-              <button
-                onClick={() => navigate('/rescue')}
-                className={`px-4 py-2.5 rounded-xl text-xs font-bold border transition-colors flex items-center gap-1.5 shadow-sm ${
-                  isLight
-                    ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-300'
-                    : 'bg-white/5 hover:bg-white/10 text-slate-200 border-white/15'
-                }`}
-              >
-                <Flame size={14} className="text-amber-500" />
-                <span>{t('hero.seeFixes')}</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Hero Right 3D Interactive Core Widget */}
-          <div className="lg:col-span-4 flex flex-col items-center justify-center p-2">
-            <Interactive3DFinancialCore
-              shortage={shortage}
-              size={240}
-              label={`${personaData.label} Shield`}
-            />
-          </div>
-        </div>
-      </Tilt3DCard>
+      {/* 1. JUDGE-REQUESTED ZERO-MANUAL-INPUT 3-STEP WORKFLOW */}
+      <ZeroManualInputFlow />
 
       {/* RBI Account Aggregator Live Feed Banner */}
       {bankConsent.isLinked && (
-        <div className={`p-3.5 sm:p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-md ${
+        <div className={`p-3.5 sm:p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xs ${
           isLight
-            ? 'bg-emerald-50 border border-emerald-300 text-emerald-800'
+            ? 'bg-amber-50/80 border border-amber-300 text-amber-950'
             : 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-300'
         }`}>
           <div className="flex items-center gap-2.5">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping shrink-0" />
             <span>
-              <strong className={isLight ? 'text-emerald-950 font-bold' : 'text-white font-bold'}>
+              <strong className={isLight ? 'text-slate-950 font-black' : 'text-white font-bold'}>
                 RBI Account Aggregator Live Feed Active:
               </strong>{' '}
               {bankConsent.bankName} ({bankConsent.accountMasked})
             </span>
           </div>
-          <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/40 shrink-0 self-start sm:self-auto">
+          <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-yellow-400 text-slate-950 border border-yellow-500 shrink-0 self-start sm:self-auto shadow-xs">
             100% Read-Only Protected · Sahamati Standard
           </span>
         </div>
@@ -354,27 +265,27 @@ export default function CommandCenter() {
             return (
               <Tilt3DCard
                 key={i}
-                className={`p-4 sm:p-5 rounded-2xl border transition-all duration-200 flex flex-col justify-between gap-3 ${
+                className={`p-4 sm:p-5 rounded-2xl border-2 transition-all duration-200 flex flex-col justify-between gap-3 ${
                   isLight
-                    ? 'bg-white border-2 border-slate-200 shadow-md text-slate-900'
+                    ? 'bg-white border-yellow-200 hover:border-yellow-400 shadow-xs text-slate-900'
                     : 'bg-slate-900/70 backdrop-blur-xl border-white/10 text-white'
                 }`}
               >
                 <div className="space-y-2">
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-blue-500/15 text-blue-500 border border-blue-500/20 flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-yellow-100 text-yellow-900 border border-yellow-300 flex items-center justify-center shrink-0">
                         <Icon size={16} />
                       </div>
-                      <span className="text-xs font-mono font-bold text-blue-500">Check {chk.num}</span>
+                      <span className="text-xs font-mono font-bold text-yellow-800">Check {chk.num}</span>
                     </div>
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
                         chk.statusType === 'critical'
-                          ? 'bg-rose-500/20 text-rose-600 dark:text-rose-400 border-rose-500/30'
+                          ? 'bg-rose-100 text-rose-800 border-rose-300'
                           : chk.statusType === 'warning'
-                          ? 'bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30'
-                          : 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/30'
+                          ? 'bg-yellow-100 text-yellow-950 border-yellow-400'
+                          : 'bg-emerald-100 text-emerald-800 border-emerald-300'
                       }`}
                     >
                       {chk.statusBadge}
@@ -385,7 +296,7 @@ export default function CommandCenter() {
                     <h3 className={`text-sm font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
                       {chk.title}
                     </h3>
-                    <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 italic mt-0.5">
+                    <p className="text-xs font-semibold text-yellow-800 dark:text-yellow-400 italic mt-0.5">
                       "{chk.question}"
                     </p>
                   </div>
@@ -396,7 +307,7 @@ export default function CommandCenter() {
                 </div>
 
                 <div className={`pt-2 border-t text-[11px] font-mono font-semibold flex items-center justify-between ${
-                  isLight ? 'border-slate-100 text-slate-600' : 'border-white/10 text-slate-400'
+                  isLight ? 'border-yellow-100 text-slate-600' : 'border-white/10 text-slate-400'
                 }`}>
                   <span>{chk.liveMetric}</span>
                   <ArrowRight size={12} className="text-slate-400" />
@@ -414,27 +325,27 @@ export default function CommandCenter() {
 
       {/* 5. Dynamic Before-You-Spend Callout Banner (Exact Rupee Value) */}
       <Tilt3DCard
-        className={`p-6 sm:p-7 rounded-3xl border shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 ${
+        className={`p-6 sm:p-7 rounded-3xl border-2 shadow-xs flex flex-col md:flex-row items-center justify-between gap-6 ${
           isLight
-            ? 'bg-white border-2 border-slate-200 text-slate-900 shadow-md'
+            ? 'bg-white border-yellow-300 text-slate-900 shadow-sm'
             : 'bg-slate-900/70 backdrop-blur-xl border-white/10 text-white'
         }`}
       >
         <div className="space-y-2">
           <div className="flex items-center gap-2">
-            <CheckCircle2 size={18} className="text-emerald-500" />
-            <h3 className={`font-bold text-base sm:text-lg ${isLight ? 'text-slate-900' : 'text-white'}`}>
+            <CheckCircle2 size={18} className="text-emerald-600" />
+            <h3 className={`font-black text-base sm:text-lg ${isLight ? 'text-slate-950' : 'text-white'}`}>
               Want to see what happens before spending ₹{simulator.decisionCost.toLocaleString('en-IN')}?
             </h3>
           </div>
-          <p className={`text-xs sm:text-sm max-w-2xl leading-relaxed ${isLight ? 'text-slate-700 font-medium' : 'text-slate-300'}`}>
+          <p className={`text-xs sm:text-sm max-w-2xl leading-relaxed ${isLight ? 'text-slate-600 font-medium' : 'text-slate-300'}`}>
             Move sliders for price, payment delay days, down payment, and batch splitting to see your exact 90-day bank balance graph live.
           </p>
         </div>
 
         <button
           onClick={() => navigate('/simulator')}
-          className="text-xs sm:text-sm py-3 px-6 whitespace-nowrap shrink-0 flex items-center gap-2 font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-lg rounded-xl transition-all"
+          className="text-xs sm:text-sm py-3 px-6 whitespace-nowrap shrink-0 flex items-center gap-2 font-black bg-yellow-400 hover:bg-yellow-500 text-slate-950 shadow-sm border border-yellow-500 rounded-xl transition-all"
         >
           <span>Run 90-Day Simulation</span>
           <ArrowRight size={16} />

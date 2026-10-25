@@ -51,9 +51,9 @@ export default function TopBar() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 h-14 backdrop-blur-xl shadow-md transition-colors duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 h-14 backdrop-blur-xl shadow-xs transition-colors duration-300 ${
           isLight
-            ? 'bg-white/95 text-slate-900 border-b border-slate-200'
+            ? 'bg-white/98 text-slate-900 border-b-2 border-yellow-300'
             : 'bg-slate-950/80 text-white border-b border-white/10'
         }`}
       >
@@ -67,11 +67,11 @@ export default function TopBar() {
             <div className="truncate">
               <div className="text-sm sm:text-base font-black tracking-tight flex items-center gap-1.5">
                 <span className={isLight ? 'text-slate-900' : 'text-white'}>FINVEXA</span>
-                <span className="text-[9px] sm:text-[10px] px-1.5 py-0.2 rounded font-mono font-bold bg-blue-500/20 text-blue-600 dark:text-blue-300 border border-blue-500/30">
+                <span className="text-[9px] sm:text-[10px] px-1.5 py-0.2 rounded font-mono font-bold bg-yellow-400 text-slate-950 border border-yellow-500 shadow-xs">
                   ₹ Twin
                 </span>
               </div>
-              <div className="text-[10px] text-emerald-600 dark:text-emerald-400 leading-tight font-semibold tracking-normal hidden md:block truncate">
+              <div className="text-[10px] text-amber-700 dark:text-emerald-400 leading-tight font-bold tracking-normal hidden md:block truncate">
                 {t('topbar.brandSubtitle')}
               </div>
             </div>
@@ -83,14 +83,14 @@ export default function TopBar() {
               onClick={() => setShowScaleMenu(!showScaleMenu)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all shadow-sm ${
                 persona === 'enterprise'
-                  ? 'bg-gradient-to-r from-blue-600 via-sky-600 to-indigo-700 text-white border border-blue-400 shadow-blue-500/20 animate-pulse'
+                  ? 'bg-gradient-to-r from-yellow-400 to-amber-500 text-slate-950 border border-yellow-500 shadow-yellow-500/20'
                   : persona === 'business'
-                  ? 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/40'
+                  ? 'bg-yellow-100 text-slate-950 border border-yellow-400'
                   : persona === 'freelancer'
-                  ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/40'
+                  ? 'bg-amber-100 text-slate-950 border border-amber-300'
                   : isLight
-                  ? 'bg-slate-100 text-slate-800 border border-slate-300 hover:border-blue-400'
-                  : 'bg-white/10 text-slate-200 border border-white/15 hover:border-blue-400'
+                  ? 'bg-yellow-50 text-slate-900 border border-yellow-300 hover:border-yellow-400'
+                  : 'bg-white/10 text-slate-200 border border-white/15 hover:border-yellow-400'
               }`}
               title="Click to switch scale (₹10K to $10 Billion)"
             >
@@ -197,19 +197,19 @@ export default function TopBar() {
             </button>
           </div>
 
-          {/* Right Action Tools: Cloud Assets + User Avatar Pill (sitting gracefully alongside GlobalTopControls) */}
-          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 mr-0 sm:mr-[270px] lg:mr-[290px]">
+          {/* Right Action Tools: Cloud Assets + User Avatar Pill */}
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 mr-0 sm:mr-[210px] lg:mr-[225px]">
             {/* 1. Cloud Assets Button */}
             <button
               onClick={() => setIsAssetManagerOpen(true)}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-all ${
                 isLight
-                  ? 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100'
-                  : 'text-blue-300 bg-blue-500/20 hover:bg-blue-500/30 border-blue-500/30'
+                  ? 'bg-yellow-100/70 text-slate-900 border-yellow-300 hover:bg-yellow-200'
+                  : 'text-yellow-300 bg-yellow-500/20 hover:bg-yellow-500/30 border-yellow-500/30'
               }`}
               title="Open Supabase Cloud Asset Manager"
             >
-              <Cloud size={13} className="text-blue-500" />
+              <Cloud size={13} className="text-amber-500" />
               <span className="hidden sm:inline">☁️ {t('topbar.cloud')}</span>
             </button>
 
