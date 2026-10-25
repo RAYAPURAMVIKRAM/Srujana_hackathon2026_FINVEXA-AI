@@ -1,6 +1,7 @@
 // src/components/KpiCard.tsx
 import React from 'react'
 import Tilt3DCard from './Tilt3DCard'
+import { useApp } from '../context/AppContext'
 
 interface KpiCardProps {
   label: string
@@ -19,7 +20,10 @@ export default function KpiCard({
   icon,
   trend,
 }: KpiCardProps) {
-  const statusColors = {
+  const { themeMode } = useApp()
+  const isLight = themeMode === 'light'
+
+  const statusColorsDark = {
     safe: {
       border: 'border-emerald-500/30 hover:border-emerald-400/50',
       text: 'text-emerald-400',
@@ -50,11 +54,46 @@ export default function KpiCard({
     },
   }
 
-  const c = statusColors[status]
+  const statusColorsLight = {
+    safe: {
+      border: 'border-emerald-500 hover:border-emerald-600',
+      text: 'text-emerald-700',
+      bg: 'bg-emerald-100',
+      badge: 'SAFE',
+      iconBg: 'bg-emerald-100 text-emerald-700 border-emerald-300',
+    },
+    warning: {
+      border: 'border-amber-500 hover:border-amber-600',
+      text: 'text-amber-800',
+      bg: 'bg-amber-100',
+      badge: 'WARNING',
+      iconBg: 'bg-amber-100 text-amber-800 border-amber-300',
+    },
+    critical: {
+      border: 'border-rose-500 hover:border-rose-600',
+      text: 'text-rose-700',
+      bg: 'bg-rose-100',
+      badge: 'CRITICAL',
+      iconBg: 'bg-rose-100 text-rose-700 border-rose-300',
+    },
+    neutral: {
+      border: 'border-slate-300 hover:border-slate-400',
+      text: 'text-blue-700',
+      bg: 'bg-blue-100',
+      badge: '',
+      iconBg: 'bg-blue-100 text-blue-700 border-blue-300',
+    },
+  }
+
+  const c = isLight ? statusColorsLight[status] : statusColorsDark[status]
 
   return (
     <Tilt3DCard
-      className={`bg-slate-900/70 backdrop-blur-xl rounded-2xl p-5 relative overflow-hidden border shadow-lg transition-all duration-300 ${c.border}`}
+      className={`rounded-2xl p-5 relative overflow-hidden transition-all duration-300 ${
+        isLight
+          ? 'bg-white border-2 shadow-md text-slate-900 ' + c.border
+          : 'bg-slate-900/70 backdrop-blur-xl border shadow-lg ' + c.border
+      }`}
     >
       <div className="flex items-start justify-between relative z-10">
         <div
@@ -72,13 +111,17 @@ export default function KpiCard({
       </div>
 
       <div className="mt-4 relative z-10">
-        <div className="text-[11px] text-slate-400 font-bold tracking-wider uppercase">
+        <div className={`text-[11px] font-bold tracking-wider uppercase ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
           {label}
         </div>
-        <div className="text-2xl font-black text-white mt-1 mono tracking-tight">
+        <div className={`text-2xl font-black mt-1 mono tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
           {value}
         </div>
-        {sub && <div className="text-xs text-slate-400 font-medium mt-1">{sub}</div>}
+        {sub && (
+          <div className={`text-xs font-medium mt-1 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+            {sub}
+          </div>
+        )}
         {trend && (
           <div className={`text-xs mt-2 font-bold ${c.text}`}>
             {trend}

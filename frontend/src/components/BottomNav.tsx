@@ -9,21 +9,29 @@ import {
   Lightbulb,
   User,
 } from 'lucide-react'
-
-const navItems = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Home' },
-  { to: '/simulator', icon: Sliders, label: 'Sim' },
-  { to: '/goal-strategy', icon: Target, label: 'Goals' },
-  { to: '/leaks', icon: Coins, label: 'Leaks' },
-  { to: '/scanner', icon: ScanLine, label: 'Scan' },
-  { to: '/rescue', icon: Lightbulb, label: 'Fixes' },
-  { to: '/profile', icon: User, label: 'Profile' },
-]
+import { useApp } from '../context/AppContext'
 
 export default function BottomNav() {
+  const { themeMode, t } = useApp()
+  const isLight = themeMode === 'light'
+
+  const navItems = [
+    { to: '/dashboard', icon: LayoutDashboard, label: t('nav.dashboard') },
+    { to: '/simulator', icon: Sliders, label: t('nav.simulator') },
+    { to: '/goal-strategy', icon: Target, label: t('nav.goalStrategy') },
+    { to: '/leaks', icon: Coins, label: t('nav.leaks') },
+    { to: '/scanner', icon: ScanLine, label: t('nav.scanner') },
+    { to: '/rescue', icon: Lightbulb, label: t('nav.rescue') },
+    { to: '/profile', icon: User, label: t('nav.profile') },
+  ]
+
   return (
     <nav
-      className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-slate-950/90 border-t border-white/10 px-1 py-1 flex justify-around items-center shadow-2xl backdrop-blur-xl"
+      className={`md:hidden fixed bottom-0 left-0 right-0 z-50 px-1 py-1 flex justify-around items-center shadow-2xl backdrop-blur-xl transition-colors duration-300 ${
+        isLight
+          ? 'bg-white/95 border-t border-slate-200 text-slate-900'
+          : 'bg-slate-950/90 border-t border-white/10 text-white'
+      }`}
     >
       {navItems.map(({ to, icon: Icon, label }) => (
         <NavLink
@@ -32,7 +40,11 @@ export default function BottomNav() {
           className={({ isActive }) =>
             `flex flex-col items-center justify-center flex-1 min-h-[46px] py-1 px-0.5 rounded-xl transition-all duration-150 relative ${
               isActive
-                ? 'text-white font-bold'
+                ? isLight
+                  ? 'text-blue-700 font-bold'
+                  : 'text-white font-bold'
+                : isLight
+                ? 'text-slate-500 hover:text-slate-800'
                 : 'text-slate-400 hover:text-slate-200'
             }`
           }
@@ -41,25 +53,39 @@ export default function BottomNav() {
             <>
               {/* Active Indicator Top Pill */}
               {isActive && (
-                <div className="absolute -top-1 w-6 h-0.5 rounded-full bg-blue-400 shadow-[0_0_8px_#60a5fa]" />
+                <div className="absolute -top-1 w-6 h-0.5 rounded-full bg-blue-500 shadow-[0_0_8px_#3b82f6]" />
               )}
 
               <div
                 className={`p-1 rounded-xl transition-all ${
-                  isActive ? 'bg-blue-500/20 text-blue-400' : 'bg-transparent text-slate-400'
+                  isActive
+                    ? isLight
+                      ? 'bg-blue-100 text-blue-600'
+                      : 'bg-blue-500/20 text-blue-400'
+                    : 'bg-transparent text-slate-400'
                 }`}
               >
                 <Icon
                   size={18}
                   className={`transition-colors ${
-                    isActive ? 'text-blue-400' : 'text-slate-400'
+                    isActive
+                      ? 'text-blue-500'
+                      : isLight
+                      ? 'text-slate-500'
+                      : 'text-slate-400'
                   }`}
                 />
               </div>
 
               <span
-                className={`text-[9.5px] tracking-tight mt-0.5 leading-none ${
-                  isActive ? 'text-white font-bold' : 'text-slate-400'
+                className={`text-[9.5px] tracking-tight mt-0.5 leading-none truncate max-w-[48px] ${
+                  isActive
+                    ? isLight
+                      ? 'text-blue-800 font-bold'
+                      : 'text-white font-bold'
+                    : isLight
+                    ? 'text-slate-500'
+                    : 'text-slate-400'
                 }`}
               >
                 {label}

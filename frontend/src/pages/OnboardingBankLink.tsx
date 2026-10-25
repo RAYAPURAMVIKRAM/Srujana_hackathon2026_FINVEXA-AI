@@ -131,12 +131,26 @@ export default function OnboardingBankLink() {
         setSyncStatus('Calibration complete! Entering FINVEXA...')
         setIsVerifying(false)
 
-        completeOnboarding(details.name, details.income, details.persona)
+        completeOnboarding(
+          details.name,
+          details.income,
+          details.persona,
+          details.goal,
+          details.goalAmount,
+          details.goalDays
+        )
         linkBankSuccess(selectedBank.name, selectedBank.id, '•••• 4912')
         navigate('/dashboard')
       }, 1450)
     } else {
-      completeOnboarding(details.name, details.income, details.persona)
+      completeOnboarding(
+        details.name,
+        details.income,
+        details.persona,
+        details.goal,
+        details.goalAmount,
+        details.goalDays
+      )
       navigate('/dashboard')
     }
   }

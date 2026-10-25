@@ -1,5 +1,6 @@
 // src/context/AppContext.tsx
-import React, { createContext, useContext, useState, useCallback, useMemo } from 'react'
+import React, { createContext, useContext, useState, useCallback, useMemo, useEffect } from 'react'
+import { type Language, translate } from '../i18n/translations'
 
 export type PersonaType = 'salaried' | 'freelancer' | 'business'
 export type ThemeMode = 'light' | 'dark'
@@ -43,6 +44,10 @@ export interface RiskCardConfig {
   warningText: string
   advice: string
   severity: 'safe' | 'warning' | 'critical'
+  pitchTitle?: string
+  pitchQuestion?: string
+  pitchExplanation?: string
+  checkNumber?: number
 }
 
 export interface RescuePlanConfig {
@@ -102,17 +107,17 @@ export const PERSONAS: Record<PersonaType, PersonaData> = {
     type: 'salaried',
     label: 'Student & Job Holder',
     emoji: '👤',
-    story: 'Buy a ₹55,000 Laptop/Bike without touching ₹18,000 Hostel Rent & College Fees.',
+    story: 'Buy your planned goal without touching untouchable Hostel Rent & College Fees.',
     balance: 65000,
     monthlyIncome: 45000,
     lockedReserves: 18000,
     hiddenLeaks: 3400,
     creditScore: 710,
     incomeLabel: 'Monthly Salary / Pocket-Money',
-    purchaseLabel: '₹55,000 Laptop or Bike',
+    purchaseLabel: 'Laptop or Bike Purchase',
     defaultDecisionCost: 55000,
     sliderLabels: {
-      decisionCost: 'Laptop / Bike Price (₹55,000)',
+      decisionCost: 'Purchase Goal Price',
       paymentDelay: 'Salary / Allowance Delay (Days)',
       upfrontPercent: 'Downpayment Paid Right Now (%)',
       hiddenCost: 'Delivery & EMI Extra Charges (%)',
@@ -200,7 +205,7 @@ export const PERSONAS: Record<PersonaType, PersonaData> = {
         hiddenCostBuffer: 5,
         paymentDelayDays: 0,
         negotiationMessage:
-          'Hey [Store/Seller], I really want to buy the ₹55,000 laptop/bike. Can you hold this piece for me until the 1st? I will make a 30% advance on the 1st as soon as my monthly salary credits. Thanks!',
+          'Hey [Store/Seller], I really want to proceed with this purchase. Can you hold this piece for me until the 1st? I will make an advance on the 1st as soon as my monthly salary credits. Thanks!',
       },
       {
         id: 'planB',
@@ -208,13 +213,13 @@ export const PERSONAS: Record<PersonaType, PersonaData> = {
         tagColor: '#059669',
         title: 'Split Purchase into 3 Zero-Cost Parts (Keep Rent Safe)',
         description:
-          'Split the ₹55,000 into 3 monthly parts of ₹18,333. Your monthly income easily covers each installment while keeping your ₹18,000 hostel rent 100% untouched.',
+          'Split the cost into 3 monthly parts. Your monthly income easily covers each installment while keeping your untouchable hostel rent 100% safe.',
         upfrontPercent: 33,
         splitBatches: 3,
         hiddenCostBuffer: 6,
         paymentDelayDays: 5,
         negotiationMessage:
-          'Hi, could we set up a 3-part monthly payment for the ₹55,000 purchase? I can pay ₹18,333 today and the remaining two parts on the 1st of the next two months. This keeps both parties protected!',
+          'Hi, could we set up a 3-part monthly payment for this purchase? I can pay the first part today and the remaining two parts on the 1st of the next two months. This keeps both parties protected!',
       },
       {
         id: 'planC',
@@ -607,7 +612,7 @@ export function parseGoalTextAndAmount(
     category = 'survival'
   }
 
-  const cleanTitle = text || (personaType === 'business' ? '₹1,00,000 Corporate Order' : personaType === 'freelancer' ? '₹45,000 Camera Gear' : '₹55,000 Laptop / Bike')
+  const cleanTitle = text || (personaType === 'business' ? '₹1,00,000 Corporate Order' : personaType === 'freelancer' ? '₹45,000 Camera Gear' : `₹${cost.toLocaleString('en-IN')} Laptop / Bike`)
 
   return { title: cleanTitle, cost, days, category }
 }
@@ -615,8 +620,11 @@ export function parseGoalTextAndAmount(
 interface AppContextType {
   themeMode: ThemeMode
   toggleThemeMode: () => void
+  lang: Language
+  setLang: (l: Language) => void
+  t: (key: string, params?: Record<string, string | number>) => string
   persona: PersonaType
-  setPersona: (p: PersonaType) => void
+  setPersona: (p: PersonaType, preserveActiveCost?: boolean) => void
   personaData: PersonaData
   simulator: SimulatorState
   setSimulator: (s: Partial<SimulatorState>) => void
@@ -631,7 +639,14 @@ interface AppContextType {
   isOnboardingDone: boolean
   loginAsReturningUser: (profile: SavedUserProfile) => void
   loginAsNewUser: (identifier: string, type: 'phone' | 'email' | 'guest', name?: string) => void
-  completeOnboarding: (name: string, monthlyIncome: number, selectedPersona: PersonaType) => void
+  completeOnboarding: (
+    name: string,
+    monthlyIncome: number,
+    selectedPersona: PersonaType,
+    customGoalTitle?: string,
+    customGoalCost?: number,
+    customGoalDays?: number
+  ) => void
   resetOnboardingDemo: () => void
   getSavedUserByIdentifier: (identifier: string) => SavedUserProfile | null
   userGoal: UserGoal
@@ -672,6 +687,60 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       return next
     })
   }, [])
+
+  // Sync themeMode with HTML document element
+  useEffect(() => {
+    try {
+      if (themeMode === 'light') {
+        document.documentElement.classList.add('light')
+        document.documentElement.classList.remove('dark')
+      } else {
+        document.documentElement.classList.add('dark')
+        document.documentElement.classList.remove('light')
+      }
+      document.documentElement.setAttribute('data-theme', themeMode)
+    } catch {
+      // ignore
+    }
+  }, [themeMode])
+
+  // Multi-Language i18n State
+  const [lang, setLangState] = useState<Language>(() => {
+    try {
+      const saved = localStorage.getItem('finvexa_lang') as Language
+      if (saved && ['en', 'hi', 'kn', 'te'].includes(saved)) return saved
+    } catch {
+      // ignore
+    }
+    return 'en'
+  })
+
+  const setLang = useCallback((l: Language) => {
+    setLangState(l)
+    try {
+      localStorage.setItem('finvexa_lang', l)
+      document.documentElement.setAttribute('data-lang', l)
+      document.documentElement.setAttribute('lang', l)
+    } catch {
+      // ignore
+    }
+  }, [])
+
+  useEffect(() => {
+    try {
+      document.documentElement.setAttribute('data-lang', lang)
+      document.documentElement.setAttribute('lang', lang)
+    } catch {
+      // ignore
+    }
+  }, [lang])
+
+  const t = useCallback(
+    (key: string, params?: Record<string, string | number>) => {
+      return translate(lang, key, params)
+    },
+    [lang]
+  )
 
   // Onboarding Done state
   const [isOnboardingDone, setIsOnboardingDone] = useState<boolean>(() => {
@@ -727,9 +796,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     } catch {
       // ignore
     }
+    const savedSimRaw = (() => {
+      try {
+        return localStorage.getItem('finvexa_simulator_state')
+      } catch {
+        return null
+      }
+    })()
+    const savedCost = savedSimRaw ? JSON.parse(savedSimRaw).decisionCost || 55000 : 55000
     return {
-      title: 'Buy a ₹55,000 laptop in 2 months',
-      targetAmount: 55000,
+      title: `Buy a ₹${savedCost.toLocaleString('en-IN')} laptop in 2 months`,
+      targetAmount: savedCost,
       targetMonths: 2,
       category: 'tech',
       downpaymentPercent: 30,
@@ -746,6 +823,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
       return updated
     })
+
+    if (newGoal.targetAmount !== undefined) {
+      setSimulatorState(prev => {
+        const next = { ...prev, decisionCost: newGoal.targetAmount! }
+        try {
+          localStorage.setItem('finvexa_simulator_state', JSON.stringify(next))
+        } catch {
+          // ignore
+        }
+        return next
+      })
+    }
   }, [])
 
   const applyUserGoalToEntireApp = useCallback(
@@ -784,46 +873,55 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     [persona, simulator.upfrontPercent]
   )
 
-  const setPersona = useCallback((p: PersonaType) => {
-    setPersonaState(p)
-    const nextCost = p === 'salaried' ? 55000 : p === 'freelancer' ? 45000 : 60000
-    const nextDays = p === 'salaried' ? 8 : p === 'freelancer' ? 22 : 25
-    const nextSim: SimulatorState = {
-      decisionCost: nextCost,
-      paymentDelayDays: nextDays,
-      upfrontPercent: p === 'business' ? 15 : p === 'freelancer' ? 25 : 30,
-      hiddenCostBuffer: p === 'freelancer' ? 10 : 8,
-      splitBatches: p === 'business' ? 1 : 2,
-    }
-    setSimulatorState(nextSim)
-    try {
-      localStorage.setItem('finvexa_simulator_state', JSON.stringify(nextSim))
-    } catch {
-      // ignore
-    }
+  const setPersona = useCallback(
+    (p: PersonaType, preserveActiveCost = false) => {
+      setPersonaState(p)
+      const nextCost =
+        preserveActiveCost && simulator.decisionCost
+          ? simulator.decisionCost
+          : p === 'salaried'
+          ? 55000
+          : p === 'freelancer'
+          ? 45000
+          : 60000
+      const nextDays = p === 'salaried' ? 8 : p === 'freelancer' ? 22 : 25
+      const nextSim: SimulatorState = {
+        decisionCost: nextCost,
+        paymentDelayDays: nextDays,
+        upfrontPercent: p === 'business' ? 15 : p === 'freelancer' ? 25 : 30,
+        hiddenCostBuffer: p === 'freelancer' ? 10 : 8,
+        splitBatches: p === 'business' ? 1 : 2,
+      }
+      setSimulatorState(nextSim)
+      try {
+        localStorage.setItem('finvexa_simulator_state', JSON.stringify(nextSim))
+      } catch {
+        // ignore
+      }
 
-    // Also update saved user session if exists
-    try {
-      const session = localStorage.getItem('finvexa_auth_session')
-      if (session) {
-        const parsed = JSON.parse(session)
-        parsed.persona = p
-        localStorage.setItem('finvexa_auth_session', JSON.stringify(parsed))
+      try {
+        const session = localStorage.getItem('finvexa_auth_session')
+        if (session) {
+          const parsed = JSON.parse(session)
+          parsed.persona = p
+          localStorage.setItem('finvexa_auth_session', JSON.stringify(parsed))
 
-        const savedUsersRaw = localStorage.getItem('finvexa_saved_users')
-        if (savedUsersRaw) {
-          const users: Record<string, SavedUserProfile> = JSON.parse(savedUsersRaw)
-          const key = parsed.phone || parsed.email || parsed.id
-          if (users[key]) {
-            users[key].persona = p
-            localStorage.setItem('finvexa_saved_users', JSON.stringify(users))
+          const savedUsersRaw = localStorage.getItem('finvexa_saved_users')
+          if (savedUsersRaw) {
+            const users: Record<string, SavedUserProfile> = JSON.parse(savedUsersRaw)
+            const key = parsed.phone || parsed.email || parsed.id
+            if (users[key]) {
+              users[key].persona = p
+              localStorage.setItem('finvexa_saved_users', JSON.stringify(users))
+            }
           }
         }
+      } catch {
+        // ignore
       }
-    } catch {
-      // ignore
-    }
-  }, [])
+    },
+    [simulator.decisionCost]
+  )
 
   const setSimulator = useCallback((s: Partial<SimulatorState>) => {
     setSimulatorState(prev => {
@@ -835,6 +933,22 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
       return next
     })
+
+    // Immediately propagate updated decisionCost to userGoal so the exact rupee number is synchronized everywhere
+    if (s.decisionCost !== undefined) {
+      setUserGoalState(prevGoal => {
+        const updated = {
+          ...prevGoal,
+          targetAmount: s.decisionCost!,
+        }
+        try {
+          localStorage.setItem('finvexa_user_goal', JSON.stringify(updated))
+        } catch {
+          // ignore
+        }
+        return updated
+      })
+    }
   }, [])
 
   // Dynamic personaData customized live with the active goal title & rupee figures
@@ -844,8 +958,55 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const currentDays = simulator.paymentDelayDays || (persona === 'salaried' ? 8 : persona === 'freelancer' ? 22 : 25)
     const goalName = userGoal.title || base.purchaseLabel
 
+    // Team Pitch Table 6 Core Checks mapping
+    const pitchTableChecks = [
+      {
+        num: 1,
+        title: 'Cash-Flow Prediction',
+        question: 'Will you run out of money while doing the work?',
+        explanation:
+          'Shows exactly when and how much money could be short by comparing when you must spend vs. when money comes in.',
+      },
+      {
+        num: 2,
+        title: 'Commitment Protection (Home Loan, Salaries & Rent)',
+        question: 'Will money still be available for other needs?',
+        explanation:
+          'Protects upcoming commitments like Home Loan EMIs, Staff Salaries, House/Shop Rent, and fees before approving a new expense or order.',
+      },
+      {
+        num: 3,
+        title: 'Customer & Incoming Payment Analysis',
+        question: 'How reliable are your incoming payments?',
+        explanation:
+          'Checks past payment delays and upcoming money to tell you exact advance % to ask for.',
+      },
+      {
+        num: 4,
+        title: 'Hidden-Cost Discovery',
+        question: 'Did you forget any costs?',
+        explanation:
+          'Highlights overlooked expenses like delivery, packaging, late-night surge fees, or auto-debit subscriptions that reduce your money.',
+      },
+      {
+        num: 5,
+        title: 'Suspicious-Record & Fraud Alerts',
+        question: 'Does anything look suspicious?',
+        explanation:
+          'Flags unusual payments, repeated duplicate bills, unverified payment screenshots, or changed bank details for verification.',
+      },
+      {
+        num: 6,
+        title: 'Risk & Scenario Comparison',
+        question: "What if things don't go as planned?",
+        explanation:
+          'Tests late payments, rising costs, or multiple expenses arriving together and shows safe fixes.',
+      },
+    ]
+
     // Dynamically update risk cards with user's exact numbers & goal name
-    const customRiskCards = base.riskCards.map(rc => {
+    const customRiskCards = base.riskCards.map((rc, idx) => {
+      const checkInfo = pitchTableChecks[idx] || pitchTableChecks[0]
       let wText = rc.warningText
       let mLabel = rc.metricLabel
       let pTitle = rc.plainTitle
@@ -869,12 +1030,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         }
       } else {
         if (rc.id === 'rent-lock') {
-          wText = `₹18,000 is strictly locked for hostel rent. Buying "${goalName}" for ₹${currentCost.toLocaleString('en-IN')} must not touch this floor.`
+          wText = `₹${base.lockedReserves.toLocaleString('en-IN')} is strictly locked for hostel rent. Buying "${goalName}" for ₹${currentCost.toLocaleString('en-IN')} must not touch this floor.`
+        } else if (rc.id === 'salary-delay-shock') {
+          wText = `If your salary or allowance is delayed by ${currentDays} days, buying "${goalName}" (₹${currentCost.toLocaleString('en-IN')}) leaves you very close to your rent floor.`
         }
       }
 
       return {
         ...rc,
+        checkNumber: checkInfo.num,
+        pitchTitle: checkInfo.title,
+        pitchQuestion: checkInfo.question,
+        pitchExplanation: checkInfo.explanation,
         warningText: wText,
         metricLabel: mLabel,
         plainTitle: pTitle,
@@ -1103,49 +1270,92 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   // Complete onboarding wizard
-  const completeOnboarding = useCallback((name: string, monthlyIncome: number, selectedPersona: PersonaType) => {
-    setPersona(selectedPersona)
-    setIsOnboardingDone(true)
+  const completeOnboarding = useCallback(
+    (
+      name: string,
+      monthlyIncome: number,
+      selectedPersona: PersonaType,
+      customGoalTitle?: string,
+      customGoalCost?: number,
+      customGoalDays?: number
+    ) => {
+      setPersonaState(selectedPersona)
+      setIsOnboardingDone(true)
 
-    setAuthUser(prev => {
-      const updated: AuthUser = {
-        id: prev?.id || `usr_${Date.now()}`,
-        name: name || prev?.name || 'Explorer',
-        email: prev?.email,
-        phone: prev?.phone,
-        isGuest: prev?.isGuest,
-        monthlyIncome,
+      const costToUse = customGoalCost || simulator.decisionCost || 55000
+      const daysToUse = customGoalDays || simulator.paymentDelayDays || 15
+      const titleToUse =
+        customGoalTitle || (userGoal.title ? userGoal.title : `₹${costToUse.toLocaleString('en-IN')} Goal`)
+
+      const updatedGoal: UserGoal = {
+        title: titleToUse,
+        targetAmount: costToUse,
+        targetMonths: Math.max(1, Math.round(daysToUse / 30)),
+        category: 'general',
+        downpaymentPercent: 30,
       }
-
-      // Persist to session and saved_users
+      setUserGoalState(updatedGoal)
       try {
-        localStorage.setItem('finvexa_auth_session', JSON.stringify({ ...updated, persona: selectedPersona }))
-        localStorage.setItem('finvexa_onboarding_done', 'true')
-
-        const key = updated.phone || updated.email || updated.id
-        const savedUsersRaw = localStorage.getItem('finvexa_saved_users')
-        const users: Record<string, SavedUserProfile> = savedUsersRaw ? JSON.parse(savedUsersRaw) : {}
-        users[key] = {
-          id: updated.id,
-          identifier: key,
-          name: updated.name,
-          email: updated.email,
-          phone: updated.phone,
-          isGuest: updated.isGuest,
-          persona: selectedPersona,
-          monthlyIncome,
-          onboardingDone: true,
-          bankConsent,
-          lastLoginAt: new Date().toISOString(),
-        }
-        localStorage.setItem('finvexa_saved_users', JSON.stringify(users))
+        localStorage.setItem('finvexa_user_goal', JSON.stringify(updatedGoal))
       } catch {
         // ignore
       }
 
-      return updated
-    })
-  }, [setPersona, bankConsent])
+      const nextSim: SimulatorState = {
+        decisionCost: costToUse,
+        paymentDelayDays: daysToUse,
+        upfrontPercent: selectedPersona === 'business' ? 15 : selectedPersona === 'freelancer' ? 25 : 30,
+        hiddenCostBuffer: selectedPersona === 'freelancer' ? 10 : 8,
+        splitBatches: selectedPersona === 'business' ? 1 : 2,
+      }
+      setSimulatorState(nextSim)
+      try {
+        localStorage.setItem('finvexa_simulator_state', JSON.stringify(nextSim))
+      } catch {
+        // ignore
+      }
+
+      setAuthUser(prev => {
+        const updated: AuthUser = {
+          id: prev?.id || `usr_${Date.now()}`,
+          name: name || prev?.name || 'Explorer',
+          email: prev?.email,
+          phone: prev?.phone,
+          isGuest: prev?.isGuest,
+          monthlyIncome,
+        }
+
+        // Persist to session and saved_users
+        try {
+          localStorage.setItem('finvexa_auth_session', JSON.stringify({ ...updated, persona: selectedPersona }))
+          localStorage.setItem('finvexa_onboarding_done', 'true')
+
+          const key = updated.phone || updated.email || updated.id
+          const savedUsersRaw = localStorage.getItem('finvexa_saved_users')
+          const users: Record<string, SavedUserProfile> = savedUsersRaw ? JSON.parse(savedUsersRaw) : {}
+          users[key] = {
+            id: updated.id,
+            identifier: key,
+            name: updated.name,
+            email: updated.email,
+            phone: updated.phone,
+            isGuest: updated.isGuest,
+            persona: selectedPersona,
+            monthlyIncome,
+            onboardingDone: true,
+            bankConsent,
+            lastLoginAt: new Date().toISOString(),
+          }
+          localStorage.setItem('finvexa_saved_users', JSON.stringify(users))
+        } catch {
+          // ignore
+        }
+
+        return updated
+      })
+    },
+    [simulator.decisionCost, simulator.paymentDelayDays, userGoal.title, bankConsent]
+  )
 
   // Demo Login (One-click judge demo)
   const demoLogin = useCallback(() => {
@@ -1196,6 +1406,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       value={{
         themeMode,
         toggleThemeMode,
+        lang,
+        setLang,
+        t,
         persona,
         setPersona,
         personaData: dynamicPersonaData,

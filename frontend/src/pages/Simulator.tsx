@@ -29,6 +29,7 @@ import { generateCashflow, computeRiskMetrics } from '../lib/cashflow'
 import { saveScenario } from '../lib/supabase'
 import Interactive3DFinancialCore from '../components/Interactive3DFinancialCore'
 import GoalQuickEditBar from '../components/GoalQuickEditBar'
+import JudgeValidationPanel from '../components/JudgeValidationPanel'
 
 function SliderRow({
   label,
@@ -80,17 +81,22 @@ function SliderRow({
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null
+  const isLight = typeof document !== 'undefined' && document.documentElement.classList.contains('light')
   return (
-    <div className="bg-slate-900/95 backdrop-blur-xl p-3.5 rounded-xl min-w-[210px] border border-white/10 shadow-2xl text-white">
-      <div className="text-xs text-slate-400 mb-2 font-bold font-mono">Day {label} Balance Check</div>
+    <div className={`p-3.5 rounded-xl min-w-[210px] shadow-2xl border ${
+      isLight ? 'bg-white text-slate-900 border-2 border-slate-200' : 'bg-slate-900/95 text-white border border-white/10'
+    }`}>
+      <div className={`text-xs mb-2 font-bold font-mono ${isLight ? 'text-slate-600' : 'text-slate-400'}`}>
+        Day {label} Balance Check
+      </div>
       {payload.map((p: any) => (
         <div key={p.dataKey} className="flex justify-between items-center gap-4 py-0.5">
           <span className="text-xs font-semibold" style={{ color: p.color }}>
             {p.name}
           </span>
-          <span className="mono text-xs font-bold text-white">
+          <span className={`mono text-xs font-bold ${isLight ? 'text-slate-900' : 'text-white'}`}>
             ₹{Math.abs(p.value).toLocaleString('en-IN')}
-            {p.value < 0 && <span className="text-rose-400"> (Shortage)</span>}
+            {p.value < 0 && <span className="text-rose-500 font-black"> (Shortage)</span>}
           </span>
         </div>
       ))}
@@ -99,7 +105,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 }
 
 export default function Simulator() {
-  const { personaData, simulator, setSimulator } = useApp()
+  const { personaData, simulator, setSimulator, themeMode } = useApp()
+  const isLight = themeMode === 'light'
   const [saving, setSaving] = useState(false)
   const [saveStatus, setSaveStatus] = useState<{ type: 'cloud' | 'local'; message: string } | null>(null)
   const [autoFixed, setAutoFixed] = useState(false)
@@ -333,8 +340,8 @@ export default function Simulator() {
             <SliderRow
               label={labels.decisionCost}
               value={simulator.decisionCost}
-              min={10000}
-              max={250000}
+              min={Math.min(5000, simulator.decisionCost > 10000 ? 5000 : 1000)}
+              max={Math.max(250000, Math.round(simulator.decisionCost * 1.5))}
               step={1000}
               onChange={v => setSimulator({ decisionCost: v })}
               format={v => `₹${v.toLocaleString('en-IN')}`}
@@ -459,16 +466,16 @@ export default function Simulator() {
                       <stop offset="95%" stopColor="#f43f5e" stopOpacity={0.0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.6} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={isLight ? '#cbd5e1' : '#334155'} opacity={0.6} />
                   <XAxis
                     dataKey="day"
-                    tick={{ fill: '#94a3b8', fontSize: 10 }}
+                    tick={{ fill: isLight ? '#475569' : '#94a3b8', fontSize: 10 }}
                     tickLine={false}
-                    axisLine={{ stroke: '#475569' }}
-                    label={{ value: 'Day', position: 'insideBottomRight', offset: -4, fill: '#64748b', fontSize: 10 }}
+                    axisLine={{ stroke: isLight ? '#94a3b8' : '#475569' }}
+                    label={{ value: 'Day', position: 'insideBottomRight', offset: -4, fill: isLight ? '#475569' : '#64748b', fontSize: 10 }}
                   />
                   <YAxis
-                    tick={{ fill: '#94a3b8', fontSize: 10 }}
+                    tick={{ fill: isLight ? '#475569' : '#94a3b8', fontSize: 10 }}
                     tickLine={false}
                     axisLine={false}
                     tickFormatter={v => `₹${(v / 1000).toFixed(0)}K`}
@@ -476,9 +483,9 @@ export default function Simulator() {
                   />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend
-                    wrapperStyle={{ fontSize: '11px', color: '#94a3b8', paddingTop: '10px' }}
+                    wrapperStyle={{ fontSize: '11px', color: isLight ? '#334155' : '#94a3b8', paddingTop: '10px' }}
                     formatter={value => (
-                      <span className="text-xs font-semibold text-slate-300">
+                      <span className={`text-xs font-semibold ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
                         {value === 'naive'
                           ? '🟢 What You Expect (Without Delays)'
                           : value === 'stressed'
@@ -580,6 +587,9 @@ export default function Simulator() {
           </div>
         </div>
       </div>
+
+      {/* Srujana 2026 Rubric: Judge Validation, Edge-Cases & Limitations Panel */}
+      <JudgeValidationPanel />
     </div>
   )
 }

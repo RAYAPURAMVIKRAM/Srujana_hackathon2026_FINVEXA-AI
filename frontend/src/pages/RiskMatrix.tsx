@@ -22,6 +22,7 @@ import { Link } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import Tilt3DCard from '../components/Tilt3DCard'
 import GoalQuickEditBar from '../components/GoalQuickEditBar'
+import JudgeValidationPanel from '../components/JudgeValidationPanel'
 import { generateCashflow, computeRiskMetrics } from '../lib/cashflow'
 
 interface RiskFixDetails {
@@ -34,8 +35,9 @@ interface RiskFixDetails {
 }
 
 export default function RiskMatrix() {
-  const { personaData, simulator, setSimulator } = useApp()
+  const { personaData, simulator, setSimulator, themeMode } = useApp()
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const isLight = themeMode === 'light'
 
   const cashflow = generateCashflow({
     balance: personaData.balance,
@@ -151,7 +153,7 @@ export default function RiskMatrix() {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-fade-in text-white">
+    <div className={`space-y-6 sm:space-y-8 animate-fade-in ${isLight ? 'text-slate-900' : 'text-white'}`}>
       {/* 0. Live Goal Quick Edit Bar (Syncs Entire App) */}
       <GoalQuickEditBar />
 
@@ -264,64 +266,105 @@ export default function RiskMatrix() {
               className={`bg-slate-900/70 backdrop-blur-xl rounded-3xl p-5 border shadow-xl transition-all duration-300 flex flex-col justify-between ${severityColors.border}`}
             >
               <div className="space-y-3.5">
-                {/* Card Header */}
+                {/* Card Header with Check Number & Badge */}
                 <div className="flex items-start justify-between gap-3">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shrink-0 ${severityColors.iconBg}`}>
-                    {getIconForIndex(idx)}
+                  <div className="flex items-center gap-2">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shrink-0 ${severityColors.iconBg}`}>
+                      {getIconForIndex(idx)}
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-wider text-blue-400 font-mono">
+                        Pitch Check #{rc.checkNumber || idx + 1}
+                      </span>
+                      <h3 className={`text-sm sm:text-base font-black leading-snug ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                        {rc.pitchTitle || rc.title}
+                      </h3>
+                    </div>
                   </div>
                   <span
-                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${severityColors.bg} ${severityColors.text} border border-current`}
+                    className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider shrink-0 ${severityColors.bg} ${severityColors.text} border border-current`}
                   >
                     {severityColors.badge}
                   </span>
                 </div>
 
-                {/* Plain-English Titles */}
-                <div>
-                  <h3 className="text-base font-bold text-white leading-snug">{rc.plainTitle}</h3>
-                  <div className="text-xs text-slate-400 font-semibold mt-0.5">{rc.title}</div>
-                </div>
+                {/* Team Pitch Table Question Callout */}
+                {rc.pitchQuestion && (
+                  <div className={`p-2.5 rounded-xl border font-medium text-xs ${
+                    isLight 
+                      ? 'bg-blue-50 border-blue-200 text-blue-950 font-semibold' 
+                      : 'bg-blue-950/40 border-blue-500/30 text-blue-200'
+                  }`}>
+                    <span className="text-amber-500 font-black mr-1">❓</span>
+                    <span className="italic">"{rc.pitchQuestion}"</span>
+                  </div>
+                )}
+
+                {/* Pitch Table Core Simple Explanation */}
+                {rc.pitchExplanation && (
+                  <p className={`text-xs leading-relaxed font-normal ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+                    {rc.pitchExplanation}
+                  </p>
+                )}
 
                 {/* Metric Highlight */}
-                <div className="p-2.5 rounded-xl bg-slate-950/80 border border-white/10 font-mono text-xs font-bold text-emerald-400">
+                <div className={`p-2.5 rounded-xl font-mono text-xs font-bold ${
+                  isLight 
+                    ? 'bg-slate-100 border border-slate-200 text-emerald-700' 
+                    : 'bg-slate-950/80 border border-white/10 text-emerald-400'
+                }`}>
                   {rc.metricLabel}
                 </div>
 
-                {/* Quick Warning Summary */}
-                <p className="text-xs text-slate-300 leading-relaxed font-medium">{rc.warningText}</p>
+                {/* Dynamic Scenario Warning */}
+                <p className={`text-xs leading-relaxed font-medium ${isLight ? 'text-slate-800' : 'text-slate-300'}`}>
+                  {rc.warningText}
+                </p>
 
                 {/* 3 Explicit Breakdown Sections: What AI Found, Why It Hurts, Actionable Fix */}
                 {isExpanded ? (
-                  <div className="pt-3 border-t border-white/10 space-y-3 animate-in fade-in duration-200">
+                  <div className={`pt-3 border-t space-y-3 animate-in fade-in duration-200 ${isLight ? 'border-slate-200' : 'border-white/10'}`}>
                     {/* Section 1: What AI Found */}
-                    <div className="p-3 rounded-xl bg-sky-950/40 border border-sky-500/30 space-y-1">
-                      <div className="text-[11px] font-black uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
-                        <Search size={12} className="text-sky-400" />
+                    <div className={`p-3 rounded-xl border space-y-1 ${
+                      isLight 
+                        ? 'bg-sky-50 border-sky-200 text-sky-950' 
+                        : 'bg-sky-950/40 border-sky-500/30 text-sky-100'
+                    }`}>
+                      <div className="text-[11px] font-black uppercase tracking-wider text-sky-600 dark:text-sky-400 flex items-center gap-1.5">
+                        <Search size={12} />
                         <span>(1) What AI Found</span>
                       </div>
-                      <p className="text-xs text-sky-100 leading-relaxed font-sans font-medium">
+                      <p className="text-xs leading-relaxed font-sans font-medium">
                         {details.aiFound}
                       </p>
                     </div>
 
                     {/* Section 2: Why It Hurts You in Simple English */}
-                    <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-500/30 space-y-1">
-                      <div className="text-[11px] font-black uppercase tracking-wider text-rose-400 flex items-center gap-1.5">
-                        <AlertTriangle size={12} className="text-rose-400" />
+                    <div className={`p-3 rounded-xl border space-y-1 ${
+                      isLight 
+                        ? 'bg-rose-50 border-rose-200 text-rose-950' 
+                        : 'bg-rose-950/40 border-rose-500/30 text-rose-100'
+                    }`}>
+                      <div className="text-[11px] font-black uppercase tracking-wider text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
+                        <AlertTriangle size={12} />
                         <span>(2) Why It Hurts You (Simple English)</span>
                       </div>
-                      <p className="text-xs text-rose-100 leading-relaxed font-sans font-medium">
+                      <p className="text-xs leading-relaxed font-sans font-medium">
                         {details.whyItHurts}
                       </p>
                     </div>
 
                     {/* Section 3: Actionable Fix Link */}
-                    <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 space-y-2">
-                      <div className="text-[11px] font-black uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                        <CheckCircle size={12} className="text-emerald-400" />
+                    <div className={`p-3 rounded-xl border space-y-2 ${
+                      isLight 
+                        ? 'bg-emerald-50 border-emerald-200 text-emerald-950' 
+                        : 'bg-emerald-950/40 border-emerald-500/30 text-emerald-100'
+                    }`}>
+                      <div className="text-[11px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                        <CheckCircle size={12} />
                         <span>(3) Actionable Fix</span>
                       </div>
-                      <p className="text-xs text-emerald-100 leading-relaxed font-sans font-medium">
+                      <p className="text-xs leading-relaxed font-sans font-medium">
                         {details.fixAction}
                       </p>
 
@@ -347,7 +390,7 @@ export default function RiskMatrix() {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-[11px] text-slate-400 italic">
+                  <div className={`text-[11px] italic ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                     Tap below to see AI findings, impact, and verified fix link.
                   </div>
                 )}
@@ -356,7 +399,11 @@ export default function RiskMatrix() {
               {/* Expand Toggle */}
               <button
                 onClick={() => toggleExpand(rc.id)}
-                className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold text-slate-300 hover:text-white transition-colors"
+                className={`mt-4 pt-3 border-t flex items-center justify-between text-xs font-bold transition-colors ${
+                  isLight 
+                    ? 'border-slate-200 text-slate-700 hover:text-slate-950' 
+                    : 'border-white/10 text-slate-300 hover:text-white'
+                }`}
               >
                 <span>{isExpanded ? '▲ Hide 3-Part Breakdown' : '▼ Expand (AI Findings, Impact & Fix)'}</span>
                 {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
@@ -365,6 +412,9 @@ export default function RiskMatrix() {
           )
         })}
       </div>
+
+      {/* Srujana 2026 Rubric: Judge Validation, Edge-Cases & Limitations Panel */}
+      <JudgeValidationPanel />
     </div>
   )
 }

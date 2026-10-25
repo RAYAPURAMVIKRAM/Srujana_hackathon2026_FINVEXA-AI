@@ -22,9 +22,10 @@ import { useApp } from './context/AppContext'
 
 export default function App() {
   const [isAssetManagerOpen, setIsAssetManagerOpen] = useState(false)
-  const { personaData } = useApp()
+  const { personaData, themeMode } = useApp()
   const location = useLocation()
   const theme = personaData.theme
+  const isLight = themeMode === 'light'
 
   // Dedicated full-screen routes without top/side navigation
   const isOnboardingOrSplash = [
@@ -36,7 +37,7 @@ export default function App() {
 
   if (isOnboardingOrSplash) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white font-sans selection:bg-blue-500/30 selection:text-white">
+      <div className={`min-h-screen font-sans selection:bg-blue-500/30 ${isLight ? 'bg-slate-50 text-slate-900' : 'bg-slate-950 text-white selection:text-white'}`}>
         <Routes>
           <Route path="/" element={<SplashScreen />} />
           <Route path="/auth" element={<Auth />} />
@@ -49,27 +50,41 @@ export default function App() {
 
   return (
     <div
-      className={`min-h-screen transition-colors duration-500 relative overflow-x-hidden bg-slate-950 text-slate-100 bg-gradient-to-br ${theme.meshClass} selection:bg-blue-500/30 selection:text-white`}
+      className={`min-h-screen transition-colors duration-300 relative overflow-x-hidden ${
+        isLight
+          ? 'bg-slate-50 text-slate-900 selection:bg-blue-500/20 selection:text-blue-900'
+          : `bg-slate-950 text-slate-100 bg-gradient-to-br ${theme.meshClass} selection:bg-blue-500/30 selection:text-white`
+      }`}
     >
       {/* Dynamic 3-Orb Radiant Aurora Mesh Background */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        {/* Orb 1: Top Left */}
-        <div
-          className="absolute -top-32 -left-32 w-96 h-96 rounded-full blur-[130px] opacity-70 animate-pulse transition-all duration-1000"
-          style={{ background: theme.orb1 }}
-        />
-        {/* Orb 2: Center Right */}
-        <div
-          className="absolute top-1/3 -right-32 w-[30rem] h-[30rem] rounded-full blur-[150px] opacity-60 transition-all duration-1000"
-          style={{ background: theme.orb2 }}
-        />
-        {/* Orb 3: Bottom Left / Center */}
-        <div
-          className="absolute -bottom-32 left-1/3 w-[26rem] h-[26rem] rounded-full blur-[140px] opacity-65 animate-pulse transition-all duration-1000"
-          style={{ background: theme.orb3 }}
-        />
-        {/* Fine Grain Grid overlay */}
-        <div className="absolute inset-0 bg-grid opacity-25" />
+        {!isLight ? (
+          <>
+            {/* Orb 1: Top Left */}
+            <div
+              className="absolute -top-32 -left-32 w-96 h-96 rounded-full blur-[130px] opacity-70 animate-pulse transition-all duration-1000"
+              style={{ background: theme.orb1 }}
+            />
+            {/* Orb 2: Center Right */}
+            <div
+              className="absolute top-1/3 -right-32 w-[30rem] h-[30rem] rounded-full blur-[150px] opacity-60 transition-all duration-1000"
+              style={{ background: theme.orb2 }}
+            />
+            {/* Orb 3: Bottom Left / Center */}
+            <div
+              className="absolute -bottom-32 left-1/3 w-[26rem] h-[26rem] rounded-full blur-[140px] opacity-65 animate-pulse transition-all duration-1000"
+              style={{ background: theme.orb3 }}
+            />
+            {/* Fine Grain Grid overlay */}
+            <div className="absolute inset-0 bg-grid opacity-25" />
+          </>
+        ) : (
+          <>
+            {/* Soft subtle ambient tint for Light Mode */}
+            <div className="absolute top-0 right-1/4 w-[36rem] h-[36rem] rounded-full blur-[160px] opacity-25 bg-blue-200 pointer-events-none" />
+            <div className="absolute bottom-0 left-1/4 w-[36rem] h-[36rem] rounded-full blur-[160px] opacity-20 bg-emerald-100 pointer-events-none" />
+          </>
+        )}
       </div>
 
       <TopBar />

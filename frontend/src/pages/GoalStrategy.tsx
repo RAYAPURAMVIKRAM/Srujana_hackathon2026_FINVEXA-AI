@@ -1,5 +1,5 @@
 // src/pages/GoalStrategy.tsx
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   Target,
   TrendingUp,
@@ -26,21 +26,29 @@ interface ResourceLink {
 
 export default function GoalStrategy() {
   const navigate = useNavigate()
-  const { persona, personaData, userGoal, simulator, applyUserGoalToEntireApp } = useApp()
+  const { persona, personaData, userGoal, simulator, applyUserGoalToEntireApp, themeMode } = useApp()
+  const isLight = themeMode === 'light'
 
   const [goalText, setGoalText] = useState(
     userGoal?.title ||
       (persona === 'salaried'
-        ? 'Buy a ₹55,000 laptop in 2 months'
+        ? `Buy a ₹${simulator.decisionCost.toLocaleString('en-IN')} laptop in 2 months`
         : persona === 'freelancer'
-        ? 'Buy a ₹45,000 camera gear in 45 days'
-        : 'Accept a ₹1,00,000 T-Shirt order in 30 days')
+        ? `Buy a ₹${simulator.decisionCost.toLocaleString('en-IN')} camera gear in 45 days`
+        : `Accept a ₹${simulator.decisionCost.toLocaleString('en-IN')} T-Shirt order in 30 days`)
   )
   const [amount, setAmount] = useState<number>(
     userGoal?.targetAmount || simulator.decisionCost || (persona === 'salaried' ? 55000 : persona === 'freelancer' ? 45000 : 60000)
   )
   const [months, setMonths] = useState<number>(userGoal?.targetMonths || 2)
   const [isAnalyzed, setIsAnalyzed] = useState(false)
+
+  // Reactively sync with global state changes from TopBar, Simulator Slider 1, or GoalQuickEditBar
+  useEffect(() => {
+    if (userGoal?.title) setGoalText(userGoal.title)
+    if (simulator.decisionCost) setAmount(simulator.decisionCost)
+    if (userGoal?.targetMonths) setMonths(userGoal.targetMonths)
+  }, [userGoal?.title, userGoal?.targetMonths, simulator.decisionCost])
 
   const handleAnalyzeGoal = (customText?: string, customAmt?: number, customM?: number) => {
     const textToUse = customText || goalText
@@ -149,7 +157,7 @@ export default function GoalStrategy() {
   const activeResources = resources[persona] || resources.salaried
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-fade-in text-white">
+    <div className={`space-y-6 sm:space-y-8 animate-fade-in ${isLight ? 'text-slate-900' : 'text-white'}`}>
       {/* 0. Live Goal Quick Edit Bar (Syncs Entire App) */}
       <GoalQuickEditBar />
 
